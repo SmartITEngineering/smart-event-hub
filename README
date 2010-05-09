@@ -1,0 +1,10 @@
+This project is ensure a persistent distributed event consumption and
+generation; i.e. there can m-sources of events and n-consumers where m & n are
+non-negative.
+It is intended to serve a wide are of persistent storage from various NoSQL 
+and/or NOSQL, SQL based RDBMS and Object database.
+It is also intended to serve a clustered environment using Atmosphere's cluster
+support.
+Primary and preliminary implementation will be based on Atmosphere (Comet) and
+later, besides Pushing, Pulling will also be supported using an Atom feed.
+
