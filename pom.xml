@@ -68,13 +68,13 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
+        <version>${servlet.version}</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.servlet.jsp</groupId>
         <artifactId>jsp-api</artifactId>
-        <version>2.1</version>
+        <version>${jsp.version}</version>
         <scope>provided</scope>
       </dependency>
       <!-- Test scope -->
@@ -104,22 +104,23 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>1.1.1</version>
+          <version>${plugin.exec.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.0.2</version>
+          <version>${plugin.compiler.version}</version>
         </plugin>
         <plugin>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>7.0.2.v20100331</version>
+          <version>${plugin.jetty.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
   </build>
   <properties>
+    <!-- dependencies -->
     <atmosphere.version>0.5.7</atmosphere.version>
     <jaxrs.version>1.1.1</jaxrs.version>
     <jersey.version>1.1.5</jersey.version>
@@ -130,6 +131,13 @@
     <groovy.version>1.7.2</groovy.version>
     <rhino.version>1.7R2</rhino.version>
     <jython.version>2.5.0</jython.version>
+    <servlet.version>2.5</servlet.version>
+    <jsp.version>2.1</jsp.version>
+    <!-- plugins -->
+    <plugin.jetty.version>7.0.2.v20100331</plugin.jetty.version>
+    <plugin.compiler.version>2.0.2</plugin.compiler.version>
+    <plugin.exec.version>1.1.1</plugin.exec.version>
+    <!-- others -->
   </properties>
   <modules>
     <module>hub</module>
