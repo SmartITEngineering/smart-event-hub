@@ -59,6 +59,11 @@
         <artifactId>atmosphere-jersey</artifactId>
         <version>${atmosphere.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.atmosphere</groupId>
+        <artifactId>atmosphere-commons</artifactId>
+        <version>${atmosphere.version}</version>
+      </dependency>
       <!-- Provided scope -->
       <dependency>
         <groupId>javax.servlet</groupId>
