@@ -24,6 +24,68 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <version>0.1-SNAPSHOT</version>
   <name>Smart Event-Hub</name>
   <url>http://smart-event-hub.github.com/</url>
+  <inceptionYear>2010</inceptionYear>
+  <description>
+    This project is ensure a persistent distributed event consumption and
+    generation; i.e. there can m-sources of events and n-consumers where m and n
+    are non-negative.
+    It is intended to serve a wide are of persistent storage from various NoSQL
+    and/or NOSQL, SQL based RDBMS and Object database.
+    It is also intended to serve a clustered environment using Atmosphere's
+    cluster support.
+    Primary and preliminary implementation will be based on Atmosphere (Comet)
+    and later, besides Pushing, Pulling will also be supported using an Atom
+    feed.
+  </description>
+  <organization>
+    <name>Smart IT Engineering</name>
+    <url>http://www.smartitengineering.com</url>
+  </organization>
+  <developers>
+    <developer>
+      <id>imyousuf</id>
+      <name>Imran M Yousuf</name>
+      <organization>Smart IT Engineering</organization>
+      <organizationUrl>http://www.smartitengineering.com</organizationUrl>
+      <email>imran@smartitengineering.com</email>
+      <roles>
+        <role>Architect</role>
+        <role>Developer</role>
+        <role>Maintainer</role>
+      </roles>
+    </developer>
+  </developers>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>http://github.com/imyousuf/smart-event-hub/issues</url>
+  </issueManagement>
+  <distributionManagement>
+    <!-- use the following if you're not using a snapshot version. -->
+    <repository>
+      <id>smartit-googlecode</id>
+      <name>Smart IT Engineering GoogleCode repository</name>
+      <url>svn:https://imyousuf@smart-it.googlecode.com/svn/maven2/releases</url>
+    </repository>
+    <!-- use the following if you ARE using a snapshot version. -->
+    <snapshotRepository>
+      <id>smartit-googlecode</id>
+      <name>Smart IT Engineering GoogleCode repository</name>
+      <url>svn:https://imyousuf@smart-it.googlecode.com/svn/maven2/snapshots</url>
+    </snapshotRepository>
+    <!-- deploy site here -->
+    <site>
+      <id>smartit-googlecode</id>
+      <name>Smart IT Engineering GoogleCode repository</name>
+      <url>svn:https://imyousuf@smart-it.googlecode.com/svn/maven2/site/event-hub</url>
+    </site>
+  </distributionManagement>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -133,9 +195,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <artifactId>jetty-maven-plugin</artifactId>
           <version>${plugin.jetty.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${plugin.site.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${plugin.javadoc.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>${plugin.cobertura.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>${plugin.surefire.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>${plugin.findbugs.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${plugin.assembly.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <inherited>true</inherited>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <aggregate>false</aggregate>
+          <linksource>true</linksource>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <inherited>true</inherited>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <inherited>true</inherited>
+      </plugin>
+    </plugins>
+  </reporting>
   <properties>
     <!-- dependencies -->
     <atmosphere.version>0.5.7</atmosphere.version>
@@ -154,6 +278,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <plugin.jetty.version>7.0.2.v20100331</plugin.jetty.version>
     <plugin.compiler.version>2.0.2</plugin.compiler.version>
     <plugin.exec.version>1.1.1</plugin.exec.version>
+    <plugin.site.version>2.0.1</plugin.site.version>
+    <plugin.javadoc.version>2.6</plugin.javadoc.version>
+    <plugin.cobertura.version>2.3</plugin.cobertura.version>
+    <plugin.surefire.version>2.4.3</plugin.surefire.version>
+    <plugin.findbugs.version>2.1</plugin.findbugs.version>
+    <plugin.assembly.version>2.2-beta-2</plugin.assembly.version>
     <!-- others -->
   </properties>
   <modules>
