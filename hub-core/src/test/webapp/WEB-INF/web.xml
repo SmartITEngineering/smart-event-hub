@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name>hub-integration-test</display-name>
+  <servlet>
+    <description>AtmosphereServlet</description>
+    <servlet-name>AtmosphereServlet</servlet-name>
+    <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>
+    <init-param>
+      <param-name>org.atmosphere.cpr.broadcasterClass</param-name>
+      <param-value>com.smartitengineering.event.hub.core.EventBroadcaster</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>com.smartitengineering.event.hub.core</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
+      <param-value>org.atmosphere.core.AtmosphereFilter</param-value>
+    </init-param>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AtmosphereServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>
+            30
+    </session-timeout>
+  </session-config>
+</web-app>
