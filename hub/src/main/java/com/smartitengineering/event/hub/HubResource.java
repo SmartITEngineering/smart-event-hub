@@ -23,9 +23,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 import org.atmosphere.annotation.Broadcast;
-import org.atmosphere.annotation.Schedule;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.jersey.Broadcastable;
@@ -45,13 +43,6 @@ public class HubResource {
   @Produces
   public Broadcastable register() {
     return new Broadcastable(broadcaster);
-  }
-
-  @Schedule(period=10)
-  @POST
-  @Path("/ping")
-  public Response ping() {
-    return Response.noContent().build();
   }
 
   @Broadcast
