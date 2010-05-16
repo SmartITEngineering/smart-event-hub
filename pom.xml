@@ -86,6 +86,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <mailingLists>
+    <mailingList>
+      <name>User List</name>
+      <archive>http://groups.google.com/group/smart-event-hub-users</archive>
+      <post>smart-event-hub-users@googlegroups.com</post>
+      <subscribe>smart-event-hub-users-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>smart-event-hub-users+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+    <mailingList>
+      <name>Developer List</name>
+      <archive>http://groups.google.com/group/smart-event-hub-dev</archive>
+      <post>smart-event-hub-dev@googlegroups.com</post>
+      <subscribe>smart-event-hub-dev-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>smart-event-hub-dev+unsubscribe@googlegroups.com</unsubscribe>
+    </mailingList>
+  </mailingLists>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -227,6 +243,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>org.jvnet.wagon-svn</groupId>
+        <artifactId>wagon-svn</artifactId>
+        <version>${wagon.svn.version}</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>${wagon.ftp.version}</version>
+      </extension>
+    </extensions>
   </build>
   <reporting>
     <plugins>
@@ -284,9 +312,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <plugin.surefire.version>2.4.3</plugin.surefire.version>
     <plugin.findbugs.version>2.1</plugin.findbugs.version>
     <plugin.assembly.version>2.2-beta-2</plugin.assembly.version>
+    <!-- extensions -->
+    <wagon.ftp.version>1.0-beta-6</wagon.ftp.version>
+    <wagon.svn.version>1.9</wagon.svn.version>
     <!-- others -->
   </properties>
   <modules>
     <module>hub</module>
+    <module>hub-core</module>
   </modules>
 </project>

@@ -15,26 +15,40 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.smartitengineering.event.hub;
+package com.smartitengineering.event.hub.core;
 
-import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereResourceEvent;
-import org.atmosphere.jersey.JerseyBroadcaster;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.annotation.Suspend;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.jersey.Broadcastable;
 
 /**
  *
  * @author imyousuf
  */
-public class EventBroadcaster
-    extends JerseyBroadcaster {
+@Path("/{channel}")
+public class HubResource {
 
-  public EventBroadcaster() {
-    super();
+  @PathParam("channel")
+  private Broadcaster broadcaster;
+
+  @GET
+  @Suspend(outputComments = false)
+  @Produces
+  public Broadcastable register() {
+    return new Broadcastable(broadcaster);
   }
 
-  @Override
-  protected void broadcast(final AtmosphereResource r,
-                           final AtmosphereResourceEvent e) {
-    super.broadcast(r, e);
+  @Broadcast
+  @POST
+  @Consumes
+  public Broadcastable broadcast(String message) {
+    return new Broadcastable(message, broadcaster);
   }
 }
