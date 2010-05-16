@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <artifactId>hub-db</artifactId>
   <packaging>war</packaging>
   <version>0.1-SNAPSHOT</version>
-  <name>Hub RDBMS Persistence</name>
+  <name>Hub RDBMS Configured WebApp</name>
   <description>
     The main web application which will persist events to RDBMS.
   </description>

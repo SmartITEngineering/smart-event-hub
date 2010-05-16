@@ -12,8 +12,8 @@
   <version>0.1-SNAPSHOT</version>
   <name>Hub Core</name>
   <description>
-    The core module defining the SPI and injection points, and implements the
-    resource responsible for event distribution.
+    The core module implements the resource responsible for event distribution.
+    It uses the SPI for supporting persistence
   </description>
   <dependencies>
     <dependency>

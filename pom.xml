@@ -320,5 +320,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <modules>
     <module>hub</module>
     <module>hub-core</module>
+    <module>hub-spi</module>
+    <module>hub-spi-db</module>
   </modules>
 </project>
