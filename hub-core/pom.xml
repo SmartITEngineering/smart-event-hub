@@ -10,7 +10,7 @@
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>hub-core</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>Hub Core</name>
+  <name>Hub RESTful Core</name>
   <description>
     The core module implements the resource responsible for event distribution.
     It uses the SPI for supporting persistence
@@ -68,10 +68,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
