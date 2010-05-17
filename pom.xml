@@ -159,6 +159,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <artifactId>atmosphere-commons</artifactId>
         <version>${atmosphere.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.smartitengineering.smart-util</groupId>
+        <artifactId>smart-bean-util</artifactId>
+        <version>${smart.util.version}</version>
+      </dependency>
       <!-- Provided scope -->
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -307,6 +312,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <jython.version>2.5.0</jython.version>
     <servlet.version>2.5</servlet.version>
     <jsp.version>2.1</jsp.version>
+    <smart.util.version>0.2-SNAPSHOT</smart.util.version>
     <!-- plugins -->
     <plugin.jetty.version>7.0.2.v20100331</plugin.jetty.version>
     <plugin.compiler.version>2.0.2</plugin.compiler.version>
