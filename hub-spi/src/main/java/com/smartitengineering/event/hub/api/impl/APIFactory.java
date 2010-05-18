@@ -15,26 +15,25 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.smartitengineering.event.hub.api;
+package com.smartitengineering.event.hub.api.impl;
+
+import com.smartitengineering.event.hub.api.Filter;
+import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 
 /**
- * A filter for filtering whether to broadcast an event to a particular channel
- * or not.
+ *
  * @author imyousuf
  */
-public interface Filter {
+public class APIFactory {
 
-  public static final String ALLOW_BROADCAST_METHOD_NAME = "allowBroadcast";
+  private APIFactory() {
+  }
 
-  /**
-   * Checks whether to allow broadcast or not.
-   * @param event The event to broadcast
-   * @return True if to allow broadcast and false if should not be broadcasted
-   */
-  public boolean allowBroadcast(Event event);
-
-  public static enum SupportedMimeType {
-
-    RUBY, GROOVY, JAVA_SCRIPT, JYTHON;
+  public static Filter getFilter(SupportedMimeType mimeType,
+                                 String script) {
+    FilterImpl filterImpl = new FilterImpl();
+    filterImpl.setFilterScript(script);
+    filterImpl.setMimeType(mimeType);
+    return filterImpl;
   }
 }
