@@ -17,8 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api.impl;
 
+import com.smartitengineering.event.hub.api.Content;
+import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.api.Filter;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
+import java.io.InputStream;
 
 /**
  *
@@ -35,5 +38,54 @@ public class APIFactory {
     filterImpl.setFilterScript(script);
     filterImpl.setMimeType(mimeType);
     return filterImpl;
+  }
+
+  public static EventBuilder getEventBuilder() {
+    return new EventBuilder();
+  }
+
+  public static Content getContent(String contentType,
+                                   InputStream stream) {
+    if (contentType == null || stream == null) {
+      throw new IllegalArgumentException(
+          "Stream or content type can not be null. They are mendatory fields");
+    }
+    ContentImpl contentImpl = new ContentImpl();
+    contentImpl.setContent(stream);
+    contentImpl.setContentType(contentType);
+    return contentImpl;
+  }
+
+  public static class EventBuilder {
+
+    private final EventImpl builderEvent;
+
+    public EventBuilder() {
+      builderEvent = new EventImpl();
+    }
+
+    public EventBuilder placeholder(String placeholderId) {
+      builderEvent.setPlaceholderId(placeholderId);
+      return this;
+    }
+
+    public EventBuilder eventContent(Content eventContent) {
+      builderEvent.setEventContent(eventContent);
+      return this;
+    }
+
+    public EventBuilder uuid(String uuid) {
+      builderEvent.setUniversallyUniqueID(uuid);
+      return this;
+    }
+
+    public Event build() {
+      try {
+        return (Event) builderEvent.clone();
+      }
+      catch (CloneNotSupportedException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
   }
 }
