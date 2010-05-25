@@ -41,7 +41,7 @@ public final class HubPersistentStorerSPI {
 
   private static HubPersistentStorerSPI storerSPI;
 
-  public HubPersistentStorerSPI getInstance() {
+  public static HubPersistentStorerSPI getInstance() {
     if(storerSPI == null) {
       storerSPI = new HubPersistentStorerSPI();
     }
