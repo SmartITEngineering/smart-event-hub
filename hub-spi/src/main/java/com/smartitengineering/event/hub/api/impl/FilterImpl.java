@@ -71,6 +71,10 @@ class FilterImpl
     }
   }
 
+  protected ScriptingContainer getRubyScriptingContainer() {
+    return rubyScriptingContainer;
+  }
+
   protected synchronized boolean allowBroadcastTestUsingRuby(Event event) {
     if (rubyScriptingContainer == null) {
       initRuby();

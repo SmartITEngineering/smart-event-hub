@@ -27,10 +27,7 @@ import java.io.InputStream;
  *
  * @author imyousuf
  */
-public class APIFactory {
-
-  private APIFactory() {
-  }
+public final class APIFactory {
 
   public static Filter getFilter(SupportedMimeType mimeType,
                                  String script) {

@@ -1,4 +1,4 @@
 
 def allowBroadcast(eventObj)
-  return false
+  return eventObj != nil
 end

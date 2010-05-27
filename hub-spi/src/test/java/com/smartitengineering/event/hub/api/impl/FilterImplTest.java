@@ -17,18 +17,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api.impl;
 
+import com.smartitengineering.event.hub.api.Event;
+import com.smartitengineering.event.hub.api.Filter;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 import java.io.IOException;
-import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jmock.integration.junit3.MockObjectTestCase;
+import org.jruby.embed.ScriptingContainer;
 
 /**
  *
  * @author imyousuf
  */
 public class FilterImplTest
-    extends TestCase {
+    extends MockObjectTestCase {
 
   public FilterImplTest(String testName) {
     super(testName);
@@ -61,8 +64,7 @@ public class FilterImplTest
       filterImpl.setMimeType(null);
       fail("Null mime type set!");
     }
-    catch(IllegalArgumentException ex) {
-
+    catch (IllegalArgumentException ex) {
     }
   }
 
@@ -102,23 +104,36 @@ public class FilterImplTest
     assertTrue(filterImpl.allowBroadcast(null));
     filterImpl.setFilterScript("\t\n ");
     assertTrue(filterImpl.allowBroadcast(null));
-    /**
-     * For ruby script
-     */
-    String script;
-    try {
-      script = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(
-          "testrubyallow_success.rb"));
-    }
-    catch (IOException ex) {
-      fail(ex.getMessage());
-      script = "";
-    }
-    if(StringUtils.isBlank(script)) {
-      fail("Script not found!");
-    }
+    String script = getScript();
     filterImpl.setFilterScript(script);
     assertFalse(filterImpl.allowBroadcast(null));
+    assertTrue(filterImpl.allowBroadcast(mock(Event.class)));
+    filterImpl.setMimeType(SupportedMimeType.JYTHON);
+    assertTrue(filterImpl.allowBroadcast(null));
+  }
+
+  public void testFactoryCreation() {
+    final String script = getScript();
+    Filter filter = APIFactory.getFilter(SupportedMimeType.RUBY, script);
+    assertNotNull(filter);
+    assertTrue(filter instanceof FilterImpl);
+    FilterImpl impl = (FilterImpl) filter;
+    assertEquals(SupportedMimeType.RUBY, impl.getMimeType());
+    assertEquals(script, impl.getFilterScript());
+  }
+
+  public void testInitRuby() {
+    FilterImpl filterImpl = new FilterImpl();
+    filterImpl.setMimeType(SupportedMimeType.RUBY);
+    String script = getScript();
+    filterImpl.setFilterScript(script);
+    assertFalse(filterImpl.allowBroadcastTestUsingRuby(null));
+    ScriptingContainer scriptingContainer =
+                       filterImpl.getRubyScriptingContainer();
+    filterImpl.initRuby();
+    assertSame(scriptingContainer, filterImpl.getRubyScriptingContainer());
+    filterImpl.setFilterScript(null);
+    assertSame(scriptingContainer, filterImpl.getRubyScriptingContainer());
   }
 
   /**
@@ -127,19 +142,29 @@ public class FilterImplTest
   public void testAllowBroadcastTestUsingRuby() {
     FilterImpl filterImpl = new FilterImpl();
     filterImpl.setMimeType(SupportedMimeType.RUBY);
+    String script = getScript();
+    filterImpl.setFilterScript(script);
+    assertFalse(filterImpl.allowBroadcastTestUsingRuby(null));
+    assertTrue(filterImpl.allowBroadcastTestUsingRuby(mock(Event.class)));
+  }
+
+  protected String getScript() {
+    /**
+     * For ruby script
+     */
     String script;
     try {
-      script = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(
-          "testrubyallow_success.rb"));
+      script =
+      IOUtils.toString(getClass().getClassLoader().
+          getResourceAsStream("testrubyallow_success.rb"));
     }
     catch (IOException ex) {
       fail(ex.getMessage());
       script = "";
     }
-    if(StringUtils.isBlank(script)) {
+    if (StringUtils.isBlank(script)) {
       fail("Script not found!");
     }
-    filterImpl.setFilterScript(script);
-    assertFalse(filterImpl.allowBroadcastTestUsingRuby(null));
+    return script;
   }
 }
