@@ -32,7 +32,6 @@ class FilterImpl
   private SupportedMimeType mimeType;
   private String filterScript;
   private ScriptingContainer rubyScriptingContainer;
-  private Object rubyObjReceiver;
 
   public SupportedMimeType getMimeType() {
     return mimeType;
@@ -66,18 +65,18 @@ class FilterImpl
   }
 
   protected synchronized void initRuby() {
-    if (StringUtils.isNotBlank(filterScript) && (rubyScriptingContainer == null ||
-                                                 rubyObjReceiver == null)) {
+    if (StringUtils.isNotBlank(filterScript) && (rubyScriptingContainer == null)) {
       rubyScriptingContainer = new ScriptingContainer();
-      rubyObjReceiver = rubyScriptingContainer.runScriptlet(filterScript);
+      rubyScriptingContainer.runScriptlet(filterScript);
     }
   }
 
-  protected boolean allowBroadcastTestUsingRuby(Event event) {
-    if (rubyScriptingContainer == null || rubyObjReceiver == null) {
+  protected synchronized boolean allowBroadcastTestUsingRuby(Event event) {
+    if (rubyScriptingContainer == null) {
       initRuby();
     }
-    Boolean bool = rubyScriptingContainer.callMethod(rubyObjReceiver,
+    final Boolean bool;
+    bool = rubyScriptingContainer.callMethod(null,
         ALLOW_BROADCAST_METHOD_NAME, new Object[] {event}, Boolean.class);
     return bool;
   }
