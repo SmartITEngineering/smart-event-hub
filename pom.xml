@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <name>Imran M Yousuf</name>
       <organization>Smart IT Engineering</organization>
       <organizationUrl>http://www.smartitengineering.com</organizationUrl>
-      <email>imran@smartitengineering.com</email>
+      <email>imyousuf@smartitengineering.com</email>
       <roles>
         <role>Architect</role>
         <role>Developer</role>
@@ -102,6 +102,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <unsubscribe>smart-event-hub-dev+unsubscribe@googlegroups.com</unsubscribe>
     </mailingList>
   </mailingLists>
+  <scm>
+    <connection>scm:git:git://github.com/imyousuf/smart-event-hub.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:imyousuf/smart-event-hub.git</developerConnection>
+    <url>http://github.com/imyousuf/smart-event-hub</url>
+  </scm>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -261,6 +266,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>${plugin.scm.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changelog-plugin</artifactId>
+          <version>${plugin.changelog.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>${plugin.assembly.version}</version>
         </plugin>
@@ -279,6 +294,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </extension>
     </extensions>
     <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changelog-plugin</artifactId>
+          <inherited>true</inherited>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-utils</artifactId>
+              <version>${plexus-utils.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-provider-gitexe</artifactId>
+              <version>${plugin.scm.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <type>tag</type>
+            <tags>
+              <tag implementation="java.lang.String">${last.release.tag}</tag>
+              <tag implementation="java.lang.String">HEAD</tag>
+            </tags>
+          </configuration>
+          <executions>
+            <execution>
+              <id>generate-history</id>
+              <inherited>true</inherited>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>changelog</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -330,6 +379,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <artifactId>findbugs-maven-plugin</artifactId>
         <inherited>true</inherited>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <version>${plugin.changelog.version}</version>
+      </plugin>
     </plugins>
   </reporting>
   <properties>
@@ -358,11 +412,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <plugin.cobertura.version>2.3</plugin.cobertura.version>
     <plugin.surefire.version>2.4.3</plugin.surefire.version>
     <plugin.findbugs.version>2.1</plugin.findbugs.version>
+    <plugin.changelog.version>2.1</plugin.changelog.version>
+    <plugin.scm.version>1.3</plugin.scm.version>
     <plugin.assembly.version>2.2-beta-2</plugin.assembly.version>
+    <plexus-utils.version>1.5.6</plexus-utils.version>
     <!-- extensions -->
     <wagon.ftp.version>1.0-beta-6</wagon.ftp.version>
     <wagon.svn.version>1.9</wagon.svn.version>
     <!-- others -->
+    <last.release.tag>0.0</last.release.tag>
   </properties>
   <modules>
     <module>hub</module>
