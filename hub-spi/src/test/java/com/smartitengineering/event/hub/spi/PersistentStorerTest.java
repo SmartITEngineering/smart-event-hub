@@ -67,5 +67,7 @@ public class PersistentStorerTest
     BeanFactoryRegistrar.registerBeanFactory(
         "com.smartitengineering.event.hub.spi", factory);
     assertEquals(storer, HubPersistentStorerSPI.getInstance().getStorer());
+    //Ensure BeanFactory is not called more than once
+    assertEquals(storer, HubPersistentStorerSPI.getInstance().getStorer());
   }
 }
