@@ -68,6 +68,7 @@ class EventImpl
   }
 
   protected synchronized void initUUID() {
+    //Extra check for successive access to initUUID of an instance
     if (StringUtils.isBlank(universallyUniqueID)) {
       universallyUniqueID = UUID.randomUUID().toString();
     }
@@ -93,9 +94,9 @@ class EventImpl
       return false;
     }
     final Event other = (Event) obj;
-    if ((this.getUniversallyUniqueID() == null) ? (other.getUniversallyUniqueID() !=
-                                                   null)
-        : !this.getUniversallyUniqueID().equals(other.getUniversallyUniqueID())) {
+    final String otherUniversallyUniqueID = other.getUniversallyUniqueID();
+    if (otherUniversallyUniqueID == null ||
+         !this.getUniversallyUniqueID().equals(otherUniversallyUniqueID)) {
       return false;
     }
     return true;
@@ -104,10 +105,7 @@ class EventImpl
   @Override
   public int hashCode() {
     int hash = 3;
-    hash =
-    23 * hash +
-    (this.getUniversallyUniqueID() != null ? this.getUniversallyUniqueID().
-        hashCode() : 0);
+    hash = 23 * hash + this.getUniversallyUniqueID().hashCode();
     return hash;
   }
 }

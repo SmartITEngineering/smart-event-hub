@@ -19,6 +19,7 @@ package com.smartitengineering.event.hub.api.impl;
 
 import com.smartitengineering.event.hub.api.Content;
 import com.smartitengineering.event.hub.api.Event;
+import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 
 /**
@@ -65,6 +66,10 @@ public class EventImplTest
     assertEquals(uuid, eventImpl.getUniversallyUniqueID());
     eventImpl.setUniversallyUniqueID(null);
     assertEquals(uuid, eventImpl.getUniversallyUniqueID());
+    eventImpl = new EventImpl();
+    String uuidVal = eventImpl.getUniversallyUniqueID();
+    eventImpl.initUUID();
+    assertEquals(uuidVal, eventImpl.getUniversallyUniqueID());
   }
 
   public void testEqualsAndHashCode() {
@@ -85,6 +90,16 @@ public class EventImplTest
 
   public void testClone() {
     EventImpl eventImpl = new EventImpl();
+    assertFalse(eventImpl.equals(null));
+    assertFalse(eventImpl.equals("String"));
+    final Event mockedEvent = mock(Event.class);
+    checking(new Expectations(){
+      {
+        allowing(mockedEvent).getUniversallyUniqueID();
+        will(returnValue(null));
+      }
+    });
+    assertFalse(eventImpl.equals(mockedEvent));
     EventImpl clone = eventImpl.clone();
     assertNull(clone.getPlaceholderId());
     assertNotNull(clone.getUniversallyUniqueID());
