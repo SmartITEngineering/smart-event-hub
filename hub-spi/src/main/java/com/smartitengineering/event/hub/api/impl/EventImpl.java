@@ -73,18 +73,8 @@ class EventImpl
     }
   }
 
-  public EventImpl cloneMe() {
-    try {
-      return (EventImpl) clone();
-    }
-    catch (CloneNotSupportedException ex) {
-      return null;
-    }
-  }
-
   @Override
-  public Object clone()
-      throws CloneNotSupportedException {
+  public EventImpl clone() {
     EventImpl clone = new EventImpl();
     clone.setEventContent(eventContent);
     if (StringUtils.isNotBlank(universallyUniqueID)) {

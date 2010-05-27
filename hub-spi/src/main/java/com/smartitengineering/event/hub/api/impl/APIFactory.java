@@ -80,12 +80,7 @@ public class APIFactory {
     }
 
     public Event build() {
-      try {
-        return (Event) builderEvent.clone();
-      }
-      catch (CloneNotSupportedException ex) {
-        throw new RuntimeException(ex);
-      }
+      return builderEvent.clone();
     }
   }
 }

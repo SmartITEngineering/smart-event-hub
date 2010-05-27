@@ -85,7 +85,7 @@ public class EventImplTest
 
   public void testClone() {
     EventImpl eventImpl = new EventImpl();
-    EventImpl clone = eventImpl.cloneMe();
+    EventImpl clone = eventImpl.clone();
     assertNull(clone.getPlaceholderId());
     assertNotNull(clone.getUniversallyUniqueID());
     assertNull(clone.getEventContent());
@@ -93,7 +93,7 @@ public class EventImplTest
     final Content mockedContent = mock(Content.class);
     eventImpl = new EventImpl();
     eventImpl.setEventContent(mockedContent);
-    clone = eventImpl.cloneMe();
+    clone = eventImpl.clone();
     assertNull(clone.getPlaceholderId());
     assertNotNull(clone.getUniversallyUniqueID());
     assertSame(mockedContent, clone.getEventContent());
@@ -102,7 +102,7 @@ public class EventImplTest
     eventImpl = new EventImpl();
     eventImpl.setEventContent(mockedContent);
     eventImpl.setPlaceholderId(placeHolderId);
-    clone = eventImpl.cloneMe();
+    clone = eventImpl.clone();
     assertEquals(placeHolderId, clone.getPlaceholderId());
     assertNotNull(clone.getUniversallyUniqueID());
     assertSame(mockedContent, clone.getEventContent());
@@ -112,7 +112,7 @@ public class EventImplTest
     eventImpl.setEventContent(mockedContent);
     eventImpl.setPlaceholderId(placeHolderId);
     eventImpl.setUniversallyUniqueID(uuid);
-    clone = eventImpl.cloneMe();
+    clone = eventImpl.clone();
     assertEquals(placeHolderId, clone.getPlaceholderId());
     assertEquals(uuid, clone.getUniversallyUniqueID());
     assertSame(mockedContent, clone.getEventContent());
