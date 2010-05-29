@@ -31,7 +31,7 @@ public interface Channel {
   /**
    * Retrieve the name of the channel. It has to be unique and case insensitive
    * in nature.
-   * @return Name of the channel
+   * @return Name of the channel; should never be null or blank.
    */
   public String getName();
 
