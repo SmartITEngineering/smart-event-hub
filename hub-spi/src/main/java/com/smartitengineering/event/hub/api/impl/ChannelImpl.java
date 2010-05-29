@@ -43,7 +43,7 @@ class ChannelImpl
     if(StringUtils.isBlank(name)) {
       throw new IllegalArgumentException();
     }
-    this.name = name;
+    this.name = name.trim().toLowerCase();
   }
 
   public void setAuthToken(String authToken) {
@@ -110,7 +110,8 @@ class ChannelImpl
       return false;
     }
     final Channel other = (Channel) obj;
-    if ((other.getName() == null) || !this.name.equals(other.getName())) {
+    final String otherName = other.getName();
+    if (otherName == null || !this.name.equals(otherName)) {
       return false;
     }
     return true;
