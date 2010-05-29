@@ -17,11 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api.impl;
 
+import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Content;
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.api.Filter;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 import java.io.InputStream;
+import java.util.Date;
 
 /**
  *
@@ -41,6 +43,10 @@ public final class APIFactory {
     return new EventBuilder();
   }
 
+  public static ChannelBuilder getChannelBuilder(String channelName) {
+    return new ChannelBuilder(channelName);
+  }
+
   public static Content getContent(String contentType,
                                    InputStream stream) {
     if (contentType == null || stream == null) {
@@ -57,7 +63,7 @@ public final class APIFactory {
 
     private final EventImpl builderEvent;
 
-    public EventBuilder() {
+    private EventBuilder() {
       builderEvent = new EventImpl();
     }
 
@@ -78,6 +84,48 @@ public final class APIFactory {
 
     public Event build() {
       return builderEvent.clone();
+    }
+  }
+
+  public static class ChannelBuilder {
+    private ChannelImpl channelImpl;
+
+    private ChannelBuilder(String name) {
+      channelImpl = new ChannelImpl(name);
+    }
+
+    public ChannelBuilder name(String name) {
+      channelImpl.setName(name);
+      return this;
+    }
+
+    public ChannelBuilder description(String description) {
+      channelImpl.setDescription(description);
+      return this;
+    }
+
+    public ChannelBuilder authToken(String authToken) {
+      channelImpl.setAuthToken(authToken);
+      return this;
+    }
+
+    public ChannelBuilder creationDateTime(Date creationDateTime) {
+      channelImpl.setCreationDateTime(creationDateTime);
+      return this;
+    }
+
+    public ChannelBuilder autoExpiryDateTime(Date autoExpiryDateTime) {
+      channelImpl.setAutoExpiryDateTime(autoExpiryDateTime);
+      return this;
+    }
+
+    public ChannelBuilder filter(Filter filter) {
+      channelImpl.setFilter(filter);
+      return this;
+    }
+
+    public Channel build() {
+      return channelImpl.clone();
     }
   }
 }
