@@ -20,5 +20,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.smartitengineering.event</groupId>
+      <artifactId>hub-spi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering</groupId>
+      <artifactId>smart-abstract-dao</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering</groupId>
+      <artifactId>smart-hibernate-abstract-dao</artifactId>
+    </dependency>
   </dependencies>
 </project>
