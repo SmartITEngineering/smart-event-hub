@@ -133,6 +133,7 @@ public class FilterImplTest
     filterImpl.initRuby();
     assertSame(scriptingContainer, filterImpl.getRubyScriptingContainer());
     filterImpl.setFilterScript(null);
+    filterImpl.initRuby();
     assertSame(scriptingContainer, filterImpl.getRubyScriptingContainer());
   }
 
