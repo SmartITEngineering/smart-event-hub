@@ -33,6 +33,10 @@ public interface Filter {
    */
   public boolean allowBroadcast(Event event);
 
+  public SupportedMimeType getMimeType();
+
+  public String getFilterScript();
+
   public static enum SupportedMimeType {
 
     RUBY, GROOVY, JAVA_SCRIPT, JYTHON;
