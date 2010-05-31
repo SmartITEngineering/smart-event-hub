@@ -17,8 +17,8 @@
   </description>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>com.smartitengineering.event</groupId>
@@ -30,8 +30,13 @@
       <artifactId>smart-abstract-dao</artifactId>
     </dependency>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.smartitengineering</groupId>
       <artifactId>smart-hibernate-abstract-dao</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
