@@ -25,7 +25,7 @@ import com.smartitengineering.event.hub.api.impl.APIFactory;
  *
  * @author imyousuf
  */
-public class ChannelConverter
+public class ChannelAdapter
     extends AbstractGenericAdapter<Channel, PersistentChannel> {
 
   @Override
