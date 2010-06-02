@@ -170,6 +170,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <version>${smart.util.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.smartitengineering.smart-util</groupId>
+        <artifactId>smart-bean-spring-util</artifactId>
+        <version>${smart.util.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.smartitengineering</groupId>
         <artifactId>smart-abstract-dao</artifactId>
         <version>${smart.dao.version}</version>
@@ -178,6 +183,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <groupId>com.smartitengineering</groupId>
         <artifactId>smart-hibernate-abstract-dao</artifactId>
         <version>${smart.dao.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>c3p0</groupId>
+        <artifactId>c3p0</artifactId>
+        <version>${c3p0.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.derby</groupId>
+        <artifactId>derby</artifactId>
+        <version>${derby.version}</version>
       </dependency>
       <!-- Provided scope -->
       <dependency>
@@ -324,40 +339,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </extension>
     </extensions>
     <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changelog-plugin</artifactId>
-          <inherited>true</inherited>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-utils</artifactId>
-              <version>${plexus-utils.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.maven.scm</groupId>
-              <artifactId>maven-scm-provider-gitexe</artifactId>
-              <version>${plugin.scm.version}</version>
-            </dependency>
-          </dependencies>
-          <configuration>
-            <type>tag</type>
-            <tags>
-              <tag implementation="java.lang.String">${last.release.tag}</tag>
-              <tag implementation="java.lang.String">HEAD</tag>
-            </tags>
-          </configuration>
-          <executions>
-            <execution>
-              <id>generate-history</id>
-              <inherited>true</inherited>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>changelog</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <inherited>true</inherited>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>${plexus-utils.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>${plugin.scm.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <type>tag</type>
+          <tags>
+            <tag implementation="java.lang.String">${last.release.tag}</tag>
+            <tag implementation="java.lang.String">HEAD</tag>
+          </tags>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-history</id>
+            <inherited>true</inherited>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>changelog</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -434,6 +449,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <smart.dao.version>0.4-SNAPSHOT</smart.dao.version>
     <junit.version>3.8.1</junit.version>
     <jmock.version>2.5.1</jmock.version>
+    <c3p0.version>0.9.1.2</c3p0.version>
+    <derby.version>10.5.3.0_1</derby.version>
     <!-- plugins -->
     <plugin.jetty.version>7.0.2.v20100331</plugin.jetty.version>
     <plugin.compiler.version>2.0.2</plugin.compiler.version>

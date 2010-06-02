@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+It is a application for event distribution to event n-consumers with m-sources.
+Copyright (C) 2010 "Imran M Yousuf <imran@smartitengineering.com>"
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or any later
+version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<hibernate-mapping>
+  <class dynamic-insert="false" dynamic-update="false" name="com.smartitengineering.event.hub.spi.db.PersistentEvent" table="persistent_event">
+    <id column="id" length="11" name="id" type="java.lang.Integer">
+      <generator class="increment"/>
+    </id>
+    <version column="version" name="version"/>
+    <property column="uuid" length="255" name="uuid" type="java.lang.String"/>
+    <property column="content_type" length="255" name="contentType" type="java.lang.String"/>
+    <property column="content" length="255" name="content" type="binary"/>
+  </class>
+</hibernate-mapping>

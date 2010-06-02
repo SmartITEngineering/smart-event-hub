@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+It is a application for event distribution to event n-consumers with m-sources.
+Copyright (C) 2010 "Imran M Yousuf <imran@smartitengineering.com>"
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or any later
+version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd"  >
+<beans>
+    <!-- Hibernate SessionFactory -->
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource">
+      <ref bean="dataSource" />
+    </property>
+    <property name="mappingResources">
+      <list>
+        <value>com/smartitengineering/event/hub/spi/db/PersistentChannel.hbm.xml</value>
+        <value>com/smartitengineering/event/hub/spi/db/PersistentEvent.hbm.xml</value>
+      </list>
+    </property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">${hibernate.dialect}
+        </prop>
+        <prop key="hibernate.autoCommit">true
+        </prop>
+        <prop key="hibernate.show_sql">${hibernate.show_sql}
+        </prop>
+        <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+        <prop key="hibernate.query.substitutions">true 'T', false 'F'
+        </prop>
+      </props>
+    </property>
+  </bean>
+  <bean id="abstractDao" class="com.smartitengineering.dao.impl.hibernate.AbstractDAO" abstract="true">
+    <property name="sessionFactory">
+      <ref local="sessionFactory" />
+    </property>
+  </bean>
+  <bean id="channelDao" class="com.smartitengineering.dao.impl.hibernate.CommonDaoImpl" parent="abstractDao"></bean>
+  <bean id="eventDao" class="com.smartitengineering.dao.impl.hibernate.CommonDaoImpl" parent="abstractDao"></bean>
+  <bean id="storer" class="com.smartitengineering.event.hub.spi.db.DBPersistentStorer" >
+    <property name="channelReadDao">
+      <ref local="channelDao" />
+    </property>
+    <property name="channelWriteDao">
+      <ref local="channelDao" />
+    </property>
+    <property name="eventReadDao">
+      <ref local="eventDao" />
+    </property>
+    <property name="eventWriteDao">
+      <ref local="eventDao" />
+    </property>
+    <property name="channelConverter">
+      <bean class="com.smartitengineering.event.hub.spi.db.ChannelAdapter" />
+    </property>
+    <property name="eventConverter">
+      <bean class="com.smartitengineering.event.hub.spi.db.EventAdapter" />
+    </property>
+  </bean>
+  <bean id="beanRegistrar" class="com.smartitengineering.util.bean.spring.SpringBeanRegistrar">
+    <property name="beanFactoryContextName">
+      <value>com.smartitengineering.event.hub.spi</value>
+    </property>
+  </bean>
+</beans>

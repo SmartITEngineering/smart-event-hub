@@ -1,0 +1,19 @@
+Add application context configurations; min version expects a "dataSource"
+bean and the max version does not expect any thing but a properties file
+in the classpath at -
+com/smartitengineering/event/hub/spi/db/db-config.properties
+can be provided to override core properties such as -
+com.smartitengineering.event.spi.db.connection.driver_class
+Default: org.apache.derby.jdbc.EmbeddedDriver
+com.smartitengineering.event.spi.db.connection.url
+Default: jdbc:derby:target/TestDB;create=true;
+com.smartitengineering.event.spi.db.connection.username
+com.smartitengineering.event.spi.db.connection.password
+Default: Both above are blank
+com.smartitengineering.event.spi.db.dialect
+Default: org.hibernate.dialect.DerbyDialect
+com.smartitengineering.event.spi.db.show_sql
+Default: false
+One can change the properties to suite their needs or create your own
+"dataSource" and import the following context definition -
+"com/smartitengineering/event/hub/spi/db/app-min-context.xml"

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+It is a application for event distribution to event n-consumers with m-sources.
+Copyright (C) 2010 "Imran M Yousuf <imran@smartitengineering.com>"
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or any later
+version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<hibernate-mapping>
+  <class dynamic-insert="false" dynamic-update="false" name="com.smartitengineering.event.hub.spi.db.PersistentChannel" table="persistent_channel">
+    <id column="id" length="11" name="id" type="java.lang.Integer">
+      <generator class="increment"/>
+    </id>
+    <version column="version" name="version"/>
+    <property column="name" length="255" name="name" type="java.lang.String"/>
+    <property column="description" length="255" name="description" type="java.lang.String"/>
+    <property column="auth_token" length="255" name="authToken" type="java.lang.String"/>
+    <property column="filter_type" length="255" name="filterType" type="java.lang.String"/>
+    <property column="script" length="255" name="script" type="text"/>
+    <property column="creation_date_time" name="creationDateTime" type="java.util.Date"/>
+    <property column="auto_expiry_date_time" name="autoExpiryDateTime" type="java.util.Date"/>
+  </class>
+</hibernate-mapping>
