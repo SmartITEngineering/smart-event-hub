@@ -20,6 +20,8 @@ package com.smartitengineering.event.hub.spi.db;
 import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 import com.smartitengineering.event.hub.api.impl.APIFactory;
+import com.smartitengineering.event.hub.api.impl.APIFactory.ChannelBuilder;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -49,10 +51,16 @@ public class ChannelAdapter
 
   @Override
   protected Channel convertFromT2F(PersistentChannel toBean) {
-    return APIFactory.getChannelBuilder(toBean.getName()).description(toBean.
-        getDescription()).authToken(toBean.getAuthToken()).autoExpiryDateTime(toBean.
-        getAutoExpiryDateTime()).creationDateTime(toBean.getCreationDateTime()).
-        filter(APIFactory.getFilter(SupportedMimeType.valueOf(toBean.
-        getFilterType()), toBean.getScript())).build();
+    final ChannelBuilder builder =
+                         APIFactory.getChannelBuilder(toBean.getName()).
+        description(toBean.getDescription()).authToken(toBean.getAuthToken()).
+        autoExpiryDateTime(toBean.getAutoExpiryDateTime()).
+        creationDateTime(toBean.getCreationDateTime());
+    if (StringUtils.isNotBlank(toBean.getFilterType())) {
+      builder.filter(
+          APIFactory.getFilter(SupportedMimeType.valueOf(toBean.getFilterType()),
+          toBean.getScript()));
+    }
+    return builder.build();
   }
 }
