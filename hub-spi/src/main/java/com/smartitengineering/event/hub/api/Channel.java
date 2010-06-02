@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api;
 
+import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import java.util.Date;
 
 /**
@@ -44,6 +45,12 @@ public interface Channel {
    */
   public String getAuthToken();
 
+  /**
+   * Retrieves the creation date time of channel. It will be either created by
+   * the {@link HubPersistentStorer persistent storer} if configured or by the
+   * RESTful service which receives the channel information.
+   * @return Creation date time of this channel
+   */
   public Date getCreationDateTime();
 
   /**

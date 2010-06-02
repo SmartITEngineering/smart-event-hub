@@ -27,6 +27,11 @@ import java.util.LinkedHashSet;
  */
 public interface HubPersistentStorer {
 
+  /**
+   * Persists a new channel in persistent storage supported. It will also set
+   * the creation time of channel.
+   * @param channel Channel to persist
+   */
   public void create(Channel channel);
 
   public void update(Channel channel);
