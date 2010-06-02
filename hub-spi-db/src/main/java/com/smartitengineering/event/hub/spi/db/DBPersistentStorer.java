@@ -26,6 +26,7 @@ import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +99,9 @@ public class DBPersistentStorer
 
   public void create(Channel channel) {
     PersistentChannel persistentChannel = channelConverter.convert(channel);
+    if(persistentChannel.getCreationDateTime() == null) {
+      persistentChannel.setCreationDateTime(new Date());
+    }
     channelWriteDao.save(persistentChannel);
   }
 
@@ -173,7 +177,7 @@ public class DBPersistentStorer
   protected PersistentChannel getPersistentChannel(String channelName) {
     PersistentChannel persistentChannel = channelReadDao.getSingle(
         QueryParameterFactory.getStringLikePropertyParam(PersistentChannel.NAME,
-        channelName, MatchMode.EXACT));
+        channelName.toLowerCase(), MatchMode.EXACT));
     return persistentChannel;
   }
 
