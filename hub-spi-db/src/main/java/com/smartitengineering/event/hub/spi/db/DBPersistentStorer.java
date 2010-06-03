@@ -120,9 +120,10 @@ public class DBPersistentStorer
     return channelConverter.convertInversely(persistentChannel);
   }
 
-  public void create(Event event) {
+  public Event create(Event event) {
     PersistentEvent persistentEvent = eventConverter.convert(event);
     eventWriteDao.save(persistentEvent);
+    return eventConverter.convertInversely(persistentEvent);
   }
 
   public void delete(Event event) {

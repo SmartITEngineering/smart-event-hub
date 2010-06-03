@@ -18,13 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.spi.db;
 
 import com.smartitengineering.event.hub.api.Channel;
+import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.api.Filter;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 import com.smartitengineering.event.hub.api.impl.APIFactory;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -74,7 +78,7 @@ public class DBHubPersistorITCase
         name = "name";
     Date expiry = new Date();
     final SupportedMimeType mime = SupportedMimeType.JYTHON;
-    Filter filter = APIFactory.getFilter( mime, script);
+    Filter filter = APIFactory.getFilter(mime, script);
     channel = APIFactory.getChannelBuilder(name).filter(filter).description(
         desc).authToken(authToken).autoExpiryDateTime(expiry).build();
     storer.create(channel);
@@ -92,8 +96,76 @@ public class DBHubPersistorITCase
       storer.create(channel);
       fail("Created duplicate!");
     }
-    catch(ConstraintViolationException ex) {
+    catch (ConstraintViolationException ex) {
       //expected
     }
+  }
+
+  public void testCreateEvent() {
+    final String content = "<xml>some xml</xml>";
+    final String contentType = "application/xml";
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    event = storer.create(event);
+    assertNotNull(event);
+    assertNotNull(event.getEventContent());
+    assertNotNull(event.getEventContent().getContent());
+    try {
+      assertEquals(content,
+          IOUtils.toString(event.getEventContent().getContent()));
+    }
+    catch (IOException ex) {
+      ex.printStackTrace();
+      fail(ex.getMessage());
+    }
+    assertNotNull(event.getEventContent().getContentType());
+    assertEquals(contentType, event.getEventContent().getContentType());
+    assertNotNull(event.getPlaceholderId());
+    assertNotNull(event.getUniversallyUniqueID());
+    event = storer.getEvent(event.getPlaceholderId());
+    assertNotNull(event);
+    assertNotNull(event.getEventContent());
+    assertNotNull(event.getEventContent().getContent());
+    try {
+      assertEquals(content,
+          IOUtils.toString(event.getEventContent().getContent()));
+    }
+    catch (IOException ex) {
+      ex.printStackTrace();
+      fail(ex.getMessage());
+    }
+    assertNotNull(event.getEventContent().getContentType());
+    assertEquals(contentType, event.getEventContent().getContentType());
+    assertNotNull(event.getPlaceholderId());
+    assertNotNull(event.getUniversallyUniqueID());
+    Event event2 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).placeholder(
+        event.getPlaceholderId()).build();
+    event2 = storer.create(event2);
+    assertFalse(event.getPlaceholderId().equals(event2.getPlaceholderId()));
+    assertFalse(event.getUniversallyUniqueID().equals(event2.
+        getUniversallyUniqueID()));
+    event2 = storer.getEvent(event2.getPlaceholderId());
+    assertNotNull(event2);
+    Event event3 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).uuid(
+        event.getUniversallyUniqueID()).build();
+    try {
+      storer.create(event3);
+      fail("Created duplicate Event!");
+    }
+    catch (ConstraintViolationException ex) {
+      //expected
+    }
+    UUID uuid = UUID.randomUUID();
+    String uuidStr = uuid.toString();
+    event3 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(
+        contentType, IOUtils.toInputStream(content))).uuid(uuidStr).build();
+    event3 = storer.create(event3);
+    assertEquals(uuidStr, event3.getUniversallyUniqueID());
+    event3 = storer.getEvent(event3.getPlaceholderId());
+    assertEquals(uuidStr, event3.getUniversallyUniqueID());
   }
 }

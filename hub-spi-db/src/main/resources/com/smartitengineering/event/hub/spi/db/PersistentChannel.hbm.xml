@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <property column="description" length="255" name="description" type="java.lang.String"/>
     <property column="auth_token" length="255" name="authToken" type="java.lang.String"/>
     <property column="filter_type" length="255" name="filterType" type="java.lang.String"/>
-    <property column="script" length="255" name="script" type="text"/>
+    <property column="script" length="3000" name="script" type="text"/>
     <property column="creation_date_time" name="creationDateTime" type="java.util.Date"/>
     <property column="auto_expiry_date_time" name="autoExpiryDateTime" type="java.util.Date"/>
   </class>

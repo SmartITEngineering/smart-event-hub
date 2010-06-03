@@ -23,8 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <generator class="increment"/>
     </id>
     <version column="version" name="version"/>
-    <property column="uuid" length="255" name="uuid" type="java.lang.String"/>
+    <property column="uuid" length="255" name="uuid" type="string" unique="true" not-null="true"/>
     <property column="content_type" length="255" name="contentType" type="java.lang.String"/>
-    <property column="content" length="255" name="content" type="binary"/>
+    <property column="content" length="3000" name="content" type="binary"/>
   </class>
 </hibernate-mapping>

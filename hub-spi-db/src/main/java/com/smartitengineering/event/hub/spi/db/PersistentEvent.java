@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import javax.sql.rowset.serial.SerialBlob;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.apache.commons.io.IOUtils;
 public class PersistentEvent
     extends AbstractPersistentDTO<PersistentEvent> {
 
-  static final String PLACE_HOLDER_ID = "placeholderId";
+  static final String PLACE_HOLDER_ID = "id";
   private String uuid, contentType;
   private byte[] content;
 
@@ -55,7 +56,9 @@ public class PersistentEvent
   }
 
   public void setPlaceholderId(String placeholderId) {
-    setId(Integer.parseInt(placeholderId));
+    if (StringUtils.isNotBlank(placeholderId)) {
+      setId(Integer.parseInt(placeholderId));
+    }
   }
 
   public String getUuid() {
@@ -108,6 +111,7 @@ public class PersistentEvent
   }
 
   public boolean isValid() {
-    return getId() != null && getId().intValue() > 0;
+    return getContent() != null && getContent().length > 0 && StringUtils.
+        isNotBlank(getContentType());
   }
 }

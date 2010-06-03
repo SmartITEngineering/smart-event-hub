@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.spi;
 
 import com.smartitengineering.event.hub.api.Channel;
+import com.smartitengineering.event.hub.api.Content;
 import com.smartitengineering.event.hub.api.Event;
 import java.util.LinkedHashSet;
 
@@ -40,7 +41,14 @@ public interface HubPersistentStorer {
 
   public Channel getChannel(String channelName);
 
-  public void create(Event event);
+  /**
+   * An event can be created only using its {@link Content content}. After its
+   * persisted it will provide its UUID and Place holder ID and that is returned
+   * as a new event instance.
+   * @param event Event to be saved
+   * @return The same event with placeholder id and UUID set
+   */
+  public Event create(Event event);
 
   public void delete(Event event);
 

@@ -83,11 +83,18 @@ public final class APIFactory {
     }
 
     public Event build() {
-      return builderEvent.clone();
+      if (builderEvent.getEventContent() != null) {
+        return builderEvent.clone();
+      }
+      else {
+        throw new IllegalStateException(
+            "Event Content must be set before building!");
+      }
     }
   }
 
   public static class ChannelBuilder {
+
     private ChannelImpl channelImpl;
 
     private ChannelBuilder(String name) {
