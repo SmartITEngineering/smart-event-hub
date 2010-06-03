@@ -98,48 +98,48 @@ public class DBPersistentStorer
   }
 
   public void create(Channel channel) {
-    PersistentChannel persistentChannel = channelConverter.convert(channel);
+    PersistentChannel persistentChannel = getChannelConverter().convert(channel);
     if (persistentChannel.getCreationDateTime() == null) {
       persistentChannel.setCreationDateTime(new Date());
     }
-    channelWriteDao.save(persistentChannel);
+    getChannelWriteDao().save(persistentChannel);
   }
 
   public void update(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
-    channelWriteDao.update(persistentChannel);
+    getChannelWriteDao().update(persistentChannel);
   }
 
   public void delete(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
-    channelWriteDao.delete(persistentChannel);
+    getChannelWriteDao().delete(persistentChannel);
   }
 
   public Channel getChannel(String channelName) {
     PersistentChannel persistentChannel = getPersistentChannel(channelName);
-    return channelConverter.convertInversely(persistentChannel);
+    return getChannelConverter().convertInversely(persistentChannel);
   }
 
   public Event create(Event event) {
-    PersistentEvent persistentEvent = eventConverter.convert(event);
-    eventWriteDao.save(persistentEvent);
-    return eventConverter.convertInversely(persistentEvent);
+    PersistentEvent persistentEvent = getEventConverter().convert(event);
+    getEventWriteDao().save(persistentEvent);
+    return getEventConverter().convertInversely(persistentEvent);
   }
 
   public void delete(Event event) {
     PersistentEvent persistentEvent = getMergedPersistentEvent(event);
-    eventWriteDao.delete(persistentEvent);
+    getEventWriteDao().delete(persistentEvent);
   }
 
   public Event getEvent(String placeholderId) {
     PersistentEvent persistentEvent = getPersistentEvent(placeholderId);
-    return eventConverter.convertInversely(persistentEvent);
+    return getEventConverter().convertInversely(persistentEvent);
   }
 
   public Event getEventByUUID(String uuid) {
-    PersistentEvent event = eventReadDao.getSingle(QueryParameterFactory.
+    PersistentEvent event = getEventReadDao().getSingle(QueryParameterFactory.
         getStringLikePropertyParam(PersistentEvent.UUID, uuid, MatchMode.EXACT));
-    return eventConverter.convertInversely(event);
+    return getEventConverter().convertInversely(event);
   }
 
   public LinkedHashSet<Event> getEvents(String placeholderId,
@@ -160,13 +160,13 @@ public class DBPersistentStorer
         QueryParameterFactory.getLesserThanEqualToPropertyParam(
             PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
       }
-      List<PersistentEvent> persistentEvents = eventReadDao.getList(
+      List<PersistentEvent> persistentEvents = getEventReadDao().getList(
           propertyParam, QueryParameterFactory.getMaxResultsParam(
           Math.abs(count)));
       if (persistentEvents == null || persistentEvents.isEmpty()) {
         return new LinkedHashSet<Event>();
       }
-      return new LinkedHashSet<Event>(eventConverter.convertInversely(persistentEvents.
+      return new LinkedHashSet<Event>(getEventConverter().convertInversely(persistentEvents.
           toArray(new PersistentEvent[persistentEvents.size()])));
     }
   }
@@ -177,12 +177,12 @@ public class DBPersistentStorer
     Map.Entry<Channel, PersistentChannel> entry;
     entry = new SimpleEntry<Channel, PersistentChannel>(channel,
         persistentChannel);
-    channelConverter.merge(entry);
+    getChannelConverter().merge(entry);
     return persistentChannel;
   }
 
   protected PersistentChannel getPersistentChannel(String channelName) {
-    PersistentChannel persistentChannel = channelReadDao.getSingle(
+    PersistentChannel persistentChannel = getChannelReadDao().getSingle(
         QueryParameterFactory.getStringLikePropertyParam(PersistentChannel.NAME,
         channelName.toLowerCase(), MatchMode.EXACT));
     return persistentChannel;
@@ -194,7 +194,7 @@ public class DBPersistentStorer
     Map.Entry<Event, PersistentEvent> entry;
     entry = new SimpleEntry<Event, PersistentEvent>(event,
         persistentEvent);
-    eventConverter.merge(entry);
+    getEventConverter().merge(entry);
     return persistentEvent;
   }
 
@@ -203,7 +203,7 @@ public class DBPersistentStorer
     if (placeholderIdInt <= 0) {
       return null;
     }
-    PersistentEvent persistentEvent = eventReadDao.getSingle(
+    PersistentEvent persistentEvent = getEventReadDao().getSingle(
         QueryParameterFactory.getEqualPropertyParam(
         PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt));
     return persistentEvent;
