@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 /**
@@ -137,6 +138,9 @@ public class DBPersistentStorer
   }
 
   public Event getEventByUUID(String uuid) {
+    if(StringUtils.isBlank(uuid)) {
+      return null;
+    }
     PersistentEvent event = getEventReadDao().getSingle(QueryParameterFactory.
         getStringLikePropertyParam(PersistentEvent.UUID, uuid, MatchMode.EXACT));
     return getEventConverter().convertInversely(event);

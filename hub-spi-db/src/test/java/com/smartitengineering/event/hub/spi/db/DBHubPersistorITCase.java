@@ -168,4 +168,27 @@ public class DBHubPersistorITCase
     event3 = storer.getEvent(event3.getPlaceholderId());
     assertEquals(uuidStr, event3.getUniversallyUniqueID());
   }
+
+  public void testGetEventByUUID() {
+    final String content = "<xml>some xml</xml>";
+    final String contentType = "application/xml";
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    UUID uuid = UUID.randomUUID();
+    String uuidStr = uuid.toString();
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(
+        contentType, IOUtils.toInputStream(content))).uuid(uuidStr).build();
+    event = storer.create(event);
+    String placeholderId = event.getPlaceholderId();
+    assertEquals(uuidStr, event.getUniversallyUniqueID());
+    event = storer.getEvent(event.getPlaceholderId());
+    assertEquals(uuidStr, event.getUniversallyUniqueID());
+    event = storer.getEventByUUID(uuidStr);
+    assertEquals(uuidStr, event.getUniversallyUniqueID());
+    assertEquals(placeholderId, event.getPlaceholderId());
+    assertNull(storer.getEventByUUID(null));
+    assertNull(storer.getEventByUUID(""));
+    assertNull(storer.getEventByUUID("aab"));
+  }
 }
