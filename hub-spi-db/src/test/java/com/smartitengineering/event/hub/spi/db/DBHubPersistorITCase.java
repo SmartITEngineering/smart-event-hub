@@ -25,6 +25,7 @@ import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import java.util.Date;
 import junit.framework.TestCase;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -87,5 +88,12 @@ public class DBHubPersistorITCase
     assertEquals(desc, channel.getDescription());
     assertEquals(mime, channel.getFilter().getMimeType());
     assertEquals(script, channel.getFilter().getFilterScript());
+    try {
+      storer.create(channel);
+      fail("Created duplicate!");
+    }
+    catch(ConstraintViolationException ex) {
+      //expected
+    }
   }
 }
