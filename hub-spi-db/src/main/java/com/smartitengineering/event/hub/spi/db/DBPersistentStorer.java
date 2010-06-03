@@ -99,7 +99,7 @@ public class DBPersistentStorer
 
   public void create(Channel channel) {
     PersistentChannel persistentChannel = channelConverter.convert(channel);
-    if(persistentChannel.getCreationDateTime() == null) {
+    if (persistentChannel.getCreationDateTime() == null) {
       persistentChannel.setCreationDateTime(new Date());
     }
     channelWriteDao.save(persistentChannel);
@@ -134,6 +134,12 @@ public class DBPersistentStorer
   public Event getEvent(String placeholderId) {
     PersistentEvent persistentEvent = getPersistentEvent(placeholderId);
     return eventConverter.convertInversely(persistentEvent);
+  }
+
+  public Event getEventByUUID(String uuid) {
+    PersistentEvent event = eventReadDao.getSingle(QueryParameterFactory.
+        getStringLikePropertyParam(PersistentEvent.UUID, uuid, MatchMode.EXACT));
+    return eventConverter.convertInversely(event);
   }
 
   public LinkedHashSet<Event> getEvents(String placeholderId,

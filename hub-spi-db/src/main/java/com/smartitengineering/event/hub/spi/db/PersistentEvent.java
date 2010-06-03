@@ -32,6 +32,7 @@ public class PersistentEvent
     extends AbstractPersistentDTO<PersistentEvent> {
 
   static final String PLACE_HOLDER_ID = "id";
+  static final String UUID = "uuid";
   private String uuid, contentType;
   private byte[] content;
 

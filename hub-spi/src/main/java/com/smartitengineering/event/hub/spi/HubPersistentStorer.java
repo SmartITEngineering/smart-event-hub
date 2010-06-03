@@ -60,6 +60,8 @@ public interface HubPersistentStorer {
    */
   public Event getEvent(String placeholderId);
 
+  public Event getEventByUUID(String uuid);
+
   /**
    * Retrieve all events from a certain placeholder and in one direction
    * @param placeholderId The placeholder id to start selecting from
