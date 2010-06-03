@@ -19,8 +19,7 @@ package com.smartitengineering.event.hub.spi.db;
 
 import com.smartitengineering.domain.AbstractPersistentDTO;
 import java.io.InputStream;
-import java.sql.Blob;
-import javax.sql.rowset.serial.SerialBlob;
+import java.util.Arrays;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -37,11 +36,11 @@ public class PersistentEvent
   private byte[] content;
 
   public byte[] getContent() {
-    return content;
+    return Arrays.copyOf(content, content.length);
   }
 
   public void setContent(byte[] content) {
-    this.content = content;
+    this.content = Arrays.copyOf(content, content.length);
   }
 
   public String getContentType() {
@@ -70,30 +69,8 @@ public class PersistentEvent
     this.uuid = uuid;
   }
 
-  Blob getContentBlob() {
-    try {
-      Blob blob = new SerialBlob(content);
-      return blob;
-    }
-    catch (Exception ex) {
-      return null;
-    }
-  }
-
   public InputStream getContentStream() {
     return IOUtils.toInputStream(new String(content));
-  }
-
-  void setContentBlob(Blob blob) {
-    InputStream stream;
-    try {
-      stream = blob.getBinaryStream();
-    }
-    catch (Exception ex) {
-      stream = null;
-      //TODO log exception
-    }
-    setContentStream(stream);
   }
 
   public void setContentStream(InputStream stream) {

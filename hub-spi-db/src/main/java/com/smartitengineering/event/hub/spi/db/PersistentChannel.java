@@ -37,11 +37,17 @@ public class PersistentChannel
   }
 
   public Date getAutoExpiryDateTime() {
-    return autoExpiryDateTime;
+    if (autoExpiryDateTime == null) {
+      return null;
+    }
+    return new Date(autoExpiryDateTime.getTime());
   }
 
   public Date getCreationDateTime() {
-    return creationDateTime;
+    if (creationDateTime == null) {
+      return null;
+    }
+    return new Date(creationDateTime.getTime());
   }
 
   public String getDescription() {
@@ -65,11 +71,21 @@ public class PersistentChannel
   }
 
   public void setAutoExpiryDateTime(Date autoExpiryDateTime) {
-    this.autoExpiryDateTime = autoExpiryDateTime;
+    if (autoExpiryDateTime != null) {
+      this.autoExpiryDateTime = new Date(autoExpiryDateTime.getTime());
+    }
+    else {
+      this.autoExpiryDateTime = null;
+    }
   }
 
   public void setCreationDateTime(Date creationDateTime) {
-    this.creationDateTime = creationDateTime;
+    if (creationDateTime != null) {
+      this.creationDateTime = new Date(creationDateTime.getTime());
+    }
+    else {
+      this.creationDateTime = null;
+    }
   }
 
   public void setDescription(String description) {
