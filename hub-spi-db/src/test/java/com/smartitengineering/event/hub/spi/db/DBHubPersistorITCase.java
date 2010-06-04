@@ -101,6 +101,45 @@ public class DBHubPersistorITCase
     }
   }
 
+  public void testUpdateChannel() {
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    assertNotNull(storer);
+    String desc = "Desc", authToken = "auth_token", script = "script",
+        name = "name";
+    Date expiry = new Date();
+    SupportedMimeType mime = SupportedMimeType.JYTHON;
+    Filter filter = APIFactory.getFilter(mime, script);
+    Channel channel;
+    channel = storer.getChannel(name);
+    assertNotNull(channel);
+    expiry = channel.getAutoExpiryDateTime();
+    assertNotNull(channel.getName());
+    assertEquals(name, channel.getName());
+    assertNotNull(channel.getCreationDateTime());
+    assertEquals(authToken, channel.getAuthToken());
+    assertEquals(expiry, channel.getAutoExpiryDateTime());
+    assertEquals(desc, channel.getDescription());
+    assertEquals(mime, channel.getFilter().getMimeType());
+    assertEquals(script, channel.getFilter().getFilterScript());
+    mime = SupportedMimeType.RUBY;
+    filter = APIFactory.getFilter(mime, script);
+    channel = APIFactory.getChannelBuilder(name).filter(filter).description(
+        desc).authToken(authToken).creationDateTime(
+        channel.getCreationDateTime()).autoExpiryDateTime(expiry).build();
+    storer.update(channel);
+    channel = storer.getChannel(name);
+    assertNotNull(channel);
+    assertNotNull(channel.getName());
+    assertEquals(name, channel.getName());
+    assertNotNull(channel.getCreationDateTime());
+    assertEquals(authToken, channel.getAuthToken());
+    assertEquals(expiry, channel.getAutoExpiryDateTime());
+    assertEquals(desc, channel.getDescription());
+    assertEquals(mime, channel.getFilter().getMimeType());
+    assertEquals(script, channel.getFilter().getFilterScript());
+  }
+
   public void testCreateEvent() {
     final String content = "<xml>some xml</xml>";
     final String contentType = "application/xml";
