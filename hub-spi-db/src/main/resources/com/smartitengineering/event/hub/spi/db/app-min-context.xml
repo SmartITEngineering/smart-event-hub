@@ -66,10 +66,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <ref local="eventDao" />
     </property>
     <property name="channelConverter">
-      <bean class="com.smartitengineering.event.hub.spi.db.ChannelAdapter" />
+      <bean class="com.smartitengineering.util.bean.adapter.GenericAdapterImpl">
+        <property name="helper">
+          <bean class="com.smartitengineering.event.hub.spi.db.ChannelAdapterHelper" />
+        </property>
+      </bean>
     </property>
     <property name="eventConverter">
-      <bean class="com.smartitengineering.event.hub.spi.db.EventAdapter" />
+      <bean class="com.smartitengineering.util.bean.adapter.GenericAdapterImpl">
+        <property name="helper">
+          <bean class="com.smartitengineering.event.hub.spi.db.EventAdapterHelper" />
+        </property>
+      </bean>
     </property>
   </bean>
   <bean id="beanRegistrar" class="com.smartitengineering.util.bean.spring.SpringBeanRegistrar">

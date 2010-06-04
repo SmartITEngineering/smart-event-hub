@@ -25,6 +25,7 @@ import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
 import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
+import com.smartitengineering.util.bean.adapter.GenericAdapter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
 import java.util.LinkedHashSet;

@@ -21,14 +21,15 @@ import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 import com.smartitengineering.event.hub.api.impl.APIFactory;
 import com.smartitengineering.event.hub.api.impl.APIFactory.ChannelBuilder;
+import com.smartitengineering.util.bean.adapter.AbstractAdapterHelper;
 import org.apache.commons.lang.StringUtils;
 
 /**
  *
  * @author imyousuf
  */
-public class ChannelAdapter
-    extends AbstractGenericAdapter<Channel, PersistentChannel> {
+public class ChannelAdapterHelper
+    extends AbstractAdapterHelper<Channel, PersistentChannel> {
 
   @Override
   protected PersistentChannel newTInstance() {

@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <hibernate-mapping>
   <class dynamic-insert="false" dynamic-update="false" name="com.smartitengineering.event.hub.spi.db.PersistentChannel" table="persistent_channel">
-    <id column="name" length="200" name="name" type="string" />
+    <id column="name" length="200" name="name" type="string"/>
     <version column="version" name="version"/>
     <property column="description" length="255" name="description" type="java.lang.String"/>
     <property column="auth_token" length="255" name="authToken" type="java.lang.String"/>

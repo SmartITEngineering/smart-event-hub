@@ -19,13 +19,14 @@ package com.smartitengineering.event.hub.spi.db;
 
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.api.impl.APIFactory;
+import com.smartitengineering.util.bean.adapter.AbstractAdapterHelper;
 
 /**
  *
  * @author imyousuf
  */
-public class EventAdapter
-    extends AbstractGenericAdapter<Event, PersistentEvent> {
+public class EventAdapterHelper
+    extends AbstractAdapterHelper<Event, PersistentEvent> {
 
   @Override
   protected PersistentEvent newTInstance() {
