@@ -140,6 +140,20 @@ public class DBHubPersistorITCase
     assertEquals(script, channel.getFilter().getFilterScript());
   }
 
+  public void testDeleteChannel() {
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    assertNotNull(storer);
+    String name = "name";
+    Channel channel;
+    channel = storer.getChannel(name);
+    assertNotNull(channel);
+    assertNotNull(channel.getName());
+    storer.delete(channel);
+    channel = storer.getChannel(name);
+    assertNull(channel);
+  }
+
   public void testCreateEvent() {
     final String content = "<xml>some xml</xml>";
     final String contentType = "application/xml";
