@@ -20,6 +20,7 @@ package com.smartitengineering.event.hub.spi.db;
 import com.smartitengineering.dao.common.CommonReadDao;
 import com.smartitengineering.dao.common.CommonWriteDao;
 import com.smartitengineering.dao.common.queryparam.MatchMode;
+import com.smartitengineering.dao.common.queryparam.Order;
 import com.smartitengineering.dao.common.queryparam.QueryParameter;
 import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
 import com.smartitengineering.event.hub.api.Channel;
@@ -101,7 +102,7 @@ public class DBPersistentStorer
 
   public void create(Channel channel) {
     PersistentChannel persistentChannel = getChannelConverter().convert(channel);
-    if(persistentChannel == null) {
+    if (persistentChannel == null) {
       return;
     }
     if (persistentChannel.getCreationDateTime() == null) {
@@ -131,7 +132,7 @@ public class DBPersistentStorer
 
   public Event create(Event event) {
     PersistentEvent persistentEvent = getEventConverter().convert(event);
-    if(persistentEvent != null) {
+    if (persistentEvent != null) {
       getEventWriteDao().save(persistentEvent);
     }
     return getEventConverter().convertInversely(persistentEvent);
@@ -178,7 +179,8 @@ public class DBPersistentStorer
       }
       List<PersistentEvent> persistentEvents = getEventReadDao().getList(
           propertyParam, QueryParameterFactory.getMaxResultsParam(
-          Math.abs(count)));
+          Math.abs(count)), QueryParameterFactory.getOrderByParam(
+          PersistentEvent.PLACE_HOLDER_ID, Order.DESC));
       if (persistentEvents == null || persistentEvents.isEmpty()) {
         return new LinkedHashSet<Event>();
       }

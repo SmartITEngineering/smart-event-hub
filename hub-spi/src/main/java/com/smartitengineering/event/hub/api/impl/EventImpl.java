@@ -108,4 +108,9 @@ class EventImpl
     hash = 23 * hash + this.getUniversallyUniqueID().hashCode();
     return hash;
   }
+
+  @Override
+  public String toString() {
+    return getPlaceholderId();
+  }
 }

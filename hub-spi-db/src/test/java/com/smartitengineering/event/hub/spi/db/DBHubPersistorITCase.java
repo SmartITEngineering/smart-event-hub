@@ -25,10 +25,16 @@ import com.smartitengineering.event.hub.api.impl.APIFactory;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -254,5 +260,84 @@ public class DBHubPersistorITCase
     assertNull(storer.getEventByUUID(null));
     assertNull(storer.getEventByUUID(""));
     assertNull(storer.getEventByUUID("aab"));
+  }
+
+  public void testGetEvents() {
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    assertTrue(storer.getEvents("-1", 0).size() == 0);
+    assertTrue(storer.getEvents("  ", 0).size() == 0);
+    assertTrue(storer.getEvents(null, 0).size() == 0);
+    assertTrue(storer.getEvents("1", 0).size() == 0);
+    final String content = "<xml>some xml</xml>";
+    final String contentType = "application/xml";
+    Event event1 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.create(event1);
+    Event event2 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.create(event2);
+    Event event3 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.create(event3);
+    Event event4 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    event4 = storer.create(event4);
+    Integer placeholderId = NumberUtils.toInt(event4.getPlaceholderId()) + 1;
+    System.out.println("Selected PlaceholderID: " + placeholderId);
+    Event event5 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.create(event5);
+    Event event6 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.create(event6);
+    Event event7 = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.create(event7);
+    final Comparator<Event> comparator = new Comparator<Event>() {
+
+      public int compare(Event o1,
+                         Event o2) {
+        if (o1 == null && o2 == null) {
+          return 0;
+        }
+        else {
+          if (o1 == null && o2 != null) {
+            return 1;
+          }
+          else {
+            if (o1 != null && o2 == null) {
+              return -1;
+            }
+            else {
+              final int compareTo =
+                        new Integer(NumberUtils.toInt(o1.getPlaceholderId())).
+                  compareTo(NumberUtils.toInt(o2.getPlaceholderId()));
+              return compareTo * -1;
+            }
+          }
+        }
+      }
+    };
+    final int count = 3;
+    Collection<Event> events = storer.getEvents(placeholderId.toString(), count);
+    assertNotNull(events);
+    assertTrue(events.size() == count);
+    List<Event> sortTestList = new ArrayList<Event>(events);
+    Collections.sort(sortTestList, comparator);
+    List<Event> origList = new ArrayList<Event>(events);
+    System.out.println(origList + " " + sortTestList);
+    assertTrue(origList.equals(sortTestList));
+    assertEquals(placeholderId.toString(), origList.get(origList.size() - 1).
+        getPlaceholderId());
+    events = storer.getEvents(placeholderId.toString(), -1 * count);
+    assertNotNull(events);
+    assertTrue(events.size() == count);
+    sortTestList = new ArrayList<Event>(events);
+    Collections.sort(sortTestList, comparator);
+    origList = new ArrayList<Event>(events);
+    System.out.println(origList + " " + sortTestList);
+    assertTrue(origList.equals(sortTestList));
+    assertEquals(placeholderId.toString(), origList.get(0).getPlaceholderId());
   }
 }

@@ -123,4 +123,9 @@ class ChannelImpl
     hash = 19 * hash + this.name.hashCode();
     return hash;
   }
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }
