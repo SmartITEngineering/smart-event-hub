@@ -37,4 +37,15 @@ public class PersistencyDomainTest extends TestCase {
     persistentEvent.setContentType("someType");
   }
 
+  public void testChannelIsValid() {
+    PersistentChannel persistentChannel = new PersistentChannel();
+    assertFalse(persistentChannel.isValid());
+    persistentChannel.setName("");
+    assertFalse(persistentChannel.isValid());
+    persistentChannel.setName(" \t");
+    assertFalse(persistentChannel.isValid());
+    persistentChannel.setName("test");
+    assertTrue(persistentChannel.isValid());
+  }
+
 }
