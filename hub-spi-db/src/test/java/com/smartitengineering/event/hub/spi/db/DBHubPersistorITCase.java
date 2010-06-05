@@ -62,6 +62,7 @@ public class DBHubPersistorITCase
     Channel channel = APIFactory.getChannelBuilder(someName).build();
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
+    storer.create((Channel) null);
     assertNotNull(storer);
     assertEquals(someName.toLowerCase(), channel.getName());
     storer.create(channel);
@@ -130,6 +131,9 @@ public class DBHubPersistorITCase
     storer.update(channel);
     channel = storer.getChannel(name);
     assertNotNull(channel);
+    storer.update(channel);
+    channel = storer.getChannel(name);
+    assertNotNull(channel);
     assertNotNull(channel.getName());
     assertEquals(name, channel.getName());
     assertNotNull(channel.getCreationDateTime());
@@ -138,6 +142,9 @@ public class DBHubPersistorITCase
     assertEquals(desc, channel.getDescription());
     assertEquals(mime, channel.getFilter().getMimeType());
     assertEquals(script, channel.getFilter().getFilterScript());
+    storer.update(null);
+    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
+    storer.update(dummyChannel);
   }
 
   public void testDeleteChannel() {
@@ -152,6 +159,9 @@ public class DBHubPersistorITCase
     storer.delete(channel);
     channel = storer.getChannel(name);
     assertNull(channel);
+    storer.delete((Channel) null);
+    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
+    storer.delete(dummyChannel);
   }
 
   public void testCreateEvent() {
@@ -161,6 +171,7 @@ public class DBHubPersistorITCase
         getContent(contentType, IOUtils.toInputStream(content))).build();
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
+    storer.create((Event) null);
     event = storer.create(event);
     assertNotNull(event);
     assertNotNull(event.getEventContent());

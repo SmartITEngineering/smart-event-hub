@@ -101,6 +101,9 @@ public class DBPersistentStorer
 
   public void create(Channel channel) {
     PersistentChannel persistentChannel = getChannelConverter().convert(channel);
+    if(persistentChannel == null) {
+      return;
+    }
     if (persistentChannel.getCreationDateTime() == null) {
       persistentChannel.setCreationDateTime(new Date());
     }
@@ -109,12 +112,16 @@ public class DBPersistentStorer
 
   public void update(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
-    getChannelWriteDao().update(persistentChannel);
+    if (persistentChannel != null) {
+      getChannelWriteDao().update(persistentChannel);
+    }
   }
 
   public void delete(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
-    getChannelWriteDao().delete(persistentChannel);
+    if (persistentChannel != null) {
+      getChannelWriteDao().delete(persistentChannel);
+    }
   }
 
   public Channel getChannel(String channelName) {
@@ -124,13 +131,17 @@ public class DBPersistentStorer
 
   public Event create(Event event) {
     PersistentEvent persistentEvent = getEventConverter().convert(event);
-    getEventWriteDao().save(persistentEvent);
+    if(persistentEvent != null) {
+      getEventWriteDao().save(persistentEvent);
+    }
     return getEventConverter().convertInversely(persistentEvent);
   }
 
   public void delete(Event event) {
     PersistentEvent persistentEvent = getMergedPersistentEvent(event);
-    getEventWriteDao().delete(persistentEvent);
+    if (persistentEvent != null) {
+      getEventWriteDao().delete(persistentEvent);
+    }
   }
 
   public Event getEvent(String placeholderId) {
@@ -139,7 +150,7 @@ public class DBPersistentStorer
   }
 
   public Event getEventByUUID(String uuid) {
-    if(StringUtils.isBlank(uuid)) {
+    if (StringUtils.isBlank(uuid)) {
       return null;
     }
     PersistentEvent event = getEventReadDao().getSingle(QueryParameterFactory.
@@ -177,6 +188,9 @@ public class DBPersistentStorer
   }
 
   protected PersistentChannel getMergedPersistentChannel(Channel channel) {
+    if (channel == null) {
+      return null;
+    }
     PersistentChannel persistentChannel =
                       getPersistentChannel(channel.getName());
     Map.Entry<Channel, PersistentChannel> entry;
