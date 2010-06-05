@@ -210,6 +210,9 @@ public class DBPersistentStorer
   }
 
   protected PersistentEvent getMergedPersistentEvent(Event event) {
+    if(event == null) {
+      return null;
+    }
     PersistentEvent persistentEvent =
                     getPersistentEvent(event.getPlaceholderId());
     Map.Entry<Event, PersistentEvent> entry;

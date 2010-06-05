@@ -340,4 +340,21 @@ public class DBHubPersistorITCase
     assertTrue(origList.equals(sortTestList));
     assertEquals(placeholderId.toString(), origList.get(0).getPlaceholderId());
   }
+
+  public void testDeleteEvent() {
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    storer.delete((Event) null);
+    final String content = "<xml>some xml</xml>";
+    final String contentType = "application/xml";
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.
+        getContent(contentType, IOUtils.toInputStream(content))).build();
+    storer.delete(event);
+    event = storer.create(event);
+    Event toDeleteEvent = storer.getEvent(event.getPlaceholderId());
+    assertNotNull(toDeleteEvent);
+    storer.delete(toDeleteEvent);
+    toDeleteEvent = storer.getEvent(event.getPlaceholderId());
+    assertNull(toDeleteEvent);
+  }
 }
