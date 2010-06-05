@@ -36,6 +36,9 @@ public class PersistentEvent
   private byte[] content;
 
   public byte[] getContent() {
+    if(content == null) {
+      return null;
+    }
     return Arrays.copyOf(content, content.length);
   }
 
