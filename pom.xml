@@ -194,6 +194,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <artifactId>derby</artifactId>
         <version>${derby.version}</version>
       </dependency>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib-nodep</artifactId>
+        <version>${cglib.version}</version>
+      </dependency>
       <!-- Provided scope -->
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -442,6 +447,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <jmock.version>2.5.1</jmock.version>
     <c3p0.version>0.9.1.2</c3p0.version>
     <derby.version>10.5.3.0_1</derby.version>
+    <cglib.version>2.2</cglib.version>
     <!-- plugins -->
     <plugin.jetty.version>7.0.2.v20100331</plugin.jetty.version>
     <plugin.compiler.version>2.0.2</plugin.compiler.version>
@@ -460,6 +466,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <wagon.svn.version>1.9</wagon.svn.version>
     <!-- others -->
     <last.release.tag>0.0</last.release.tag>
+    <hub.server.port>9090</hub.server.port>
+    <hub.server.stop.port>9999</hub.server.stop.port>
+    <hub.server.stop.key>stop</hub.server.stop.key>
   </properties>
   <modules>
     <module>hub</module>

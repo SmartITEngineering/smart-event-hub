@@ -91,9 +91,4 @@
       </plugin>
     </plugins>
   </build>
-  <properties>
-    <hub.server.port>9090</hub.server.port>
-    <hub.server.stop.port>9999</hub.server.stop.port>
-    <hub.server.stop.key>stop</hub.server.stop.key>
-  </properties>
 </project>
