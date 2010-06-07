@@ -50,8 +50,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <ref local="sessionFactory" />
     </property>
   </bean>
-  <bean id="channelDao" class="com.smartitengineering.dao.impl.hibernate.CommonDaoImpl" parent="abstractDao"></bean>
-  <bean id="eventDao" class="com.smartitengineering.dao.impl.hibernate.CommonDaoImpl" parent="abstractDao"></bean>
+  <bean id="channelDao" class="com.smartitengineering.dao.impl.hibernate.CommonDaoImpl" parent="abstractDao">
+    <property name="entityClassString">
+      <value>com.smartitengineering.event.hub.spi.db.PersistentChannel</value>
+    </property>
+  </bean>
+  <bean id="eventDao" class="com.smartitengineering.dao.impl.hibernate.CommonDaoImpl" parent="abstractDao">
+    <property name="entityClassString">
+      <value>com.smartitengineering.event.hub.spi.db.PersistentEvent</value>
+    </property>
+  </bean>
   <bean id="storer" class="com.smartitengineering.event.hub.spi.db.DBPersistentStorer" >
     <property name="channelReadDao">
       <ref local="channelDao" />
