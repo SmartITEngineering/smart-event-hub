@@ -18,23 +18,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.common;
 
 import com.smartitengineering.event.hub.api.Channel;
+import com.smartitengineering.event.hub.api.Filter;
+import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
+import com.smartitengineering.event.hub.api.impl.APIFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
@@ -47,7 +56,17 @@ public class ChannelJsonProvider
     implements MessageBodyReader<Channel>,
                MessageBodyWriter<Channel> {
 
-  
+  private final ObjectMapper mapper = new ObjectMapper();
+  private static final String NAME = "name";
+  private static final String DESCRIPTION = "description";
+  private static final String AUTH_TOKEN = "auth-token";
+  private static final String AUTO_EXPIRE = "auto-expire";
+  private static final String CREATED = "created-at";
+  private static final String FILTER_TYPE = "filter-type";
+  private static final String FILTER = "filter";
+  private static final String DATE_ISO8601_PATTERN =
+                              DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.
+      getPattern();
 
   public boolean isReadable(Class<?> type,
                             Type genericType,
@@ -65,10 +84,60 @@ public class ChannelJsonProvider
                           InputStream entityStream)
       throws IOException,
              WebApplicationException {
-
-    JsonParser parser = new JsonFactory().createJsonParser(entityStream);
-    Map<String, Object> parsedJsonContentMap = parser.readValueAs(Map.class);
-    throw new UnsupportedOperationException("Not supported yet.");
+    Map<String, String> parsedJsonContentMap = mapper.readValue(entityStream,
+        HashMap.class);
+    final String name = parsedJsonContentMap.get(NAME);
+    if (StringUtils.isBlank(name)) {
+      throw new WebApplicationException(new NullPointerException(
+          "Name is blank!"), Status.BAD_REQUEST);
+    }
+    final String description = parsedJsonContentMap.get(DESCRIPTION);
+    final String authToken = parsedJsonContentMap.get(AUTH_TOKEN);
+    final String filterTypeStr = parsedJsonContentMap.get(FILTER_TYPE);
+    final SupportedMimeType mimeType;
+    try {
+      if (StringUtils.isNotBlank(filterTypeStr)) {
+        mimeType = SupportedMimeType.valueOf(filterTypeStr.toUpperCase());
+      }
+      else {
+        mimeType = null;
+      }
+    }
+    catch (Throwable th) {
+      throw new WebApplicationException(th, Status.BAD_REQUEST);
+    }
+    final String filterScript = parsedJsonContentMap.get(FILTER);
+    final Date expireDate;
+    try {
+      final String expireStr = parsedJsonContentMap.get(AUTO_EXPIRE);
+      expireDate = parseDate(expireStr);
+    }
+    catch (ParseException ex) {
+      throw new WebApplicationException(ex, Status.BAD_REQUEST);
+    }
+    final Date creationDate;
+    try {
+      final String createdAtStr = parsedJsonContentMap.get(CREATED);
+      creationDate = parseDate(createdAtStr);
+    }
+    catch (ParseException ex) {
+      throw new WebApplicationException(ex, Status.BAD_REQUEST);
+    }
+    final Filter filter;
+    if (mimeType != null && StringUtils.isNotBlank(filterScript)) {
+      filter = APIFactory.getFilter(mimeType, filterScript);
+    }
+    else {
+      filter = null;
+      if (mimeType != null || StringUtils.isNotBlank(filterScript)) {
+        throw new WebApplicationException(new IllegalArgumentException(
+            "Filter should have both type and script specified."),
+            Status.BAD_REQUEST);
+      }
+    }
+    return APIFactory.getChannelBuilder(name).description(description).authToken(
+        authToken).autoExpiryDateTime(expireDate).creationDateTime(creationDate).
+        filter(filter).build();
   }
 
   public boolean isWriteable(Class<?> type,
@@ -107,6 +176,47 @@ public class ChannelJsonProvider
   }
 
   public String getJsonString(Channel channel) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    if (channel == null) {
+      return "";
+    }
+    HashMap<String, String> jsonMap = new HashMap<String, String>();
+    jsonMap.put(NAME, channel.getName());
+    if (StringUtils.isNotBlank(channel.getAuthToken())) {
+      jsonMap.put(AUTH_TOKEN, channel.getAuthToken());
+    }
+    if (StringUtils.isNotBlank(channel.getDescription())) {
+      jsonMap.put(DESCRIPTION, channel.getDescription());
+    }
+    if (channel.getCreationDateTime() != null) {
+      jsonMap.put(CREATED, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(
+          channel.getCreationDateTime()));
+    }
+    if (channel.getAutoExpiryDateTime() != null) {
+      jsonMap.put(AUTO_EXPIRE, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.
+          format(channel.getAutoExpiryDateTime()));
+    }
+    if(channel.getFilter() != null) {
+      Filter filter = channel.getFilter();
+      jsonMap.put(FILTER, filter.getFilterScript());
+      jsonMap.put(FILTER_TYPE, filter.getMimeType().name());
+    }
+    try {
+      return mapper.writeValueAsString(jsonMap);
+    }
+    catch (Exception ex) {
+      return "";
+    }
+  }
+
+  protected Date parseDate(final String dateStr)
+      throws ParseException {
+    Date date;
+    if (StringUtils.isNotBlank(dateStr)) {
+      date = DateUtils.parseDate(dateStr, new String[] {DATE_ISO8601_PATTERN});
+    }
+    else {
+      date = null;
+    }
+    return date;
   }
 }
