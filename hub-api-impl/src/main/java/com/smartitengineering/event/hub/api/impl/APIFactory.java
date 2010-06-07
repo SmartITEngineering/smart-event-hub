@@ -47,6 +47,10 @@ public final class APIFactory {
     return new ChannelBuilder(channelName);
   }
 
+  public static ChannelBuilder getChannelBuilder(Channel channel) {
+    return new ChannelBuilder(channel);
+  }
+
   public static Content getContent(String contentType,
                                    InputStream stream) {
     if (contentType == null || stream == null) {
@@ -99,6 +103,10 @@ public final class APIFactory {
 
     private ChannelBuilder(String name) {
       channelImpl = new ChannelImpl(name);
+    }
+
+    private ChannelBuilder(Channel channel) {
+      channelImpl = new ChannelImpl(channel);
     }
 
     public ChannelBuilder name(String name) {

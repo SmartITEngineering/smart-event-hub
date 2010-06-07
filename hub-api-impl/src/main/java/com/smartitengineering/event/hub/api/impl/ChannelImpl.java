@@ -39,8 +39,21 @@ class ChannelImpl
     setName(name);
   }
 
+  public ChannelImpl(Channel channel) {
+    setName(channel.getName());
+    setDescription(channel.getDescription());
+    setAuthToken(channel.getAuthToken());
+    setCreationDateTime(channel.getCreationDateTime());
+    setAutoExpiryDateTime(channel.getAutoExpiryDateTime());
+    final Filter otherFilter = channel.getFilter();
+    if (otherFilter != null) {
+      setFilter(APIFactory.getFilter(otherFilter.getMimeType(), otherFilter.
+          getFilterScript()));
+    }
+  }
+
   public void setName(String name) {
-    if(StringUtils.isBlank(name)) {
+    if (StringUtils.isBlank(name)) {
       throw new IllegalArgumentException();
     }
     this.name = name.trim().toLowerCase();
