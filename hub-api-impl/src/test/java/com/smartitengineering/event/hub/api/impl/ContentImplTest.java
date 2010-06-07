@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api.impl;
 
+import com.smartitengineering.event.hub.api.impl.*;
 import java.io.InputStream;
 import junit.framework.TestCase;
 import org.jmock.Mockery;

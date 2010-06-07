@@ -46,6 +46,11 @@
     </dependency>
     <dependency>
       <groupId>com.smartitengineering.event</groupId>
+      <artifactId>hub-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering.event</groupId>
       <artifactId>hub-spi</artifactId>
       <version>${project.version}</version>
     </dependency>

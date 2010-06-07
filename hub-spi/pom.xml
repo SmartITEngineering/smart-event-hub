@@ -17,20 +17,13 @@
   </description>
   <dependencies>
     <dependency>
+      <groupId>com.smartitengineering.event</groupId>
+      <artifactId>hub-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.smartitengineering.smart-util</groupId>
       <artifactId>smart-bean-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jruby</groupId>
-      <artifactId>jruby-complete</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jruby.embed</groupId>
-      <artifactId>jruby-embed</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>
@@ -39,11 +32,6 @@
     <dependency>
       <groupId>org.jmock</groupId>
       <artifactId>jmock-legacy</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

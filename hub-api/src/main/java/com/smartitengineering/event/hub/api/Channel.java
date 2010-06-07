@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api;
 
-import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import java.util.Date;
 
 /**

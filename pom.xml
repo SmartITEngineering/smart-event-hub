@@ -150,6 +150,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <version>${jersey.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-core</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>jsr311-api</artifactId>
         <version>${jaxrs.version}</version>
@@ -198,6 +203,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <groupId>cglib</groupId>
         <artifactId>cglib-nodep</artifactId>
         <version>${cglib.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-lgpl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-lgpl</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
       <!-- Provided scope -->
       <dependency>
@@ -431,7 +446,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <!-- dependencies -->
     <atmosphere.version>0.5.7</atmosphere.version>
     <jaxrs.version>1.1.1</jaxrs.version>
-    <jersey.version>1.1.5</jersey.version>
+    <jersey.version>1.2</jersey.version>
     <commons.io.version>1.4</commons.io.version>
     <commons.lang.version>2.4</commons.lang.version>
     <jruby.version>1.5.0.RC2</jruby.version>
@@ -441,13 +456,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <jython.version>2.5.0</jython.version>
     <servlet.version>2.5</servlet.version>
     <jsp.version>2.1</jsp.version>
-    <smart.util.version>0.2-SNAPSHOT</smart.util.version>
-    <smart.dao.version>0.4-SNAPSHOT</smart.dao.version>
     <junit.version>3.8.1</junit.version>
     <jmock.version>2.5.1</jmock.version>
     <c3p0.version>0.9.1.2</c3p0.version>
     <derby.version>10.5.3.0_1</derby.version>
     <cglib.version>2.2</cglib.version>
+    <jackson.version>1.5.3</jackson.version>
+    <smart.util.version>0.2-SNAPSHOT</smart.util.version>
+    <smart.dao.version>0.4-SNAPSHOT</smart.dao.version>
     <!-- plugins -->
     <plugin.jetty.version>7.0.2.v20100331</plugin.jetty.version>
     <plugin.compiler.version>2.0.2</plugin.compiler.version>
@@ -475,5 +491,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <module>hub-core</module>
     <module>hub-spi</module>
     <module>hub-spi-db</module>
+    <module>hub-common</module>
+    <module>hub-api</module>
+    <module>hub-api-impl</module>
   </modules>
 </project>

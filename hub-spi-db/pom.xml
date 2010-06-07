@@ -26,6 +26,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.smartitengineering.event</groupId>
+      <artifactId>hub-api-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.smartitengineering</groupId>
       <artifactId>smart-abstract-dao</artifactId>
     </dependency>

@@ -18,7 +18,7 @@
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>com.smartitengineering.event.hub.core</param-value>
+      <param-value>com.smartitengineering.event.hub.core;com.smartitengineering.event.hub.common</param-value>
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
