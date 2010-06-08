@@ -86,6 +86,11 @@ public final class APIFactory {
       return this;
     }
 
+    public EventBuilder creationDate(Date creationDate) {
+      builderEvent.setCreationDate(creationDate);
+      return this;
+    }
+
     public Event build() {
       if (builderEvent.getEventContent() != null) {
         return builderEvent.clone();
@@ -131,6 +136,11 @@ public final class APIFactory {
 
     public ChannelBuilder autoExpiryDateTime(Date autoExpiryDateTime) {
       channelImpl.setAutoExpiryDateTime(autoExpiryDateTime);
+      return this;
+    }
+
+    public ChannelBuilder lastModifiedDate(Date lastModifiedDate) {
+      channelImpl.setLastModifiedDate(lastModifiedDate);
       return this;
     }
 

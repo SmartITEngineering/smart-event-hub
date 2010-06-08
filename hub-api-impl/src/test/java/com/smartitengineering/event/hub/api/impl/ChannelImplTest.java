@@ -86,18 +86,32 @@ public class ChannelImplTest
     modelImpl.setAuthToken("a");
     modelImpl.setCreationDateTime(new Date());
     modelImpl.setAutoExpiryDateTime(new Date());
-    modelImpl.setFilter(mock(Filter.class));
+    final Filter mockedFilter = mock(Filter.class);
+    modelImpl.setFilter(mockedFilter);
+    checking(new Expectations() {
+
+      {
+        exactly(2).of(mockedFilter).getMimeType();
+        will(returnValue(Filter.SupportedMimeType.RUBY));
+        exactly(2).of(mockedFilter).getFilterScript();
+        will(returnValue("Some script!"));
+      }
+    });
     final Channel sample = APIFactory.getChannelBuilder(modelImpl.getName()).
         description(modelImpl.getDescription()).authToken(
         modelImpl.getAuthToken()).creationDateTime(
         modelImpl.getCreationDateTime()).autoExpiryDateTime(modelImpl.
         getAutoExpiryDateTime()).filter(modelImpl.getFilter()).build();
     assertEquals(modelImpl.getAuthToken(), sample.getAuthToken());
-    assertEquals(modelImpl.getAutoExpiryDateTime(), sample.getAutoExpiryDateTime());
+    assertEquals(modelImpl.getAutoExpiryDateTime(),
+        sample.getAutoExpiryDateTime());
     assertEquals(modelImpl.getCreationDateTime(), sample.getCreationDateTime());
     assertEquals(modelImpl.getDescription(), sample.getDescription());
     assertEquals(modelImpl.getName(), sample.getName());
-    assertEquals(modelImpl.getFilter(), sample.getFilter());
+    assertEquals(modelImpl.getFilter().getFilterScript(), sample.getFilter().
+        getFilterScript());
+    assertEquals(modelImpl.getFilter().getMimeType(), sample.getFilter().
+        getMimeType());
   }
 
   public void testEqualsAndHashCode() {

@@ -19,6 +19,7 @@ package com.smartitengineering.event.hub.api.impl;
 
 import com.smartitengineering.event.hub.api.Content;
 import com.smartitengineering.event.hub.api.Event;
+import java.util.Date;
 import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
@@ -33,6 +34,7 @@ class EventImpl
   private Content eventContent;
   private String placeholderId;
   private String universallyUniqueID;
+  private Date creationDate;
 
   public void setEventContent(Content eventContent) {
     this.eventContent = eventContent;
@@ -40,6 +42,15 @@ class EventImpl
 
   public void setPlaceholderId(String placeholderId) {
     this.placeholderId = placeholderId;
+  }
+
+  public void setCreationDate(Date creationDate) {
+    if (creationDate == null) {
+      this.creationDate = null;
+    }
+    else {
+      this.creationDate = new Date(creationDate.getTime());
+    }
   }
 
   /**
@@ -67,6 +78,13 @@ class EventImpl
     return eventContent;
   }
 
+  public Date getCreationDate() {
+    if (creationDate == null) {
+      return null;
+    }
+    return new Date(creationDate.getTime());
+  }
+
   protected synchronized void initUUID() {
     //Extra check for successive access to initUUID of an instance
     if (StringUtils.isBlank(universallyUniqueID)) {
@@ -82,6 +100,7 @@ class EventImpl
       clone.setUniversallyUniqueID(getUniversallyUniqueID());
     }
     clone.setPlaceholderId(placeholderId);
+    clone.setCreationDate(creationDate);
     return clone;
   }
 
@@ -96,7 +115,7 @@ class EventImpl
     final Event other = (Event) obj;
     final String otherUniversallyUniqueID = other.getUniversallyUniqueID();
     if (otherUniversallyUniqueID == null ||
-         !this.getUniversallyUniqueID().equals(otherUniversallyUniqueID)) {
+        !this.getUniversallyUniqueID().equals(otherUniversallyUniqueID)) {
       return false;
     }
     return true;

@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api;
 
+import java.util.Date;
+
 /**
  * Represents an event that may get broadcasted.
  * @author imyousuf
@@ -28,4 +30,6 @@ public interface Event {
   public String getUniversallyUniqueID();
 
   public Content getEventContent();
+
+  public Date getCreationDate();
 }

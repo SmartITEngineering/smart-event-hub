@@ -64,6 +64,7 @@ public class ChannelJsonProvider
   private static final String CREATED = "created-at";
   private static final String FILTER_TYPE = "filter-type";
   private static final String FILTER = "filter";
+  private static final String LAST_MODIFIED = "last-modified";
   private static final String DATE_ISO8601_PATTERN =
                               DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.
       getPattern();
@@ -123,6 +124,14 @@ public class ChannelJsonProvider
     catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
+    final Date lastModifiedDate;
+    try {
+      final String lastModifiedStr = parsedJsonContentMap.get(LAST_MODIFIED);
+      lastModifiedDate = parseDate(lastModifiedStr);
+    }
+    catch (ParseException ex) {
+      throw new WebApplicationException(ex, Status.BAD_REQUEST);
+    }
     final Filter filter;
     if (mimeType != null && StringUtils.isNotBlank(filterScript)) {
       filter = APIFactory.getFilter(mimeType, filterScript);
@@ -137,7 +146,7 @@ public class ChannelJsonProvider
     }
     return APIFactory.getChannelBuilder(name).description(description).authToken(
         authToken).autoExpiryDateTime(expireDate).creationDateTime(creationDate).
-        filter(filter).build();
+        filter(filter).lastModifiedDate(lastModifiedDate).build();
   }
 
   public boolean isWriteable(Class<?> type,
@@ -188,12 +197,13 @@ public class ChannelJsonProvider
       jsonMap.put(DESCRIPTION, channel.getDescription());
     }
     if (channel.getCreationDateTime() != null) {
-      jsonMap.put(CREATED, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(
-          channel.getCreationDateTime()));
+      jsonMap.put(CREATED, formatDate(channel.getCreationDateTime()));
     }
     if (channel.getAutoExpiryDateTime() != null) {
-      jsonMap.put(AUTO_EXPIRE, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.
-          format(channel.getAutoExpiryDateTime()));
+      jsonMap.put(AUTO_EXPIRE, formatDate(channel.getAutoExpiryDateTime()));
+    }
+    if (channel.getLastModifiedDate() != null) {
+      jsonMap.put(LAST_MODIFIED, formatDate(channel.getLastModifiedDate()));
     }
     if(channel.getFilter() != null) {
       Filter filter = channel.getFilter();
@@ -206,6 +216,10 @@ public class ChannelJsonProvider
     catch (Exception ex) {
       return "";
     }
+  }
+
+  protected String formatDate(Date date) {
+    return DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(date);
   }
 
   protected Date parseDate(final String dateStr)

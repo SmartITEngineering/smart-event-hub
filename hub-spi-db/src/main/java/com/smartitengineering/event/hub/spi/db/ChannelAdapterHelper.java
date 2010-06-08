@@ -43,7 +43,6 @@ public class ChannelAdapterHelper
     toBean.setDescription(fromBean.getDescription());
     toBean.setAuthToken(fromBean.getAuthToken());
     toBean.setAutoExpiryDateTime(fromBean.getAutoExpiryDateTime());
-    toBean.setCreationDateTime(fromBean.getCreationDateTime());
     if (fromBean.getFilter() != null) {
       toBean.setFilterType(fromBean.getFilter().getMimeType().name());
       toBean.setScript(fromBean.getFilter().getFilterScript());
@@ -56,7 +55,8 @@ public class ChannelAdapterHelper
                          APIFactory.getChannelBuilder(toBean.getName()).
         description(toBean.getDescription()).authToken(toBean.getAuthToken()).
         autoExpiryDateTime(toBean.getAutoExpiryDateTime()).
-        creationDateTime(toBean.getCreationDateTime());
+        creationDateTime(toBean.getCreationDateTime()).lastModifiedDate(toBean.
+        getLastModifiedDateTime());
     if (StringUtils.isNotBlank(toBean.getFilterType())) {
       builder.filter(
           APIFactory.getFilter(SupportedMimeType.valueOf(toBean.getFilterType()),

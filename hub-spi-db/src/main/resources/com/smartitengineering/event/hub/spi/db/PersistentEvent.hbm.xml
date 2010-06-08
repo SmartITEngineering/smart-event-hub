@@ -26,5 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <property column="uuid" length="255" name="uuid" not-null="true" type="string" unique="true"/>
     <property column="content_type" length="255" name="contentType" type="java.lang.String"/>
     <property column="content" length="3000" name="content" type="binary"/>
+    <property column="creation_date_time" name="creationDateTime" type="java.util.Date"/>
   </class>
 </hibernate-mapping>

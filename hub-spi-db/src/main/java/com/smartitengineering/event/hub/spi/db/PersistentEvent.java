@@ -20,6 +20,7 @@ package com.smartitengineering.event.hub.spi.db;
 import com.smartitengineering.domain.AbstractPersistentDTO;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -34,6 +35,23 @@ public class PersistentEvent
   static final String UUID = "uuid";
   private String uuid, contentType;
   private byte[] content;
+  private Date creationDateTime;
+
+  public void setCreationDateTime(Date creationDateTime) {
+    if (creationDateTime != null) {
+      this.creationDateTime = new Date(creationDateTime.getTime());
+    }
+    else {
+      this.creationDateTime = null;
+    }
+  }
+
+  public Date getCreationDateTime() {
+    if (creationDateTime == null) {
+      return null;
+    }
+    return new Date(creationDateTime.getTime());
+  }
 
   public byte[] getContent() {
     if(content == null) {

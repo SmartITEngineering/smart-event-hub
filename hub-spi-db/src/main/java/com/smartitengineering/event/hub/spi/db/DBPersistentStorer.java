@@ -105,15 +105,16 @@ public class DBPersistentStorer
     if (persistentChannel == null) {
       return;
     }
-    if (persistentChannel.getCreationDateTime() == null) {
-      persistentChannel.setCreationDateTime(new Date());
-    }
+    final Date date = new Date();
+    persistentChannel.setCreationDateTime(date);
+    persistentChannel.setLastModifiedDateTime(date);
     getChannelWriteDao().save(persistentChannel);
   }
 
   public void update(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
     if (persistentChannel != null) {
+      persistentChannel.setLastModifiedDateTime(new Date());
       getChannelWriteDao().update(persistentChannel);
     }
   }
@@ -210,7 +211,7 @@ public class DBPersistentStorer
   }
 
   protected PersistentEvent getMergedPersistentEvent(Event event) {
-    if(event == null) {
+    if (event == null) {
       return null;
     }
     PersistentEvent persistentEvent =

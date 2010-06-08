@@ -52,6 +52,8 @@ public interface Channel {
    */
   public Date getCreationDateTime();
 
+  public Date getLastModifiedDate();
+
   /**
    * Return the auto expiry date time of this channel. If this channel is not
    * deleted then at the designated date time this channel will be deleted from

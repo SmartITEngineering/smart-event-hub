@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api.impl;
 
-import com.smartitengineering.event.hub.api.impl.*;
 import com.smartitengineering.event.hub.api.Content;
 import com.smartitengineering.event.hub.api.Event;
+import java.util.Date;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 
@@ -43,6 +43,16 @@ public class EventImplTest
     final EventImpl eventImpl = new EventImpl();
     eventImpl.setPlaceholderId(placeholderId);
     assertEquals(placeholderId, eventImpl.getPlaceholderId());
+  }
+
+  public void testGetSetCreationDate() {
+    final Date date = new Date();
+    final EventImpl eventImpl = new EventImpl();
+    eventImpl.setCreationDate(date);
+    assertEquals(date, eventImpl.getCreationDate());
+    assertNotSame(date, eventImpl.getCreationDate());
+    eventImpl.setCreationDate(null);
+    assertNull(eventImpl.getCreationDate());
   }
 
   public void testGetSetUniversallyUniqueID() {
@@ -94,7 +104,8 @@ public class EventImplTest
     assertFalse(eventImpl.equals(null));
     assertFalse(eventImpl.equals("String"));
     final Event mockedEvent = mock(Event.class);
-    checking(new Expectations(){
+    checking(new Expectations() {
+
       {
         allowing(mockedEvent).getUniversallyUniqueID();
         will(returnValue(null));
@@ -133,6 +144,19 @@ public class EventImplTest
     assertEquals(uuid, clone.getUniversallyUniqueID());
     assertSame(mockedContent, clone.getEventContent());
     assertTrue(clone.equals(eventImpl));
+    Date date = new Date();
+    eventImpl = new EventImpl();
+    eventImpl.setEventContent(mockedContent);
+    eventImpl.setPlaceholderId(placeHolderId);
+    eventImpl.setUniversallyUniqueID(uuid);
+    eventImpl.setCreationDate(date);
+    clone = eventImpl.clone();
+    assertEquals(placeHolderId, clone.getPlaceholderId());
+    assertEquals(uuid, clone.getUniversallyUniqueID());
+    assertSame(mockedContent, clone.getEventContent());
+    assertTrue(clone.equals(eventImpl));
+    assertEquals(date, eventImpl.getCreationDate());
+    assertNotSame(date, eventImpl.getCreationDate());
   }
 
   public void testBuild() {

@@ -30,7 +30,7 @@ public class PersistentChannel
 
   static final String NAME = "name";
   private String name, description, authToken, filterType, script;
-  private Date creationDateTime, autoExpiryDateTime;
+  private Date creationDateTime, autoExpiryDateTime, lastModifiedDateTime;
 
   public String getAuthToken() {
     return authToken;
@@ -48,6 +48,13 @@ public class PersistentChannel
       return null;
     }
     return new Date(creationDateTime.getTime());
+  }
+
+  public Date getLastModifiedDateTime() {
+    if (lastModifiedDateTime == null) {
+      return null;
+    }
+    return new Date(lastModifiedDateTime.getTime());
   }
 
   public String getDescription() {
@@ -85,6 +92,15 @@ public class PersistentChannel
     }
     else {
       this.creationDateTime = null;
+    }
+  }
+
+  public void setLastModifiedDateTime(Date lastModifiedDate) {
+    if (lastModifiedDate == null) {
+      this.lastModifiedDateTime = null;
+    }
+    else {
+      this.lastModifiedDateTime = new Date(lastModifiedDate.getTime());
     }
   }
 

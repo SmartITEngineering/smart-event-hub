@@ -32,7 +32,7 @@ class ChannelImpl
 
   private String name;
   private String description, authToken;
-  private Date creationDateTime, autoExpiryDateTime;
+  private Date creationDateTime, autoExpiryDateTime, lastModifiedDate;
   private Filter filter;
 
   public ChannelImpl(String name) {
@@ -45,6 +45,7 @@ class ChannelImpl
     setAuthToken(channel.getAuthToken());
     setCreationDateTime(channel.getCreationDateTime());
     setAutoExpiryDateTime(channel.getAutoExpiryDateTime());
+    setLastModifiedDate(channel.getLastModifiedDate());
     final Filter otherFilter = channel.getFilter();
     if (otherFilter != null) {
       setFilter(APIFactory.getFilter(otherFilter.getMimeType(), otherFilter.
@@ -64,11 +65,30 @@ class ChannelImpl
   }
 
   public void setAutoExpiryDateTime(Date autoExpiryDateTime) {
-    this.autoExpiryDateTime = autoExpiryDateTime;
+    if (autoExpiryDateTime == null) {
+      this.autoExpiryDateTime = null;
+    }
+    else {
+      this.autoExpiryDateTime = new Date(autoExpiryDateTime.getTime());
+    }
   }
 
   public void setCreationDateTime(Date creationDateTime) {
-    this.creationDateTime = creationDateTime;
+    if (creationDateTime != null) {
+      this.creationDateTime = new Date(creationDateTime.getTime());
+    }
+    else {
+      this.creationDateTime = null;
+    }
+  }
+
+  public void setLastModifiedDate(Date lastModifiedDate) {
+    if (lastModifiedDate == null) {
+      this.lastModifiedDate = null;
+    }
+    else {
+      this.lastModifiedDate = new Date(lastModifiedDate.getTime());
+    }
   }
 
   public void setDescription(String description) {
@@ -92,26 +112,33 @@ class ChannelImpl
   }
 
   public Date getCreationDateTime() {
-    return creationDateTime;
+    if (creationDateTime == null) {
+      return null;
+    }
+    return new Date(creationDateTime.getTime());
   }
 
   public Date getAutoExpiryDateTime() {
-    return autoExpiryDateTime;
+    if (autoExpiryDateTime == null) {
+      return null;
+    }
+    return new Date(autoExpiryDateTime.getTime());
   }
 
   public Filter getFilter() {
     return filter;
   }
 
+  public Date getLastModifiedDate() {
+    if (lastModifiedDate == null) {
+      return null;
+    }
+    return new Date(lastModifiedDate.getTime());
+  }
+
   @Override
   public ChannelImpl clone() {
-    ChannelImpl clone = new ChannelImpl(name);
-    clone.authToken = authToken;
-    clone.description = description;
-    clone.creationDateTime = creationDateTime;
-    clone.autoExpiryDateTime = autoExpiryDateTime;
-    clone.filter = filter;
-    return clone;
+    return new ChannelImpl(this);
   }
 
   @Override
