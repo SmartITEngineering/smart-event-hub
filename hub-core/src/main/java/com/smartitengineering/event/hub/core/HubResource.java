@@ -65,8 +65,7 @@ public class HubResource {
         storer.create(channel);
       }
       else {
-        storer.update(APIFactory.getChannelBuilder(channel).creationDateTime(
-            myChannel.getCreationDateTime()).build());
+        storer.update(channel);
       }
       response = Response.created(UriBuilder.fromResource(HubResource.class).
           build(channelName)).build();
