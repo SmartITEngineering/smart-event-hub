@@ -31,9 +31,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
@@ -44,15 +45,17 @@ import org.atmosphere.jersey.Broadcastable;
  *
  * @author imyousuf
  */
-@Path("/{channel}")
+@Path("/{" + Constants.RSRC_PATH_CHANNEL + "}")
 public class HubResource {
 
-  @PathParam("channel")
+  @PathParam(Constants.RSRC_PATH_CHANNEL)
   private Broadcaster broadcaster;
-  @PathParam("channel")
+  @PathParam(Constants.RSRC_PATH_CHANNEL)
   private String channelName;
   @HeaderParam(Constants.AUTH_TOKEN_HEADER_NAME)
   private String authToken;
+  @Context
+  private UriInfo uriInfo;
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
@@ -67,13 +70,13 @@ public class HubResource {
       Channel myChannel = getChannel();
       if (myChannel == null) {
         storer.create(channel);
+        response = Response.created(uriInfo.getAbsolutePath()).build();
       }
       else {
         checkAuthToken(myChannel);
         storer.update(channel);
+        response = Response.noContent().location(uriInfo.getAbsolutePath()).build();
       }
-      response = Response.created(UriBuilder.fromResource(HubResource.class).
-          build(channelName)).build();
     }
     catch (Throwable th) {
       throw new WebApplicationException(th, Response.Status.BAD_REQUEST);
@@ -92,7 +95,7 @@ public class HubResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("info")
+  @Path(Constants.RSRC_PATH_CHANNEL_INFO)
   public Response getChannelInfo() {
     Channel channel = getChannel();
     checkAuthToken(channel);
