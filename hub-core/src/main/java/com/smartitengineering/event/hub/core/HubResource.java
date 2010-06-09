@@ -18,12 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Channel;
-import com.smartitengineering.event.hub.api.impl.APIFactory;
+import com.smartitengineering.event.hub.common.Constants;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -33,6 +34,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
@@ -49,6 +51,8 @@ public class HubResource {
   private Broadcaster broadcaster;
   @PathParam("channel")
   private String channelName;
+  @HeaderParam(Constants.AUTH_TOKEN_HEADER_NAME)
+  private String authToken;
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
@@ -60,11 +64,12 @@ public class HubResource {
       }
       HubPersistentStorer storer = HubPersistentStorerSPI.getInstance().
           getStorer();
-      Channel myChannel = storer.getChannel(channelName);
+      Channel myChannel = getChannel();
       if (myChannel == null) {
         storer.create(channel);
       }
       else {
+        checkAuthToken(myChannel);
         storer.update(channel);
       }
       response = Response.created(UriBuilder.fromResource(HubResource.class).
@@ -81,6 +86,7 @@ public class HubResource {
   @Produces
   public Broadcastable register() {
     checkChannelExistence();
+    checkAuthToken();
     return new Broadcastable(broadcaster);
   }
 
@@ -88,8 +94,8 @@ public class HubResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("info")
   public Response getChannelInfo() {
-    Channel channel = HubPersistentStorerSPI.getInstance().getStorer().
-        getChannel(channelName);
+    Channel channel = getChannel();
+    checkAuthToken(channel);
     if (channel != null) {
       return Response.ok(channel).build();
     }
@@ -102,6 +108,7 @@ public class HubResource {
   @POST
   @Consumes
   public Broadcastable broadcast(String message) {
+    checkAuthToken();
     checkChannelExistence();
     return new Broadcastable(message, broadcaster);
   }
@@ -109,19 +116,36 @@ public class HubResource {
   @DELETE
   public Response delete() {
     Channel channel = checkChannelExistence();
+    checkAuthToken(channel);
     HubPersistentStorerSPI.getInstance().getStorer().delete(channel);
     return Response.ok().build();
   }
 
   protected Channel checkChannelExistence()
       throws WebApplicationException {
-    final HubPersistentStorer storer =
-                              HubPersistentStorerSPI.getInstance().getStorer();
-    Channel channel = storer.getChannel(channelName);
+    Channel channel = getChannel();
     if (channel == null) {
       throw new WebApplicationException(Response.status(
           Response.Status.NOT_FOUND).build());
     }
     return channel;
+  }
+
+  protected Channel getChannel() {
+    final HubPersistentStorer storer =
+                              HubPersistentStorerSPI.getInstance().getStorer();
+    Channel channel = storer.getChannel(channelName);
+    return channel;
+  }
+
+  protected void checkAuthToken() {
+    checkAuthToken(getChannel());
+  }
+
+  protected void checkAuthToken(Channel myChannel) {
+    if (myChannel == null || !StringUtils.equals(authToken, myChannel.
+        getAuthToken())) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
   }
 }
