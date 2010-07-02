@@ -25,7 +25,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -35,10 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.atmosphere.annotation.Broadcast;
-import org.atmosphere.annotation.Suspend;
-import org.atmosphere.cpr.Broadcaster;
-import org.atmosphere.jersey.Broadcastable;
 
 /**
  *
@@ -47,8 +42,6 @@ import org.atmosphere.jersey.Broadcastable;
 @Path("/{" + Constants.RSRC_PATH_CHANNEL + "}")
 public class ChannelResource extends AbstractChannelResource {
 
-  @PathParam(Constants.RSRC_PATH_CHANNEL)
-  private Broadcaster broadcaster;
   @PathParam(Constants.RSRC_PATH_CHANNEL)
   private String channelName;
   @HeaderParam(Constants.AUTH_TOKEN_HEADER_NAME)
@@ -84,16 +77,6 @@ public class ChannelResource extends AbstractChannelResource {
   }
 
   @GET
-  @Suspend(outputComments = false)
-  @Path(Constants.RSRC_PATH_CHANNEL_HUB)
-  @Produces
-  public Broadcastable register() {
-    checkChannelExistence();
-    checkAuthToken();
-    return new Broadcastable(broadcaster);
-  }
-
-  @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getChannelInfo() {
     Channel channel = getChannel();
@@ -104,15 +87,6 @@ public class ChannelResource extends AbstractChannelResource {
     else {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
-  }
-
-  @Broadcast
-  @POST
-  @Consumes
-  public Broadcastable broadcast(String message) {
-    checkAuthToken();
-    checkChannelExistence();
-    return new Broadcastable(message, broadcaster);
   }
 
   @DELETE
