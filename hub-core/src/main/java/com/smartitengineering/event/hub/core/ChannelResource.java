@@ -35,7 +35,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
@@ -46,7 +45,7 @@ import org.atmosphere.jersey.Broadcastable;
  * @author imyousuf
  */
 @Path("/{" + Constants.RSRC_PATH_CHANNEL + "}")
-public class HubResource {
+public class ChannelResource extends AbstractChannelResource {
 
   @PathParam(Constants.RSRC_PATH_CHANNEL)
   private Broadcaster broadcaster;
@@ -86,6 +85,7 @@ public class HubResource {
 
   @GET
   @Suspend(outputComments = false)
+  @Path(Constants.RSRC_PATH_CHANNEL_HUB)
   @Produces
   public Broadcastable register() {
     checkChannelExistence();
@@ -95,7 +95,6 @@ public class HubResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Path(Constants.RSRC_PATH_CHANNEL_INFO)
   public Response getChannelInfo() {
     Channel channel = getChannel();
     checkAuthToken(channel);
@@ -124,31 +123,13 @@ public class HubResource {
     return Response.ok().build();
   }
 
-  protected Channel checkChannelExistence()
-      throws WebApplicationException {
-    Channel channel = getChannel();
-    if (channel == null) {
-      throw new WebApplicationException(Response.status(
-          Response.Status.NOT_FOUND).build());
-    }
-    return channel;
+  @Override
+  protected String getChannelName() {
+    return channelName;
   }
 
-  protected Channel getChannel() {
-    final HubPersistentStorer storer =
-                              HubPersistentStorerSPI.getInstance().getStorer();
-    Channel channel = storer.getChannel(channelName);
-    return channel;
-  }
-
-  protected void checkAuthToken() {
-    checkAuthToken(getChannel());
-  }
-
-  protected void checkAuthToken(Channel myChannel) {
-    if (myChannel == null || !StringUtils.equals(authToken, myChannel.
-        getAuthToken())) {
-      throw new WebApplicationException(Response.Status.FORBIDDEN);
-    }
+  @Override
+  protected String getAuthToken() {
+    return authToken;
   }
 }

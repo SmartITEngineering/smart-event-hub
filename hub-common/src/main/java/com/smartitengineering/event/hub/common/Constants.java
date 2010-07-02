@@ -23,7 +23,7 @@ package com.smartitengineering.event.hub.common;
  */
 public interface Constants {
 
-  static final String AUTH_TOKEN_HEADER_NAME = "X-CHANNEL-AUTH-TOKEN";
-  static final String RSRC_PATH_CHANNEL = "channel";
-  static final String RSRC_PATH_CHANNEL_INFO = "info";
+    static final String AUTH_TOKEN_HEADER_NAME = "X-CHANNEL-AUTH-TOKEN";
+    static final String RSRC_PATH_CHANNEL = "channel";
+    static final String RSRC_PATH_CHANNEL_HUB = "hub";
 }
