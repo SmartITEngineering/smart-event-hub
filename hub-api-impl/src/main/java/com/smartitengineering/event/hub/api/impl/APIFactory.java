@@ -23,7 +23,11 @@ import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.api.Filter;
 import com.smartitengineering.event.hub.api.Filter.SupportedMimeType;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
+import javax.ws.rs.core.UriBuilder;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -94,8 +98,7 @@ public final class APIFactory {
     public Event build() {
       if (builderEvent.getEventContent() != null) {
         return builderEvent.clone();
-      }
-      else {
+      } else {
         throw new IllegalStateException(
             "Event Content must be set before building!");
       }
@@ -149,7 +152,32 @@ public final class APIFactory {
       return this;
     }
 
+    public ChannelBuilder hubUri(URI baseUri) {
+      UriBuilder builder = UriBuilder.fromUri(baseUri);
+      builder.path(channelImpl.getName());
+      builder.path(Channel.HUB_SUB_RESOURCE_PATH);
+      channelImpl.setHubUri(builder.build());
+      return this;
+    }
+
+    public ChannelBuilder hubUri(String uriStr) {
+      if (StringUtils.isBlank(uriStr)) {
+        return this;
+      }
+      URI uri;
+      try {
+        uri = new URI(uriStr);
+      } catch (URISyntaxException ex) {
+        throw new RuntimeException(ex);
+      }
+      channelImpl.setHubUri(uri);
+      return this;
+    }
+
     public Channel build() {
+      if (channelImpl.getHubUri() == null) {
+        hubUri(UriBuilder.fromPath("/").build());
+      }
       return channelImpl.clone();
     }
   }

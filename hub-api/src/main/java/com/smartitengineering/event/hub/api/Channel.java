@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.api;
 
+import java.net.URI;
 import java.util.Date;
 
 /**
@@ -27,6 +28,8 @@ import java.util.Date;
  * @since 0.1
  */
 public interface Channel {
+
+  static final String HUB_SUB_RESOURCE_PATH = "hub";
 
   /**
    * Retrieve the name of the channel. It has to be unique and case insensitive
@@ -67,4 +70,6 @@ public interface Channel {
    * @return Filter of this channel
    */
   public Filter getFilter();
+
+  public URI getHubUri();
 }

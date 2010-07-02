@@ -59,6 +59,7 @@ public class ChannelJsonProvider
   private final ObjectMapper mapper = new ObjectMapper();
   private static final String NAME = "name";
   private static final String DESCRIPTION = "description";
+  private static final String HUB_URI = "hub-uri";
   private static final String AUTH_TOKEN = "auth-token";
   private static final String AUTO_EXPIRE = "auto-expire";
   private static final String CREATED = "created-at";
@@ -66,15 +67,13 @@ public class ChannelJsonProvider
   private static final String FILTER = "filter";
   private static final String LAST_MODIFIED = "last-modified";
   private static final String DATE_ISO8601_PATTERN =
-                              DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.
-      getPattern();
+                              DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern();
 
   public boolean isReadable(Class<?> type,
                             Type genericType,
                             Annotation[] annotations,
                             MediaType mediaType) {
-    return Channel.class.isAssignableFrom(type) &&
-           MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
+    return Channel.class.isAssignableFrom(type) && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
   }
 
   public Channel readFrom(Class<Channel> type,
@@ -86,25 +85,24 @@ public class ChannelJsonProvider
       throws IOException,
              WebApplicationException {
     Map<String, String> parsedJsonContentMap = mapper.readValue(entityStream,
-        HashMap.class);
+                                                                HashMap.class);
     final String name = parsedJsonContentMap.get(NAME);
     if (StringUtils.isBlank(name)) {
       throw new WebApplicationException(new NullPointerException(
           "Name is blank!"), Status.BAD_REQUEST);
     }
     final String description = parsedJsonContentMap.get(DESCRIPTION);
+    final String uriStr = parsedJsonContentMap.get(HUB_URI);
     final String authToken = parsedJsonContentMap.get(AUTH_TOKEN);
     final String filterTypeStr = parsedJsonContentMap.get(FILTER_TYPE);
     final SupportedMimeType mimeType;
     try {
       if (StringUtils.isNotBlank(filterTypeStr)) {
         mimeType = SupportedMimeType.valueOf(filterTypeStr.toUpperCase());
-      }
-      else {
+      } else {
         mimeType = null;
       }
-    }
-    catch (Throwable th) {
+    } catch (Throwable th) {
       throw new WebApplicationException(th, Status.BAD_REQUEST);
     }
     final String filterScript = parsedJsonContentMap.get(FILTER);
@@ -112,49 +110,44 @@ public class ChannelJsonProvider
     try {
       final String expireStr = parsedJsonContentMap.get(AUTO_EXPIRE);
       expireDate = parseDate(expireStr);
-    }
-    catch (ParseException ex) {
+    } catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
     final Date creationDate;
     try {
       final String createdAtStr = parsedJsonContentMap.get(CREATED);
       creationDate = parseDate(createdAtStr);
-    }
-    catch (ParseException ex) {
+    } catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
     final Date lastModifiedDate;
     try {
       final String lastModifiedStr = parsedJsonContentMap.get(LAST_MODIFIED);
       lastModifiedDate = parseDate(lastModifiedStr);
-    }
-    catch (ParseException ex) {
+    } catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
     final Filter filter;
     if (mimeType != null && StringUtils.isNotBlank(filterScript)) {
       filter = APIFactory.getFilter(mimeType, filterScript);
-    }
-    else {
+    } else {
       filter = null;
       if (mimeType != null || StringUtils.isNotBlank(filterScript)) {
         throw new WebApplicationException(new IllegalArgumentException(
             "Filter should have both type and script specified."),
-            Status.BAD_REQUEST);
+                                          Status.BAD_REQUEST);
       }
     }
     return APIFactory.getChannelBuilder(name).description(description).authToken(
         authToken).autoExpiryDateTime(expireDate).creationDateTime(creationDate).
-        filter(filter).lastModifiedDate(lastModifiedDate).build();
+        filter(filter).lastModifiedDate(lastModifiedDate).hubUri(uriStr).build();
   }
 
   public boolean isWriteable(Class<?> type,
                              Type genericType,
                              Annotation[] annotations,
                              MediaType mediaType) {
-    return Channel.class.isAssignableFrom(type) &&
-           MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
+    return Channel.class.isAssignableFrom(type) && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
   }
 
   public long getSize(Channel t,
@@ -164,8 +157,7 @@ public class ChannelJsonProvider
                       MediaType mediaType) {
     if (isWriteable(type, genericType, annotations, mediaType)) {
       return getJsonString(t).length();
-    }
-    else {
+    } else {
       return 0;
     }
   }
@@ -205,15 +197,17 @@ public class ChannelJsonProvider
     if (channel.getLastModifiedDate() != null) {
       jsonMap.put(LAST_MODIFIED, formatDate(channel.getLastModifiedDate()));
     }
-    if(channel.getFilter() != null) {
+    if (channel.getHubUri() != null) {
+      jsonMap.put(HUB_URI, channel.getHubUri().toString());
+    }
+    if (channel.getFilter() != null) {
       Filter filter = channel.getFilter();
       jsonMap.put(FILTER, filter.getFilterScript());
       jsonMap.put(FILTER_TYPE, filter.getMimeType().name());
     }
     try {
       return mapper.writeValueAsString(jsonMap);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       return "";
     }
   }
@@ -226,9 +220,8 @@ public class ChannelJsonProvider
       throws ParseException {
     Date date;
     if (StringUtils.isNotBlank(dateStr)) {
-      date = DateUtils.parseDate(dateStr, new String[] {DATE_ISO8601_PATTERN});
-    }
-    else {
+      date = DateUtils.parseDate(dateStr, new String[]{DATE_ISO8601_PATTERN});
+    } else {
       date = null;
     }
     return date;
