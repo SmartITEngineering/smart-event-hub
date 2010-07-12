@@ -97,25 +97,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <url>http://github.com/imyousuf/smart-event-hub</url>
   </scm>
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <inherited>true</inherited>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <inherited>true</inherited>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
@@ -167,16 +157,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <inherited>true</inherited>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <inherited>true</inherited>
-        <configuration>
-          <aggregate>false</aggregate>
-          <linksource>true</linksource>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -185,12 +169,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <inherited>true</inherited>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <inherited>true</inherited>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -198,11 +180,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </plugin>
     </plugins>
   </reporting>
-  <properties>
-    <hub.server.port>9090</hub.server.port>
-    <hub.server.stop.port>9999</hub.server.stop.port>
-    <hub.server.stop.key>stop</hub.server.stop.key>
-  </properties>
   <modules>
     <module>hub</module>
     <module>hub-core</module>

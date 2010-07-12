@@ -64,14 +64,6 @@
           <webAppConfig>
             <descriptor>${basedir}/src/test/webapp/WEB-INF/web.xml</descriptor>
           </webAppConfig>
-          <connectors>
-            <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-              <port>${hub.server.port}</port>
-              <maxIdleTime>60000</maxIdleTime>
-            </connector>
-          </connectors>
-          <stopPort>${hub.server.stop.port}</stopPort>
-          <stopKey>${hub.server.stop.key}</stopKey>
         </configuration>
         <executions>
           <execution>
