@@ -48,7 +48,7 @@ public interface HubPersistentStorer {
    * @param event Event to be saved
    * @return The same event with placeholder id and UUID set
    */
-  public Event create(Event event);
+  public Event create(Channel channel, Event event);
 
   public void delete(Event event);
 
@@ -65,10 +65,11 @@ public interface HubPersistentStorer {
   /**
    * Retrieve all events from a certain placeholder and in one direction
    * @param placeholderId The placeholder id to start selecting from
-   * @param count Signed integer with numer of event to return. Its sign acts as
+   * @param count Signed integer with number of event to return. Its sign acts as
    *        after and before when, +ve and -ve respectively
+   * @param channelId Channel name/ID to fetch the events for. It will be considered only if it is non-blank
    * @return Ordered set of events for the matching criteria
    */
-  public LinkedHashSet<Event> getEvents(String placeholderId,
+  public LinkedHashSet<Event> getEvents(String placeholderId, String channelId,
                                         int count);
 }

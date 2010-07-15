@@ -33,9 +33,18 @@ public class PersistentEvent
 
   static final String PLACE_HOLDER_ID = "id";
   static final String UUID = "uuid";
-  private String uuid, contentType;
+  static final String CHANNEL_ID = "channelId";
+  private String uuid, contentType, channelId;
   private byte[] content;
   private Date creationDateTime;
+
+  public String getChannelId() {
+    return channelId;
+  }
+
+  public void setChannelId(String channelId) {
+    this.channelId = channelId;
+  }
 
   public void setCreationDateTime(Date creationDateTime) {
     if (creationDateTime != null) {

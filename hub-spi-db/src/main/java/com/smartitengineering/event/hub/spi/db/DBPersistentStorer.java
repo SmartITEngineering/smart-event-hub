@@ -28,6 +28,8 @@ import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.util.bean.adapter.GenericAdapter;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -100,6 +102,7 @@ public class DBPersistentStorer
     return eventWriteDao;
   }
 
+  @Override
   public void create(Channel channel) {
     PersistentChannel persistentChannel = getChannelConverter().convert(channel);
     if (persistentChannel == null) {
@@ -111,6 +114,7 @@ public class DBPersistentStorer
     getChannelWriteDao().save(persistentChannel);
   }
 
+  @Override
   public void update(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
     if (persistentChannel != null) {
@@ -119,6 +123,7 @@ public class DBPersistentStorer
     }
   }
 
+  @Override
   public void delete(Channel channel) {
     PersistentChannel persistentChannel = getMergedPersistentChannel(channel);
     if (persistentChannel != null) {
@@ -126,19 +131,24 @@ public class DBPersistentStorer
     }
   }
 
+  @Override
   public Channel getChannel(String channelName) {
     PersistentChannel persistentChannel = getPersistentChannel(channelName);
     return getChannelConverter().convertInversely(persistentChannel);
   }
 
-  public Event create(Event event) {
+  @Override
+  public Event create(Channel channel, Event event) {
     PersistentEvent persistentEvent = getEventConverter().convert(event);
-    if (persistentEvent != null) {
+    if (persistentEvent != null && channel != null) {
+      persistentEvent.setChannelId(channel.getName());
       getEventWriteDao().save(persistentEvent);
+      return getEventConverter().convertInversely(persistentEvent);
     }
-    return getEventConverter().convertInversely(persistentEvent);
+    return null;
   }
 
+  @Override
   public void delete(Event event) {
     PersistentEvent persistentEvent = getMergedPersistentEvent(event);
     if (persistentEvent != null) {
@@ -146,27 +156,31 @@ public class DBPersistentStorer
     }
   }
 
+  @Override
   public Event getEvent(String placeholderId) {
     PersistentEvent persistentEvent = getPersistentEvent(placeholderId);
     return getEventConverter().convertInversely(persistentEvent);
   }
 
+  @Override
   public Event getEventByUUID(String uuid) {
     if (StringUtils.isBlank(uuid)) {
       return null;
     }
-    PersistentEvent event = getEventReadDao().getSingle(QueryParameterFactory.
-        getStringLikePropertyParam(PersistentEvent.UUID, uuid, MatchMode.EXACT));
+    PersistentEvent event = getEventReadDao().getSingle(QueryParameterFactory.getStringLikePropertyParam(
+        PersistentEvent.UUID, uuid, MatchMode.EXACT));
     return getEventConverter().convertInversely(event);
   }
 
-  public LinkedHashSet<Event> getEvents(String placeholderId,
+  @Override
+  public LinkedHashSet<Event> getEvents(String placeholderId, String channelId,
                                         int count) {
     int placeholderIdInt = NumberUtils.toInt(placeholderId);
     if (placeholderIdInt <= 0 || count == 0) {
       return new LinkedHashSet<Event>();
     }
     else {
+      List<QueryParameter> params = new ArrayList<QueryParameter>();
       final QueryParameter<Integer> propertyParam;
       if (count > 0) {
         propertyParam =
@@ -178,15 +192,18 @@ public class DBPersistentStorer
         QueryParameterFactory.getLesserThanEqualToPropertyParam(
             PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
       }
-      List<PersistentEvent> persistentEvents = getEventReadDao().getList(
-          propertyParam, QueryParameterFactory.getMaxResultsParam(
+      if (StringUtils.isNotBlank(channelId)) {
+        params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId));
+      }
+      params.addAll(Arrays.asList(propertyParam, QueryParameterFactory.getMaxResultsParam(
           Math.abs(count)), QueryParameterFactory.getOrderByParam(
-          PersistentEvent.PLACE_HOLDER_ID, Order.DESC));
+          PersistentEvent.PLACE_HOLDER_ID, Order.DESC)));
+      List<PersistentEvent> persistentEvents = getEventReadDao().getList(params);
       if (persistentEvents == null || persistentEvents.isEmpty()) {
         return new LinkedHashSet<Event>();
       }
-      return new LinkedHashSet<Event>(getEventConverter().convertInversely(persistentEvents.
-          toArray(new PersistentEvent[persistentEvents.size()])));
+      return new LinkedHashSet<Event>(getEventConverter().convertInversely(persistentEvents.toArray(new PersistentEvent[persistentEvents.
+          size()])));
     }
   }
 
@@ -198,7 +215,7 @@ public class DBPersistentStorer
                       getPersistentChannel(channel.getName());
     Map.Entry<Channel, PersistentChannel> entry;
     entry = new SimpleEntry<Channel, PersistentChannel>(channel,
-        persistentChannel);
+                                                        persistentChannel);
     getChannelConverter().merge(entry);
     return persistentChannel;
   }
@@ -206,7 +223,7 @@ public class DBPersistentStorer
   protected PersistentChannel getPersistentChannel(String channelName) {
     PersistentChannel persistentChannel = getChannelReadDao().getSingle(
         QueryParameterFactory.getStringLikePropertyParam(PersistentChannel.NAME,
-        channelName.toLowerCase(), MatchMode.EXACT));
+                                                         channelName.toLowerCase(), MatchMode.EXACT));
     return persistentChannel;
   }
 
@@ -218,7 +235,7 @@ public class DBPersistentStorer
                     getPersistentEvent(event.getPlaceholderId());
     Map.Entry<Event, PersistentEvent> entry;
     entry = new SimpleEntry<Event, PersistentEvent>(event,
-        persistentEvent);
+                                                    persistentEvent);
     getEventConverter().merge(entry);
     return persistentEvent;
   }

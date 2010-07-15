@@ -173,18 +173,25 @@ public class DBHubPersistorITCase
   public void testCreateEvent() {
     final String content = "<xml>some xml</xml>";
     final String contentType = "application/xml";
-    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
-    storer.create((Event) null);
-    event = storer.create(event);
+    Event nullEvent = storer.create((Channel) null, (Event) null);
+    assertNull(nullEvent);
+    nullEvent = storer.create(null, APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.
+        toInputStream(content))).build());
+    assertNull(nullEvent);
+    nullEvent = storer.create(dummyChannel, (Event) null);
+    assertNull(nullEvent);
+    event = storer.create(dummyChannel, event);
     assertNotNull(event);
     assertNotNull(event.getEventContent());
     assertNotNull(event.getEventContent().getContent());
     try {
       assertEquals(content,
-          IOUtils.toString(event.getEventContent().getContent()));
+                   IOUtils.toString(event.getEventContent().getContent()));
     }
     catch (IOException ex) {
       ex.printStackTrace();
@@ -200,7 +207,7 @@ public class DBHubPersistorITCase
     assertNotNull(event.getEventContent().getContent());
     try {
       assertEquals(content,
-          IOUtils.toString(event.getEventContent().getContent()));
+                   IOUtils.toString(event.getEventContent().getContent()));
     }
     catch (IOException ex) {
       ex.printStackTrace();
@@ -210,20 +217,19 @@ public class DBHubPersistorITCase
     assertEquals(contentType, event.getEventContent().getContentType());
     assertNotNull(event.getPlaceholderId());
     assertNotNull(event.getUniversallyUniqueID());
-    Event event2 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).placeholder(
+    Event event2 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).placeholder(
         event.getPlaceholderId()).build();
-    event2 = storer.create(event2);
+    event2 = storer.create(dummyChannel, event2);
     assertFalse(event.getPlaceholderId().equals(event2.getPlaceholderId()));
-    assertFalse(event.getUniversallyUniqueID().equals(event2.
-        getUniversallyUniqueID()));
+    assertFalse(event.getUniversallyUniqueID().equals(event2.getUniversallyUniqueID()));
     event2 = storer.getEvent(event2.getPlaceholderId());
     assertNotNull(event2);
-    Event event3 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).uuid(
+    Event event3 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).uuid(
         event.getUniversallyUniqueID()).build();
     try {
-      storer.create(event3);
+      storer.create(dummyChannel, event3);
       fail("Created duplicate Event!");
     }
     catch (ConstraintViolationException ex) {
@@ -233,7 +239,7 @@ public class DBHubPersistorITCase
     String uuidStr = uuid.toString();
     event3 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(
         contentType, IOUtils.toInputStream(content))).uuid(uuidStr).build();
-    event3 = storer.create(event3);
+    event3 = storer.create(dummyChannel, event3);
     assertEquals(uuidStr, event3.getUniversallyUniqueID());
     event3 = storer.getEvent(event3.getPlaceholderId());
     assertEquals(uuidStr, event3.getUniversallyUniqueID());
@@ -245,11 +251,11 @@ public class DBHubPersistorITCase
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
     UUID uuid = UUID.randomUUID();
+    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
     String uuidStr = uuid.toString();
-    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(
-        contentType, IOUtils.toInputStream(content))).uuid(uuidStr).build();
-    event = storer.create(event);
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).uuid(uuidStr).build();
+    event = storer.create(dummyChannel, event);
     String placeholderId = event.getPlaceholderId();
     assertEquals(uuidStr, event.getUniversallyUniqueID());
     event = storer.getEvent(event.getPlaceholderId());
@@ -265,35 +271,36 @@ public class DBHubPersistorITCase
   public void testGetEvents() {
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
-    assertTrue(storer.getEvents("-1", 0).size() == 0);
-    assertTrue(storer.getEvents("  ", 0).size() == 0);
-    assertTrue(storer.getEvents(null, 0).size() == 0);
-    assertTrue(storer.getEvents("1", 0).size() == 0);
+    assertTrue(storer.getEvents("-1", null, 0).size() == 0);
+    assertTrue(storer.getEvents("  ", "  ", 0).size() == 0);
+    assertTrue(storer.getEvents(null, null, 0).size() == 0);
+    assertTrue(storer.getEvents("1", null, 0).size() == 0);
     final String content = "<xml>some xml</xml>";
     final String contentType = "application/xml";
-    Event event1 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    storer.create(event1);
-    Event event2 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    storer.create(event2);
-    Event event3 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    storer.create(event3);
-    Event event4 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    event4 = storer.create(event4);
+    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
+    Event event1 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    storer.create(dummyChannel, event1);
+    Event event2 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    storer.create(dummyChannel, event2);
+    Event event3 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    storer.create(dummyChannel, event3);
+    Event event4 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    event4 = storer.create(dummyChannel, event4);
     Integer placeholderId = NumberUtils.toInt(event4.getPlaceholderId()) + 1;
     System.out.println("Selected PlaceholderID: " + placeholderId);
-    Event event5 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    storer.create(event5);
-    Event event6 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    storer.create(event6);
-    Event event7 = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
-    storer.create(event7);
+    Event event5 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    storer.create(dummyChannel, event5);
+    Event event6 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    storer.create(dummyChannel, event6);
+    Event event7 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
+    storer.create(dummyChannel, event7);
     final Comparator<Event> comparator = new Comparator<Event>() {
 
       public int compare(Event o1,
@@ -311,8 +318,8 @@ public class DBHubPersistorITCase
             }
             else {
               final int compareTo =
-                        new Integer(NumberUtils.toInt(o1.getPlaceholderId())).
-                  compareTo(NumberUtils.toInt(o2.getPlaceholderId()));
+                        new Integer(NumberUtils.toInt(o1.getPlaceholderId())).compareTo(NumberUtils.toInt(o2.
+                  getPlaceholderId()));
               return compareTo * -1;
             }
           }
@@ -320,7 +327,7 @@ public class DBHubPersistorITCase
       }
     };
     final int count = 3;
-    Collection<Event> events = storer.getEvents(placeholderId.toString(), count);
+    Collection<Event> events = storer.getEvents(placeholderId.toString(), null, count);
     assertNotNull(events);
     assertTrue(events.size() == count);
     List<Event> sortTestList = new ArrayList<Event>(events);
@@ -330,7 +337,16 @@ public class DBHubPersistorITCase
     assertTrue(origList.equals(sortTestList));
     assertEquals(placeholderId.toString(), origList.get(origList.size() - 1).
         getPlaceholderId());
-    events = storer.getEvents(placeholderId.toString(), -1 * count);
+    events = storer.getEvents(placeholderId.toString(), "\t", -1 * count);
+    assertNotNull(events);
+    assertTrue(events.size() == count);
+    sortTestList = new ArrayList<Event>(events);
+    Collections.sort(sortTestList, comparator);
+    origList = new ArrayList<Event>(events);
+    System.out.println(origList + " " + sortTestList);
+    assertTrue(origList.equals(sortTestList));
+    assertEquals(placeholderId.toString(), origList.get(0).getPlaceholderId());
+    events = storer.getEvents(placeholderId.toString(), dummyChannel.getName(), -1 * count);
     assertNotNull(events);
     assertTrue(events.size() == count);
     sortTestList = new ArrayList<Event>(events);
@@ -347,10 +363,11 @@ public class DBHubPersistorITCase
     storer.delete((Event) null);
     final String content = "<xml>some xml</xml>";
     final String contentType = "application/xml";
-    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.
-        getContent(contentType, IOUtils.toInputStream(content))).build();
+    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
+        content))).build();
     storer.delete(event);
-    event = storer.create(event);
+    event = storer.create(dummyChannel, event);
     Event toDeleteEvent = storer.getEvent(event.getPlaceholderId());
     assertNotNull(toDeleteEvent);
     storer.delete(toDeleteEvent);
