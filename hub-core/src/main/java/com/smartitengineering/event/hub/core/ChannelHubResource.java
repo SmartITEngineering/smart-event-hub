@@ -17,7 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.core;
 
+import com.smartitengineering.event.hub.api.Channel;
+import com.smartitengineering.event.hub.api.Event;
+import com.smartitengineering.event.hub.api.impl.APIFactory;
 import com.smartitengineering.event.hub.common.Constants;
+import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -25,6 +29,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.apache.commons.io.IOUtils;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
@@ -59,6 +65,10 @@ public class ChannelHubResource extends AbstractChannelResource {
   public Broadcastable broadcast(String message) {
     checkAuthToken();
     checkChannelExistence();
+    Event event = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(MediaType.APPLICATION_OCTET_STREAM, IOUtils.
+        toInputStream(message))).build();
+    final Channel channel = HubPersistentStorerSPI.getInstance().getStorer().getChannel(channelName);
+    HubPersistentStorerSPI.getInstance().getStorer().create(channel, event);
     return new Broadcastable(message, broadcaster);
   }
 

@@ -142,6 +142,7 @@ public class DBPersistentStorer
     PersistentEvent persistentEvent = getEventConverter().convert(event);
     if (persistentEvent != null && channel != null) {
       persistentEvent.setChannelId(channel.getName());
+      persistentEvent.setCreationDateTime(new Date());
       getEventWriteDao().save(persistentEvent);
       return getEventConverter().convertInversely(persistentEvent);
     }
