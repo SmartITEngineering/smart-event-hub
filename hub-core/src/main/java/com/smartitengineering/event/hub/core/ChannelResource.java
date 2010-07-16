@@ -39,7 +39,7 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author imyousuf
  */
-@Path("/{" + Constants.RSRC_PATH_CHANNEL + "}")
+@Path("/channels/{" + Constants.RSRC_PATH_CHANNEL + "}")
 public class ChannelResource extends AbstractChannelResource {
 
   @PathParam(Constants.RSRC_PATH_CHANNEL)

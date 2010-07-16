@@ -32,7 +32,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.io.IOUtils;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
@@ -43,7 +42,7 @@ import org.atmosphere.jersey.Broadcastable;
  *
  * @author imyousuf
  */
-@Path("/{" + Constants.RSRC_PATH_CHANNEL + "}/" + Constants.RSRC_PATH_CHANNEL_HUB)
+@Path("/channels/{" + Constants.RSRC_PATH_CHANNEL + "}/" + Constants.RSRC_PATH_CHANNEL_HUB)
 public class ChannelHubResource extends AbstractChannelResource {
 
   @PathParam(Constants.RSRC_PATH_CHANNEL)
