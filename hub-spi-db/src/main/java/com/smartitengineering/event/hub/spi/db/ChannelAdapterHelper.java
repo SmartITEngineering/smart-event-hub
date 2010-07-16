@@ -47,20 +47,18 @@ public class ChannelAdapterHelper
       toBean.setFilterType(fromBean.getFilter().getMimeType().name());
       toBean.setScript(fromBean.getFilter().getFilterScript());
     }
+    toBean.setId(fromBean.getPosition());
   }
 
   @Override
   protected Channel convertFromT2F(PersistentChannel toBean) {
-    final ChannelBuilder builder =
-                         APIFactory.getChannelBuilder(toBean.getName()).
-        description(toBean.getDescription()).authToken(toBean.getAuthToken()).
-        autoExpiryDateTime(toBean.getAutoExpiryDateTime()).
-        creationDateTime(toBean.getCreationDateTime()).lastModifiedDate(toBean.
-        getLastModifiedDateTime());
+    final ChannelBuilder builder = APIFactory.getChannelBuilder(toBean.getName()).description(toBean.getDescription()).
+        authToken(toBean.getAuthToken()).autoExpiryDateTime(toBean.getAutoExpiryDateTime()).creationDateTime(toBean.
+        getCreationDateTime()).lastModifiedDate(toBean.getLastModifiedDateTime()).position(toBean.getId());
     if (StringUtils.isNotBlank(toBean.getFilterType())) {
       builder.filter(
           APIFactory.getFilter(SupportedMimeType.valueOf(toBean.getFilterType()),
-          toBean.getScript()));
+                               toBean.getScript()));
     }
     return builder.build();
   }

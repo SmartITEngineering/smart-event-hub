@@ -152,6 +152,11 @@ public final class APIFactory {
       return this;
     }
 
+    public ChannelBuilder position(int position) {
+      channelImpl.setPosition(position);
+      return this;
+    }
+
     public ChannelBuilder hubUri(URI baseUri) {
       UriBuilder builder = UriBuilder.fromUri(baseUri);
       builder.path(channelImpl.getName());
