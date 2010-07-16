@@ -30,6 +30,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.io.IOUtils;
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
@@ -62,14 +65,17 @@ public class ChannelHubResource extends AbstractChannelResource {
   @Broadcast
   @POST
   @Consumes
-  public Broadcastable broadcast(String message) {
+  public Response broadcast(String message) {
     checkAuthToken();
     checkChannelExistence();
     Event event = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(MediaType.APPLICATION_OCTET_STREAM, IOUtils.
         toInputStream(message))).build();
     final Channel channel = HubPersistentStorerSPI.getInstance().getStorer().getChannel(channelName);
-    HubPersistentStorerSPI.getInstance().getStorer().create(channel, event);
-    return new Broadcastable(message, broadcaster);
+    event = HubPersistentStorerSPI.getInstance().getStorer().create(channel, event);
+    Broadcastable broadcastable = new Broadcastable(message, broadcaster);
+    ResponseBuilder builder = Response.ok(broadcastable);
+    builder.location(setBaseUri(EventResource.EVENT_URI_BUILDER.clone()).build(event.getPlaceholderId()));
+    return builder.build();
   }
 
   @Override

@@ -20,8 +20,12 @@ package com.smartitengineering.event.hub.core;
 import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import java.net.URI;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -30,19 +34,22 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractChannelResource {
 
+  @Context
+  private UriInfo uriInfo;
+
   protected Channel checkChannelExistence()
-          throws WebApplicationException {
+      throws WebApplicationException {
     Channel channel = getChannel();
     if (channel == null) {
       throw new WebApplicationException(Response.status(
-              Response.Status.NOT_FOUND).build());
+          Response.Status.NOT_FOUND).build());
     }
     return channel;
   }
 
   protected Channel getChannel() {
     final HubPersistentStorer storer =
-            HubPersistentStorerSPI.getInstance().getStorer();
+                              HubPersistentStorerSPI.getInstance().getStorer();
     Channel channel = storer.getChannel(getChannelName());
     return channel;
   }
@@ -57,6 +64,15 @@ public abstract class AbstractChannelResource {
     }
   }
 
+  protected UriBuilder setBaseUri(final UriBuilder builder) throws IllegalArgumentException {
+    final URI baseUri = uriInfo.getBaseUri();
+    builder.host(baseUri.getHost());
+    builder.port(baseUri.getPort());
+    builder.scheme(baseUri.getScheme());
+    return builder;
+  }
+
   protected abstract String getChannelName();
+
   protected abstract String getAuthToken();
 }

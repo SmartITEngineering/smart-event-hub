@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
+import com.smartitengineering.event.hub.core.EventResource;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -35,6 +37,8 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("/events/{eventPlaceholderId}")
 public class EventResource {
+
+  static final UriBuilder EVENT_URI_BUILDER = UriBuilder.fromResource(EventResource.class);
 
   @Context
   private UriInfo uriInfo;
