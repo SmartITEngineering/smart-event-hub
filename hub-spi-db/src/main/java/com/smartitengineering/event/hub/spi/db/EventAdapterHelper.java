@@ -48,6 +48,6 @@ public class EventAdapterHelper
   protected Event convertFromT2F(PersistentEvent toBean) {
     return APIFactory.getEventBuilder().eventContent(APIFactory.getContent(toBean.
         getContentType(), toBean.getContentStream())).placeholder(toBean.
-        getPlaceholderId()).uuid(toBean.getUuid()).build();
+        getPlaceholderId()).uuid(toBean.getUuid()).creationDate(toBean.getCreationDateTime()).build();
   }
 }

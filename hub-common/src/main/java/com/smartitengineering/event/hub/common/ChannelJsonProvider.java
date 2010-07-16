@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -180,7 +181,7 @@ public class ChannelJsonProvider
     if (channel == null) {
       return "";
     }
-    HashMap<String, String> jsonMap = new HashMap<String, String>();
+    Map<String, String> jsonMap = new LinkedHashMap<String, String>();
     jsonMap.put(NAME, channel.getName());
     if (StringUtils.isNotBlank(channel.getAuthToken())) {
       jsonMap.put(AUTH_TOKEN, channel.getAuthToken());

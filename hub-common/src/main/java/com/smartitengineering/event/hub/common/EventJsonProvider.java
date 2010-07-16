@@ -24,7 +24,9 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -50,6 +52,7 @@ public class EventJsonProvider implements MessageBodyWriter<Event> {
   private static final String CONTENT_TYPE = "content-type";
   private static final String CONTENT_AS_STRING = "content-as-string";
   private static final String CREATION_DATE = "created-at";
+  private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
 
   @Override
   public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -79,7 +82,7 @@ public class EventJsonProvider implements MessageBodyWriter<Event> {
     if (event == null) {
       return "";
     }
-    HashMap<String, String> jsonMap = new HashMap<String, String>();
+    Map<String, String> jsonMap = new LinkedHashMap<String, String>();
     if (StringUtils.isNotBlank(event.getPlaceholderId())) {
       jsonMap.put(PLACEHOLDER_ID, event.getPlaceholderId());
     }
@@ -91,15 +94,29 @@ public class EventJsonProvider implements MessageBodyWriter<Event> {
     }
     InputStream contentStream = event.getEventContent().getContent();
     if (contentStream != null) {
-      try {
-        jsonMap.put(CONTENT_AS_STRING, IOUtils.toString(contentStream));
+      String contentAsString = "";
+      if (contentCache.containsKey(event)) {
+        contentAsString = contentCache.get(event);
       }
-      catch (IOException ex) {
+      else {
+        try {
+          if (contentStream.markSupported()) {
+            contentStream.mark(Integer.MAX_VALUE);
+          }
+          contentAsString = IOUtils.toString(contentStream);
+          contentCache.put(event, contentAsString);
+          if (contentStream.markSupported()) {
+            contentStream.reset();
+          }
+        }
+        catch (IOException ex) {
+        }
       }
+      jsonMap.put(CONTENT_AS_STRING, contentAsString);
     }
     Date creationDate = event.getCreationDate();
     if (creationDate != null) {
-      jsonMap.put(CREATION_DATE, DateFormatUtils.ISO_DATETIME_FORMAT.format(creationDate));
+      jsonMap.put(CREATION_DATE, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(creationDate));
     }
     try {
       return mapper.writeValueAsString(jsonMap);
