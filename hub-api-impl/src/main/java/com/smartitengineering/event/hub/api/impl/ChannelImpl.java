@@ -36,6 +36,7 @@ class ChannelImpl
   private Date creationDateTime, autoExpiryDateTime, lastModifiedDate;
   private Filter filter;
   private URI hubUri;
+  private int position;
 
   public ChannelImpl(String name) {
     setName(name);
@@ -54,6 +55,11 @@ class ChannelImpl
           getFilterScript()));
     }
     setHubUri(channel.getHubUri());
+    setPosition(channel.getPosition());
+  }
+
+  public void setPosition(int position) {
+    this.position = position;
   }
 
   public void setName(String name) {
@@ -106,22 +112,27 @@ class ChannelImpl
     this.hubUri = hubUri;
   }
 
+  @Override
   public URI getHubUri() {
     return hubUri;
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public String getDescription() {
     return description;
   }
 
+  @Override
   public String getAuthToken() {
     return authToken;
   }
 
+  @Override
   public Date getCreationDateTime() {
     if (creationDateTime == null) {
       return null;
@@ -129,6 +140,7 @@ class ChannelImpl
     return new Date(creationDateTime.getTime());
   }
 
+  @Override
   public Date getAutoExpiryDateTime() {
     if (autoExpiryDateTime == null) {
       return null;
@@ -136,15 +148,22 @@ class ChannelImpl
     return new Date(autoExpiryDateTime.getTime());
   }
 
+  @Override
   public Filter getFilter() {
     return filter;
   }
 
+  @Override
   public Date getLastModifiedDate() {
     if (lastModifiedDate == null) {
       return null;
     }
     return new Date(lastModifiedDate.getTime());
+  }
+
+  @Override
+  public int getPosition() {
+    return position;
   }
 
   @Override

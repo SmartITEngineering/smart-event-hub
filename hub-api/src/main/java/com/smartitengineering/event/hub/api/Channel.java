@@ -31,6 +31,8 @@ public interface Channel {
 
   static final String HUB_SUB_RESOURCE_PATH = "hub";
 
+  public int getPosition();
+
   /**
    * Retrieve the name of the channel. It has to be unique and case insensitive
    * in nature.

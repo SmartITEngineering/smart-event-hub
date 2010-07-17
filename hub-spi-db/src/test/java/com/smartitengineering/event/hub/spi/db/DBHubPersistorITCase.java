@@ -131,7 +131,8 @@ public class DBHubPersistorITCase
     assertEquals(script, channel.getFilter().getFilterScript());
     mime = SupportedMimeType.RUBY;
     filter = APIFactory.getFilter(mime, script);
-    channel = APIFactory.getChannelBuilder(name).filter(filter).description(
+    channel = storer.getChannel(name);
+    channel = APIFactory.getChannelBuilder(channel).filter(filter).description(
         desc).authToken(authToken).creationDateTime(
         channel.getCreationDateTime()).autoExpiryDateTime(expiry).build();
     storer.update(channel);
@@ -149,7 +150,7 @@ public class DBHubPersistorITCase
     assertEquals(mime, channel.getFilter().getMimeType());
     assertEquals(script, channel.getFilter().getFilterScript());
     storer.update(null);
-    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
+    Channel dummyChannel = storer.getChannel("someName");
     storer.update(dummyChannel);
   }
 
@@ -166,8 +167,32 @@ public class DBHubPersistorITCase
     channel = storer.getChannel(name);
     assertNull(channel);
     storer.delete((Channel) null);
-    Channel dummyChannel = APIFactory.getChannelBuilder("someName").build();
+    Channel dummyChannel = storer.getChannel("someName");
     storer.delete(dummyChannel);
+  }
+
+  public void testGetChannels() {
+    final HubPersistentStorer storer = HubPersistentStorerSPI.getInstance().getStorer();
+    assertTrue(storer.getChannels(1, 0) == Collections.EMPTY_LIST);
+    assertTrue(storer.getChannels(-1, 0) == Collections.EMPTY_LIST);
+    Channel newChannel = APIFactory.getChannelBuilder("channel1").build();
+    storer.create(newChannel);
+    newChannel = APIFactory.getChannelBuilder("channel2").build();
+    storer.create(newChannel);
+    newChannel = APIFactory.getChannelBuilder("channel3").build();
+    storer.create(newChannel);
+    newChannel = APIFactory.getChannelBuilder("channel4").build();
+    storer.create(newChannel);
+    newChannel = APIFactory.getChannelBuilder("channel5").build();
+    storer.create(newChannel);
+    Collection<Channel> channels = storer.getChannels(6, 2);
+    for (Channel channel : channels) {
+      assertTrue("Position is: " + channel.getPosition(), channel.getPosition() > 6);
+    }
+    channels = storer.getChannels(6, -2);
+    for (Channel channel : channels) {
+      assertTrue("Position is: " + channel.getPosition(), channel.getPosition() < 6);
+    }
   }
 
   public void testCreateEvent() {

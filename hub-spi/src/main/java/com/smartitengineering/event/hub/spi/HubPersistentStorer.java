@@ -20,6 +20,7 @@ package com.smartitengineering.event.hub.spi;
 import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Content;
 import com.smartitengineering.event.hub.api.Event;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
@@ -40,6 +41,14 @@ public interface HubPersistentStorer {
   public void delete(Channel channel);
 
   public Channel getChannel(String channelName);
+
+  /**
+   * Retrieve all channels in paginated manner.
+   * @param startIndex Index to start retrieving channels
+   * @param count Maximum number of channels to retrieve. Its sign acts as after or before when +ve and -ve respectively
+   * @return Collection of channels as fits the parameters. Should never return null.
+   */
+  public Collection<Channel> getChannels(final int startIndex, final int count);
 
   /**
    * An event can be created only using its {@link Content content}. After its

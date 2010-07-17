@@ -30,6 +30,8 @@ import com.smartitengineering.util.bean.adapter.GenericAdapter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -206,6 +208,23 @@ public class DBPersistentStorer
       return new LinkedHashSet<Event>(getEventConverter().convertInversely(persistentEvents.toArray(new PersistentEvent[persistentEvents.
           size()])));
     }
+  }
+
+  @Override
+  public Collection<Channel> getChannels(int startIndex, int count) {
+    if (startIndex < 0 || count == 0) {
+      return Collections.emptyList();
+    }
+    final QueryParameter<Integer> idParam;
+    if (count > 0) {
+      idParam = QueryParameterFactory.getGreaterThanPropertyParam("id", startIndex);
+    }
+    else {
+      idParam = QueryParameterFactory.getLesserThanPropertyParam("id", startIndex);
+    }
+    List<PersistentChannel> channels = getChannelReadDao().getList(idParam, QueryParameterFactory.getMaxResultsParam(
+        Math.abs(count)));
+    return getChannelConverter().convertInversely(channels.toArray(new PersistentChannel[channels.size()]));
   }
 
   protected PersistentChannel getMergedPersistentChannel(Channel channel) {
