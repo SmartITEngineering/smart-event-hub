@@ -30,14 +30,14 @@ public class RootResource extends AbstractEventResource {
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
     ResponseBuilder responseBuilder = Response.ok();
-    Feed atomFeed = getFeed("ROA Demo", INIT_DATE);
-    Link booksLink = Abdera.getNewFactory().newLink();
-    booksLink.setHref(UriBuilder.fromResource(ChannelEventsResource.class).build().toString());
-    booksLink.setRel("Events");
-    atomFeed.addLink(booksLink);
+    Feed atomFeed = getFeed("Event Hub", INIT_DATE);
+    Link eventsLink = Abdera.getNewFactory().newLink();
+    eventsLink.setHref(UriBuilder.fromResource(ChannelEventsResource.class).build().toString());
+    eventsLink.setRel("Events");
+    atomFeed.addLink(eventsLink);
     Link authorsLink = Abdera.getNewFactory().newLink();
     authorsLink.setHref(UriBuilder.fromResource(ChannelHubResource.class).build().toString());
-    authorsLink.setRel("authors");
+    authorsLink.setRel("info@smartitengineering.com");
     atomFeed.addLink(authorsLink);
     responseBuilder.entity(atomFeed);
     return responseBuilder.build();

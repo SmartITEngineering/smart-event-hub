@@ -41,7 +41,7 @@ import org.apache.abdera.model.Person;
 public abstract class AbstractEventResource {
 
   @Context
-  private UriInfo uriInfo;
+  public UriInfo uriInfo;
   protected final Factory abderaFactory=Abdera.getNewFactory();
 
   protected Event checkEventExistence()
