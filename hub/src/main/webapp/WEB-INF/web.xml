@@ -20,15 +20,11 @@
       <param-name>com.sun.jersey.config.property.packages</param-name>
       <param-value>com.smartitengineering.event.hub.core;com.smartitengineering.event.hub.common</param-value>
     </init-param>
-    <init-param>
-      <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
-      <param-value>org.atmosphere.core.AtmosphereFilter</param-value>
-    </init-param>
     <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>AtmosphereServlet</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>

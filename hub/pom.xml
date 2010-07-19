@@ -81,6 +81,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <artifactId>jsp-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>

@@ -58,15 +58,15 @@ public class ChannelJsonProvider
                MessageBodyWriter<Channel> {
 
   private final ObjectMapper mapper = new ObjectMapper();
-  private static final String NAME = "name";
-  private static final String DESCRIPTION = "description";
-  private static final String HUB_URI = "hub-uri";
-  private static final String AUTH_TOKEN = "auth-token";
-  private static final String AUTO_EXPIRE = "auto-expire";
-  private static final String CREATED = "created-at";
-  private static final String FILTER_TYPE = "filter-type";
-  private static final String FILTER = "filter";
-  private static final String LAST_MODIFIED = "last-modified";
+  public static final String NAME = "name";
+  public static final String DESCRIPTION = "description";
+  private static final String HUB_URI = "hubUri";
+  public static final String AUTH_TOKEN = "authToken";
+  public static final String AUTO_EXPIRE = "autoExpire";
+  private static final String CREATED = "createdAt";
+  public static final String FILTER_TYPE = "filterType";
+  public static final String FILTER = "filter";
+  private static final String LAST_MODIFIED = "lastModified";
   private static final String DATE_ISO8601_PATTERN =
                               DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern();
 
