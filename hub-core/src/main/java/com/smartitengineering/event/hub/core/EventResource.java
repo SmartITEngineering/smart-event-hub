@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author imyousuf
  */
-@Path("/events/{eventPlaceholderId}")
+@Path("/event/{eventPlaceholderId}")
 public class EventResource {
 
   static final UriBuilder EVENT_URI_BUILDER = UriBuilder.fromResource(EventResource.class);

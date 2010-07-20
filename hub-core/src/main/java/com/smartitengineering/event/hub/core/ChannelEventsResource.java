@@ -8,10 +8,15 @@ package com.smartitengineering.event.hub.core;
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import java.awt.print.Book;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -22,11 +27,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import org.apache.abdera.model.*;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -35,56 +39,57 @@ import org.apache.abdera.model.Link;
 @Path ("/events")
 public class ChannelEventsResource  extends AbstractEventResource{
     static final UriBuilder EVENTS_URI_BUILDER;
-  static final UriBuilder EVENTS_AFTER_BUILDER;
-  static final UriBuilder EVENTS_BEFORE_BUILDER;
-  static {
-    EVENTS_URI_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
-    EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
-    try {
-      EVENTS_BEFORE_BUILDER.path(ChannelEventsResource.class.getMethod("getBefore", String.class));
+    static final UriBuilder EVENTS_AFTER_BUILDER;
+    static final UriBuilder EVENTS_BEFORE_BUILDER;
+    private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
+    static {
+        EVENTS_URI_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
+        EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
+        try {
+            EVENTS_BEFORE_BUILDER.path(ChannelEventsResource.class.getMethod("getBefore", String.class));
+        }
+        catch (Exception ex) {
+            throw new InstantiationError();
+        }
+        EVENTS_AFTER_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
+        try {
+            EVENTS_AFTER_BUILDER.path(ChannelEventsResource.class.getMethod("getAfter", String.class));
+        }
+        catch (Exception ex) {
+            throw new InstantiationError();
+        }
     }
-    catch (Exception ex) {
-      throw new InstantiationError();
-    }
-    EVENTS_AFTER_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
-    try {
-      EVENTS_AFTER_BUILDER.path(ChannelEventsResource.class.getMethod("getAfter", String.class));
-    }
-    catch (Exception ex) {
-      throw new InstantiationError();
-    }
-  }
-   @QueryParam("id")
+    
+    
+    
   private String placeholderId;
-  @QueryParam("universally_unique_id")
-  private String universallyUniqueID;
   @QueryParam("count")
+  @DefaultValue("10")
   private Integer count;
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  @Path("/before/{event}")
-  public Response getBefore(@PathParam("event") String beforeEvent) {
+  @Path("/before/{eventPlaceholderId}")
+  public Response getBefore(@PathParam("eventPlaceholderId") String beforeEvent) {
     return get(beforeEvent, true);
   }
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  @Path("/after/{event}")
-  public Response getAfter(@PathParam("event") String afterEvent) {
+  @Path("/after/{eventPlaceholderId}")
+  public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
     return get(afterEvent, false);
   }
-
+  
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
-    return get(null, true);
+    return get("1", true);
   }
 
 
 
-
-  public Response get(String eventNo, boolean isBefore) {
+  public Response get(String placeholderId, boolean isBefore) {
     if (count == null) {
       count = 10;
     }
@@ -97,7 +102,7 @@ public class ChannelEventsResource  extends AbstractEventResource{
 
     atomFeed.addLink(eventsLink);
 
-    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, eventNo, count);
+    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null, count);
 
     if(events !=null && !events.isEmpty())
     {
@@ -130,9 +135,34 @@ public class ChannelEventsResource  extends AbstractEventResource{
         {
             Entry eventEntry = abderaFactory.newEntry();
 
-            eventEntry.setId(event.getUniversallyUniqueID());
-            eventEntry.setTitle(event.getUniversallyUniqueID().toString());
-            eventEntry.setContent(event.getEventContent().toString());
+            eventEntry.setId(event.getPlaceholderId());
+            eventEntry.setTitle(event.getPlaceholderId().toString());
+
+            InputStream contentStream = event.getEventContent().getContent();
+            String contentAsString = "";
+            
+            if (contentStream != null) {
+                if (contentCache.containsKey(event)) {
+                    contentAsString = contentCache.get(event);
+                }
+                else {
+                    try {
+                        if (contentStream.markSupported()) {
+                            contentStream.mark(Integer.MAX_VALUE);
+                        }
+                        contentAsString = IOUtils.toString(contentStream);
+                        contentCache.put(event, contentAsString);
+                        if (contentStream.markSupported()) {
+                            contentStream.reset();
+                        }
+                    }
+                    catch (IOException ex) {
+                    }
+                }
+            }
+
+
+            eventEntry.setContent(contentAsString);
             eventEntry.setUpdated(event.getCreationDate());
 
             Link eventLink=abderaFactory.newLink();
