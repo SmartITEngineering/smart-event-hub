@@ -15,7 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
@@ -48,12 +47,11 @@ import org.apache.commons.io.IOUtils;
  *
  * @author kaisar
  */
-@Path ("/{channelId}/events")
-public class ChannelEventsResource  extends AbstractEventResource{
+@Path ("/events")
+public class AllEventsResource  extends AbstractEventResource{
     static final UriBuilder EVENTS_URI_BUILDER;
     static final UriBuilder EVENTS_AFTER_BUILDER;
     static final UriBuilder EVENTS_BEFORE_BUILDER;
-    private String cahnnelId="";
     private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
     static {
         EVENTS_URI_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
@@ -72,9 +70,9 @@ public class ChannelEventsResource  extends AbstractEventResource{
             throw new InstantiationError();
         }
     }
-
-
-
+    
+    
+    
   private String placeholderId;
   @QueryParam("count")
   @DefaultValue("10")
@@ -93,11 +91,10 @@ public class ChannelEventsResource  extends AbstractEventResource{
   public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
     return get(afterEvent, false);
   }
-
+  
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  public Response get(@PathParam("channelId") String inputChannelId) {
-      this.cahnnelId=inputChannelId;
+  public Response get() {
     return get("1", true);
   }
 
@@ -111,12 +108,12 @@ public class ChannelEventsResource  extends AbstractEventResource{
     Feed atomFeed = getFeed("Events", new Date());
 
     Link eventsLink = abderaFactory.newLink();
-    eventsLink.setHref(UriBuilder.fromResource(EventResource.class).build().toString());
+    eventsLink.setHref(UriBuilder.fromResource(RootResource.class).build().toString());
     eventsLink.setRel("root");
 
     atomFeed.addLink(eventsLink);
 
-    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, cahnnelId, count);
+    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null, count);
 
     if(events !=null && !events.isEmpty())
     {
@@ -154,7 +151,7 @@ public class ChannelEventsResource  extends AbstractEventResource{
 
             InputStream contentStream = event.getEventContent().getContent();
             String contentAsString = "";
-
+            
             if (contentStream != null) {
                 if (contentCache.containsKey(event)) {
                     contentAsString = contentCache.get(event);
