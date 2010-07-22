@@ -20,6 +20,7 @@ package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import com.sun.jersey.api.view.Viewable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ChannelEventsResource  extends AbstractEventResource{
     static final UriBuilder EVENTS_URI_BUILDER;
     static final UriBuilder EVENTS_AFTER_BUILDER;
     static final UriBuilder EVENTS_BEFORE_BUILDER;
-    private String cahnnelId="";
+    private String channelId="";
     private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
     static {
         EVENTS_URI_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
@@ -88,20 +89,55 @@ public class ChannelEventsResource  extends AbstractEventResource{
   }
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/before/{eventPlaceholderId}")
+  public Response getBeforeInHTML(@PathParam("eventPlaceholderId") String beforeEvent) {
+    return getInHTML(beforeEvent, true);
+  }
+
+  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   @Path("/after/{eventPlaceholderId}")
   public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
     return get(afterEvent, false);
   }
+  
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/after/{eventPlaceholderId}")
+  public Response getAfterInHTML(@PathParam("eventPlaceholderId") String afterEvent){
+      return getInHTML(afterEvent,false);
+  }
+
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get(@PathParam("channelId") String inputChannelId) {
-      this.cahnnelId=inputChannelId;
+      this.channelId=inputChannelId;
     return get("1", true);
   }
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  public Response getHtml(@PathParam("channelId") String inputChannelId){
+      this.channelId=inputChannelId;
+      return getInHTML("1",true);
+  }
+  /*
+   *
+   * add get events in HTML format
+   *
+   */
 
-
+  public Response getInHTML(String placeholderId, boolean isBefore){
+      if(count==null){
+          count=10;
+      }
+      ResponseBuilder responseBuilder=Response.ok();
+      Collection<Event> events=HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId, count);
+      Viewable viewable=new Viewable("events", events, ChannelEventsResource.class);
+      responseBuilder.entity(viewable);
+      return responseBuilder.build();
+  }
 
   public Response get(String placeholderId, boolean isBefore) {
     if (count == null) {
@@ -116,7 +152,7 @@ public class ChannelEventsResource  extends AbstractEventResource{
 
     atomFeed.addLink(eventsLink);
 
-    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, cahnnelId, count);
+    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId, count);
 
     if(events !=null && !events.isEmpty())
     {

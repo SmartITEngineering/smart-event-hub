@@ -88,8 +88,9 @@ public class ChannelsResource {
         builder = Response.ok(viewable);
       }
     }
-    else {
-      builder = Response.status(Response.Status.BAD_REQUEST);
+    else
+    {
+        builder = Response.status(Response.Status.BAD_REQUEST);
     }
     return builder.build();
   }

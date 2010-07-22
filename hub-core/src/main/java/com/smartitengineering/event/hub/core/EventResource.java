@@ -20,6 +20,7 @@ package com.smartitengineering.event.hub.core;
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.core.EventResource;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import com.sun.jersey.api.view.Viewable;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
  *
@@ -57,6 +59,33 @@ public class EventResource {
     else {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
+  }
+
+
+  /*
+   * Get a certain event in HTML format
+   *
+   *
+   *
+   *
+   */
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  public Response getHTML()
+  {
+      final ResponseBuilder builder=Response.ok();
+      Viewable viewable;
+      if(event !=null)
+      {
+          viewable = new Viewable("event", event, EventResource.class);
+      }
+      else
+      {
+          viewable=new Viewable("event", "Not Found");
+      }
+      builder.entity(viewable);
+      return builder.build();
+
   }
 
   @DELETE
