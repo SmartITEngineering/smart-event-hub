@@ -51,11 +51,10 @@ public class ChannelResource extends AbstractChannelResource {
   @Context
   private UriInfo uriInfo;
 
-  @PUT
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response put(Channel channel) {
-    Response response;
-    try {
+  private Response setData(Channel channel)
+  {
+      Response response;
+          try {
       if (!channelName.equals(channel.getName())) {
         throw new IllegalArgumentException("Names do not match!");
       }
@@ -75,8 +74,17 @@ public class ChannelResource extends AbstractChannelResource {
     catch (Throwable th) {
       throw new WebApplicationException(th, Response.Status.BAD_REQUEST);
     }
+          return response;
+  }
+
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response put(Channel channel) {
+    Response response;
+    response=setData(channel);
     return response;
   }
+
   private Channel getAuthChannel()
   {
       Channel channel=getChannel();

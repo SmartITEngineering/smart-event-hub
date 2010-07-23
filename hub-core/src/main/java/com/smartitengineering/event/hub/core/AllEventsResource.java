@@ -19,6 +19,7 @@ package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import com.sun.jersey.api.view.Viewable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -96,6 +97,19 @@ public class AllEventsResource  extends AbstractEventResource{
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
     return get("1", true);
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  public Response getHTML()
+  {
+      if(count==null)
+          count=10;
+      ResponseBuilder responseBuilder=Response.ok();
+      Collection<Event> events =HubPersistentStorerSPI.getInstance().getStorer().getEvents("1", null, count);
+      Viewable viewable=new Viewable("allevents", events, AllEventsResource.class);
+      responseBuilder.entity(viewable);
+      return responseBuilder.build();
   }
 
 
