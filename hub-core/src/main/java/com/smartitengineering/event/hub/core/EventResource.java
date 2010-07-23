@@ -73,19 +73,18 @@ public class EventResource {
   @Produces(MediaType.TEXT_HTML)
   public Response getHTML()
   {
-      final ResponseBuilder builder=Response.ok();
-      Viewable viewable;
-      if(event !=null)
-      {
-          viewable = new Viewable("event", event, EventResource.class);
-      }
-      else
-      {
-          viewable=new Viewable("event", "Not Found");
-      }
-      builder.entity(viewable);
-      return builder.build();
-
+    final ResponseBuilder builder=Response.ok();
+    Viewable viewable;
+    if(event !=null)
+    {
+      viewable = new Viewable("event", event, EventResource.class);
+    }
+    else
+    {
+      viewable=new Viewable("event", "Not Found");
+    }
+    builder.entity(viewable);
+    return builder.build();
   }
 
   @DELETE
