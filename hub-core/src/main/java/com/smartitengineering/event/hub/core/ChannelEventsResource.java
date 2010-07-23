@@ -49,7 +49,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author kaisar
  */
-@Path ("/{channelId}/events")
+@Path ("/channels/{channelId}/events")
 public class ChannelEventsResource  extends AbstractEventResource{
     static final UriBuilder EVENTS_URI_BUILDER;
     static final UriBuilder EVENTS_AFTER_BUILDER;
