@@ -26,11 +26,10 @@
         <th>Description</th>
         <th>Auth Token</th>
       </tr>
-      <h3> <a onclick=change() href="#">Create New Channel</a></h3>
       <c:forEach var="channel" items="${it}">
         <tr>
           <td>
-            <c:out value="${channel.name}" />
+              <a href="<c:out value="${channel.name}" />/hub"><c:out value="${channel.name}" /></a>
           </td>
           <td>
             <c:out value="${channel.description}" />
@@ -46,14 +45,13 @@
     
     <h3>
         <div class="hide" id="div2">
-            <a onclick=change() href="#">View All Channels</a>
             <form action="/api/channels" method="post" id="create-channel">
                 <div>Name</div><input name="name" type="text" /><br />
                 <div>Description</div><input name="description" type="text" /><br />
                 <div>Auth Token</div><input name="authToken" type="text" /><br />
                 <input name="submit" type="submit" />
             </form>
-            <button onclick=change()>View All Channels</button>
+            <button onclick=change()>Back</button>
         </div>
       
     </h3>
