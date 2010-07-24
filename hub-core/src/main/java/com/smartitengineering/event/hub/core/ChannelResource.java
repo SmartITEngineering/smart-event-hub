@@ -51,10 +51,9 @@ public class ChannelResource extends AbstractChannelResource {
   @Context
   private UriInfo uriInfo;
 
-  private Response setData(Channel channel)
-  {
-      Response response;
-          try {
+  private Response setData(Channel channel) {
+    Response response;
+    try {
       if (!channelName.equals(channel.getName())) {
         throw new IllegalArgumentException("Names do not match!");
       }
@@ -74,28 +73,27 @@ public class ChannelResource extends AbstractChannelResource {
     catch (Throwable th) {
       throw new WebApplicationException(th, Response.Status.BAD_REQUEST);
     }
-          return response;
+    return response;
   }
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   public Response put(Channel channel) {
     Response response;
-    response=setData(channel);
+    response = setData(channel);
     return response;
   }
 
-  private Channel getAuthChannel()
-  {
-      Channel channel=getChannel();
-      checkAuthToken(channel);
-      return channel;
+  private Channel getAuthChannel() {
+    Channel channel = getChannel();
+    checkAuthToken(channel);
+    return channel;
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getChannelInfo() {
-     Channel channel=getAuthChannel();
+    Channel channel = getAuthChannel();
     if (channel != null) {
       return Response.ok(channel).build();
     }
@@ -111,21 +109,19 @@ public class ChannelResource extends AbstractChannelResource {
    */
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getChannelInfoInHTML(){
-      Viewable viewable;
-      Channel channel =getAuthChannel();
-      ResponseBuilder builder=Response.ok();
-      if(channel!=null)
-      {
-          viewable = new Viewable("channelName", channel, ChannelResource.class);
-          builder.entity(viewable);
-          return builder.build();
-      }
-      else
-      {
-          viewable = new Viewable("channelName", "Not Found");
-          return Response.status(Response.Status.NOT_FOUND).build();
-      }
+  public Response getChannelInfoInHTML() {
+    Viewable viewable;
+    Channel channel = getAuthChannel();
+    ResponseBuilder builder = Response.ok();
+    if (channel != null) {
+      viewable = new Viewable("channelName", channel, ChannelResource.class);
+      builder.entity(viewable);
+      return builder.build();
+    }
+    else {
+      viewable = new Viewable("channelName", "Not Found");
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
 
 
   }

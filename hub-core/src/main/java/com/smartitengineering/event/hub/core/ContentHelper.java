@@ -15,7 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Content;
@@ -31,35 +30,28 @@ import org.apache.commons.io.IOUtils;
  */
 public class ContentHelper {
 
-  private Content content;
-  private InputStream contentStream;
-  private String contentAsString;
-  private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
+  public Content content;
+  public InputStream contentStream;
+  public String contentAsString = "is not null";
+  //private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
 
   public void setContent(Content content) {
     this.content = content;
   }
-  
-  private void convert()
-  {
-    contentStream=(InputStream)content;
-    if(contentStream!=null)
-    {
-      try
-      {
-        contentAsString=IOUtils.toString(contentStream);
-      }
-      catch (Exception ex)
-      {
 
+  private void convert() {
+    //contentStream=(InputStream)content;
+    if (!content.equals(null)) {
+      try {
+        contentAsString = IOUtils.toString((InputStream) content);
+      }
+      catch (Exception ex) {
       }
     }
   }
 
   public String getContentAsString() {
     convert();
-    return contentAsString;
+    return this.contentAsString;
   }
-
-
 }

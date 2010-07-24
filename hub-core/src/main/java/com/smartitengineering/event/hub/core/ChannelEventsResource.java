@@ -15,7 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
@@ -49,33 +48,32 @@ import org.apache.commons.io.IOUtils;
  *
  * @author kaisar
  */
-@Path ("/channels/{channelId}/events")
-public class ChannelEventsResource  extends AbstractEventResource{
-    static final UriBuilder EVENTS_URI_BUILDER;
-    static final UriBuilder EVENTS_AFTER_BUILDER;
-    static final UriBuilder EVENTS_BEFORE_BUILDER;
-    private String channelId="";
-    private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
-    static {
-        EVENTS_URI_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
-        EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
-        try {
-            EVENTS_BEFORE_BUILDER.path(AllEventsResource.class.getMethod("getBefore", String.class));
-        }
-        catch (Exception ex) {
-            throw new InstantiationError();
-        }
-        EVENTS_AFTER_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
-        try {
-            EVENTS_AFTER_BUILDER.path(AllEventsResource.class.getMethod("getAfter", String.class));
-        }
-        catch (Exception ex) {
-            throw new InstantiationError();
-        }
+@Path("/channels/{channelId}/events")
+public class ChannelEventsResource extends AbstractEventResource {
+
+  static final UriBuilder EVENTS_URI_BUILDER;
+  static final UriBuilder EVENTS_AFTER_BUILDER;
+  static final UriBuilder EVENTS_BEFORE_BUILDER;
+  private String channelId = "";
+  private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
+
+  static {
+    EVENTS_URI_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
+    EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
+    try {
+      EVENTS_BEFORE_BUILDER.path(AllEventsResource.class.getMethod("getBefore", String.class));
     }
-
-
-
+    catch (Exception ex) {
+      throw new InstantiationError();
+    }
+    EVENTS_AFTER_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
+    try {
+      EVENTS_AFTER_BUILDER.path(AllEventsResource.class.getMethod("getAfter", String.class));
+    }
+    catch (Exception ex) {
+      throw new InstantiationError();
+    }
+  }
   private String placeholderId;
   @QueryParam("count")
   @DefaultValue("10")
@@ -101,26 +99,26 @@ public class ChannelEventsResource  extends AbstractEventResource{
   public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
     return get(afterEvent, false);
   }
-  
+
   @GET
   @Produces(MediaType.TEXT_HTML)
   @Path("/after/{eventPlaceholderId}")
-  public Response getAfterInHTML(@PathParam("eventPlaceholderId") String afterEvent){
-      return getInHTML(afterEvent,false);
+  public Response getAfterInHTML(@PathParam("eventPlaceholderId") String afterEvent) {
+    return getInHTML(afterEvent, false);
   }
-
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get(@PathParam("channelId") String inputChannelId) {
-      this.channelId=inputChannelId;
+    this.channelId = inputChannelId;
     return get("1", true);
   }
+
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getHtml(@PathParam("channelId") String inputChannelId){
-      this.channelId=inputChannelId;
-      return getInHTML("1",true);
+  public Response getHtml(@PathParam("channelId") String inputChannelId) {
+    this.channelId = inputChannelId;
+    return getInHTML("1", true);
   }
   /*
    *
@@ -128,15 +126,16 @@ public class ChannelEventsResource  extends AbstractEventResource{
    *
    */
 
-  public Response getInHTML(String placeholderId, boolean isBefore){
-      if(count==null){
-          count=10;
-      }
-      ResponseBuilder responseBuilder=Response.ok();
-      Collection<Event> events=HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId, count);
-      Viewable viewable=new Viewable("events", events, ChannelEventsResource.class);
-      responseBuilder.entity(viewable);
-      return responseBuilder.build();
+  public Response getInHTML(String placeholderId, boolean isBefore) {
+    if (count == null) {
+      count = 10;
+    }
+    ResponseBuilder responseBuilder = Response.ok();
+    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
+                                                                                          count);
+    Viewable viewable = new Viewable("events", events, ChannelEventsResource.class);
+    responseBuilder.entity(viewable);
+    return responseBuilder.build();
   }
 
   public Response get(String placeholderId, boolean isBefore) {
@@ -152,86 +151,83 @@ public class ChannelEventsResource  extends AbstractEventResource{
 
     atomFeed.addLink(eventsLink);
 
-    Collection<Event> events= HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId, count);
+    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
+                                                                                          count);
 
-    if(events !=null && !events.isEmpty())
-    {
-        MultivaluedMap<String,String> queryParams= uriInfo.getQueryParameters();
+    if (events != null && !events.isEmpty()) {
+      MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        List<Event> eventList=new ArrayList<Event>(events);
-        Link nextLink=abderaFactory.newLink();
-        nextLink.setRel(Link.REL_PREVIOUS);
-        Event lastEvent=eventList.get(0);
-        final UriBuilder nextUri=EVENTS_AFTER_BUILDER.clone();
-        final UriBuilder previousUri=EVENTS_BEFORE_BUILDER.clone();
+      List<Event> eventList = new ArrayList<Event>(events);
+      Link nextLink = abderaFactory.newLink();
+      nextLink.setRel(Link.REL_PREVIOUS);
+      Event lastEvent = eventList.get(0);
+      final UriBuilder nextUri = EVENTS_AFTER_BUILDER.clone();
+      final UriBuilder previousUri = EVENTS_BEFORE_BUILDER.clone();
 
-        for(String key : queryParams.keySet())
-        {
-            final Object[] values=queryParams.get(key).toArray();
-            nextUri.queryParam(key, values);
-            previousUri.queryParam(key, values);
-        }
+      for (String key : queryParams.keySet()) {
+        final Object[] values = queryParams.get(key).toArray();
+        nextUri.queryParam(key, values);
+        previousUri.queryParam(key, values);
+      }
 
-        nextLink.setHref(nextUri.build(lastEvent.getPlaceholderId()).toString());
-        atomFeed.addLink(nextLink);
+      nextLink.setHref(nextUri.build(lastEvent.getPlaceholderId()).toString());
+      atomFeed.addLink(nextLink);
 
-        Link previousLink= abderaFactory.newLink();
-        previousLink.setRel(Link.REL_NEXT);
-        Event firstEvent=eventList.get(events.size()-1);
-        previousLink.setHref(previousUri.build(firstEvent.getPlaceholderId()).toString());
-        atomFeed.addLink(previousLink);
+      Link previousLink = abderaFactory.newLink();
+      previousLink.setRel(Link.REL_NEXT);
+      Event firstEvent = eventList.get(events.size() - 1);
+      previousLink.setHref(previousUri.build(firstEvent.getPlaceholderId()).toString());
+      atomFeed.addLink(previousLink);
 
-        for(Event event :events)
-        {
-            Entry eventEntry = abderaFactory.newEntry();
+      for (Event event : events) {
+        Entry eventEntry = abderaFactory.newEntry();
 
-            eventEntry.setId(event.getPlaceholderId());
-            eventEntry.setTitle(event.getPlaceholderId().toString());
+        eventEntry.setId(event.getPlaceholderId());
+        eventEntry.setTitle(event.getPlaceholderId().toString());
 
-            InputStream contentStream = event.getEventContent().getContent();
-            String contentAsString = "";
+        InputStream contentStream = event.getEventContent().getContent();
+        String contentAsString = "";
 
-            if (contentStream != null) {
-                if (contentCache.containsKey(event)) {
-                    contentAsString = contentCache.get(event);
-                }
-                else {
-                    try {
-                        if (contentStream.markSupported()) {
-                            contentStream.mark(Integer.MAX_VALUE);
-                        }
-                        contentAsString = IOUtils.toString(contentStream);
-                        contentCache.put(event, contentAsString);
-                        if (contentStream.markSupported()) {
-                            contentStream.reset();
-                        }
-                    }
-                    catch (IOException ex) {
-                    }
-                }
+        if (contentStream != null) {
+          if (contentCache.containsKey(event)) {
+            contentAsString = contentCache.get(event);
+          }
+          else {
+            try {
+              if (contentStream.markSupported()) {
+                contentStream.mark(Integer.MAX_VALUE);
+              }
+              contentAsString = IOUtils.toString(contentStream);
+              contentCache.put(event, contentAsString);
+              if (contentStream.markSupported()) {
+                contentStream.reset();
+              }
             }
-
-
-            eventEntry.setContent(contentAsString);
-            eventEntry.setUpdated(event.getCreationDate());
-
-            Link eventLink=abderaFactory.newLink();
-
-            eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getUniversallyUniqueID()).toString());
-            eventLink.setRel(Link.REL_ALTERNATE);
-            eventLink.setMimeType(MediaType.APPLICATION_ATOM_XML);
-
-            eventEntry.addLink(eventLink);
-            atomFeed.addEntry(eventEntry);
+            catch (IOException ex) {
+            }
+          }
         }
+
+
+        eventEntry.setContent(contentAsString);
+        eventEntry.setUpdated(event.getCreationDate());
+
+        Link eventLink = abderaFactory.newLink();
+
+        eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getUniversallyUniqueID()).toString());
+        eventLink.setRel(Link.REL_ALTERNATE);
+        eventLink.setMimeType(MediaType.APPLICATION_ATOM_XML);
+
+        eventEntry.addLink(eventLink);
+        atomFeed.addEntry(eventEntry);
+      }
     }
     responseBuilder.entity(atomFeed);
     return responseBuilder.build();
   }
+
   @Override
   protected String getEventName() {
     return placeholderId;
   }
-
-
 }

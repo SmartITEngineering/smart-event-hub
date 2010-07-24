@@ -42,7 +42,7 @@ public abstract class AbstractEventResource {
 
   @Context
   public UriInfo uriInfo;
-  protected final Factory abderaFactory=Abdera.getNewFactory();
+  protected final Factory abderaFactory = Abdera.getNewFactory();
 
   protected Event checkEventExistence()
       throws WebApplicationException {
@@ -68,9 +68,11 @@ public abstract class AbstractEventResource {
     builder.scheme(baseUri.getScheme());
     return builder;
   }
+
   protected Feed getFeed(String title, Date updated) {
-   return getFeed(uriInfo.getRequestUri().toString(), title, updated);
+    return getFeed(uriInfo.getRequestUri().toString(), title, updated);
   }
+
   protected Feed getFeed(String id, String title, Date updated) {
     Feed feed = getFeed();
     feed.setId(id);
@@ -78,17 +80,20 @@ public abstract class AbstractEventResource {
     feed.setUpdated(updated);
     return feed;
   }
+
   protected Feed getFeed() {
     Feed feed = abderaFactory.newFeed();
     feed.addLink(getSelfLink());
-     feed.addAuthor("author");     ///error in adding getDefaultAuthor();
+    feed.addAuthor("author");     ///error in adding getDefaultAuthor();
     return feed;
   }
+
   protected Link getSelfLink() {
     Link selfLink = abderaFactory.newLink();
     selfLink.setHref(uriInfo.getRequestUri().toString());
     selfLink.setRel(Link.REL_SELF);
     return selfLink;
   }
- protected abstract String getEventName();
+
+  protected abstract String getEventName();
 }

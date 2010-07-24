@@ -37,7 +37,7 @@ import org.apache.abdera.model.Link;
 public class RootResource extends AbstractEventResource {
 
   private static final Date INIT_DATE = new Date();
-  private String eventName="";
+  private String eventName = "";
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
@@ -55,6 +55,7 @@ public class RootResource extends AbstractEventResource {
     responseBuilder.entity(atomFeed);
     return responseBuilder.build();
   }
+
   @Override
   protected String getEventName() {
     return eventName;

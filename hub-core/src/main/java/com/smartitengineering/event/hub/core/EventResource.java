@@ -41,7 +41,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 public class EventResource {
 
   static final UriBuilder EVENT_URI_BUILDER = UriBuilder.fromResource(EventResource.class);
-
   @Context
   private UriInfo uriInfo;
   private final Event event;
@@ -71,17 +70,14 @@ public class EventResource {
    */
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getHTML()
-  {
-    final ResponseBuilder builder=Response.ok();
+  public Response getHTML() {
+    final ResponseBuilder builder = Response.ok();
     Viewable viewable;
-    if(event !=null)
-    {
+    if (event != null) {
       viewable = new Viewable("event", event, EventResource.class);
     }
-    else
-    {
-      viewable=new Viewable("event", "Not Found");
+    else {
+      viewable = new Viewable("event", "Not Found");
     }
     builder.entity(viewable);
     return builder.build();
