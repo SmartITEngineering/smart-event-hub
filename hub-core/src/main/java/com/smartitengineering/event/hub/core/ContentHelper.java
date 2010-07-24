@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.WeakHashMap;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -32,18 +33,19 @@ public class ContentHelper {
 
   public Content content;
   public InputStream contentStream;
-  public String contentAsString = "is not null";
+  public String contentAsString = null;
   //private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
 
   public void setContent(Content content) {
     this.content = content;
+    this.contentAsString=null;
   }
 
   private void convert() {
     //contentStream=(InputStream)content;
-    if (!content.equals(null)) {
+    if (content!=null && StringUtils.isBlank(contentAsString)) {
       try {
-        contentAsString = IOUtils.toString((InputStream) content);
+        contentAsString = IOUtils.toString(content.getContent());
       }
       catch (Exception ex) {
       }
