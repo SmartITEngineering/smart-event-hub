@@ -74,11 +74,11 @@ public class ChannelsResource {
       try {
         HubPersistentStorerSPI.getInstance().getStorer().create(newChannel);
       }
-      catch(Exception ex) {
+      catch (Exception ex) {
         error = true;
         errorMessage = ex.getMessage();
       }
-      if(error) {
+      if (error) {
         builder = Response.status(Response.Status.BAD_REQUEST);
         builder.entity(errorMessage);
       }

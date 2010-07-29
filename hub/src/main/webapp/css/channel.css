@@ -1,0 +1,48 @@
+/* 
+    Document   : channel
+    Created on : Jul 22, 2010, 11:55:30 AM
+    Author     : kaisar
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+body
+{
+  background-color: #00FFCC;
+}
+.show {
+  display: block;
+  background-color:#ffcc90;
+
+}
+table
+{
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+
+}
+.hide
+{
+  display: none;
+}
+th
+{
+  background-color: #CCFFCC;
+  border-left: 10px;
+  border-color: #333333;
+}
+td
+{
+  text-align: center;
+  color: gray;
+  background-color: #66FFFF;
+  border: 20px;
+  border-color: black;
+  font-size: 20px;
+}
+

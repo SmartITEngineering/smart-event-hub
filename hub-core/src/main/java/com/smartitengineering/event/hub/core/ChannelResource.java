@@ -21,6 +21,7 @@ import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.common.Constants;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import com.sun.jersey.api.view.Viewable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -33,6 +34,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -49,9 +51,7 @@ public class ChannelResource extends AbstractChannelResource {
   @Context
   private UriInfo uriInfo;
 
-  @PUT
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response put(Channel channel) {
+  private Response setData(Channel channel) {
     Response response;
     try {
       if (!channelName.equals(channel.getName())) {
@@ -76,17 +76,54 @@ public class ChannelResource extends AbstractChannelResource {
     return response;
   }
 
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response put(Channel channel) {
+    Response response;
+    response = setData(channel);
+    return response;
+  }
+
+  private Channel getAuthChannel() {
+    Channel channel = getChannel();
+    checkAuthToken(channel);
+    return channel;
+  }
+
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getChannelInfo() {
-    Channel channel = getChannel();
-    checkAuthToken(channel);
+    Channel channel = getAuthChannel();
     if (channel != null) {
       return Response.ok(channel).build();
     }
     else {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
+  }
+
+  /*
+   *
+   * add the facility to get channel info in HTML
+   *
+   */
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  public Response getChannelInfoInHTML() {
+    Viewable viewable;
+    Channel channel = getAuthChannel();
+    ResponseBuilder builder = Response.ok();
+    if (channel != null) {
+      viewable = new Viewable("channelName", channel, ChannelResource.class);
+      builder.entity(viewable);
+      return builder.build();
+    }
+    else {
+      viewable = new Viewable("channelName", "Not Found");
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+
   }
 
   @DELETE

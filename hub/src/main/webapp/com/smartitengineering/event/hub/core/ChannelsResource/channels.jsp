@@ -14,10 +14,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Channels</title>
+    <script type="text/javascript" src="/javascripts/js_1.js"></script>
+    <link type="text/css" rel='stylesheet' href='/css/channel.css' />
   </head>
   <body>
     <h1>Channels</h1>
-    <table>
+    <div class="show" id="div1">
+        <table>
       <tr>
         <th>Name</th>
         <th>Description</th>
@@ -26,7 +29,7 @@
       <c:forEach var="channel" items="${it}">
         <tr>
           <td>
-            <c:out value="${channel.name}" />
+              <a href="<c:out value="${channel.name}" />/hub"><c:out value="${channel.name}" /></a>
           </td>
           <td>
             <c:out value="${channel.description}" />
@@ -37,12 +40,20 @@
         </tr>
       </c:forEach>
     </table>
-    <h2>Create channel</h2>
-    <form action="/api/channels" method="post" id="create-channel">
-      <div>Name</div><input name="name" type="text" /><br />
-      <div>Description</div><input name="description" type="text" /><br />
-      <div>Auth Token</div><input name="authToken" type="text" /><br />
-      <input name="submit" type="submit" />
-    </form>
+        <button onclick=change()>Create New Channel</button>
+    </div>
+    
+    <h3>
+        <div class="hide" id="div2">
+            <form action="/api/channels" method="post" id="create-channel">
+                <div>Name</div><input name="name" type="text" /><br />
+                <div>Description</div><input name="description" type="text" /><br />
+                <div>Auth Token</div><input name="authToken" type="text" /><br />
+                <input name="submit" type="submit" />
+            </form>
+            <button onclick=change()>Back</button>
+        </div>
+      
+    </h3>
   </body>
 </html>
