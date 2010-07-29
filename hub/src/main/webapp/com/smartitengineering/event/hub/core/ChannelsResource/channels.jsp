@@ -20,40 +20,40 @@
   <body>
     <h1>Channels</h1>
     <div class="show" id="div1">
-        <table>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Auth Token</th>
-      </tr>
-      <c:forEach var="channel" items="${it}">
+      <table>
         <tr>
-          <td>
-              <a href="<c:out value="${channel.name}" />/hub"><c:out value="${channel.name}" /></a>
-          </td>
-          <td>
-            <c:out value="${channel.description}" />
-          </td>
-          <td>
-            <c:out value="${channel.authToken}" />
-          </td>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Auth Token</th>
         </tr>
-      </c:forEach>
-    </table>
-        <button onclick=change()>Create New Channel</button>
+        <c:forEach var="channel" items="${it}">
+          <tr>
+            <td>
+              <a href="channels/${channel.name}/events"><c:out value="${channel.name}" /></a>
+            </td>
+            <td>
+              <c:out value="${channel.description}" />Description
+            </td>
+            <td>
+              <c:out value="${channel.authToken}" />Auth Token
+            </td>
+          </tr>
+        </c:forEach>
+      </table>
+      <button onclick=change()>Create New Channel</button>
     </div>
-    
+
     <h3>
-        <div class="hide" id="div2">
-            <form action="/api/channels" method="post" id="create-channel">
-                <div>Name</div><input name="name" type="text" /><br />
-                <div>Description</div><input name="description" type="text" /><br />
-                <div>Auth Token</div><input name="authToken" type="text" /><br />
-                <input name="submit" type="submit" />
-            </form>
-            <button onclick=change()>Back</button>
-        </div>
-      
+      <div class="hide" id="div2">
+        <form action="/api/channels" method="post" id="create-channel">
+          <div>Name</div><input name="name" type="text" /><br />
+          <div>Description</div><input name="description" type="text" /><br />
+          <div>Auth Token</div><input name="authToken" type="text" /><br />
+          <input name="submit" type="submit" />
+        </form>
+        <button onclick=change()>Back</button>
+      </div>
+
     </h3>
   </body>
 </html>
