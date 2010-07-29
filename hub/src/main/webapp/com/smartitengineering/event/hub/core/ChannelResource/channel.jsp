@@ -15,7 +15,7 @@
         <title>Add New Event in ${it.name} Channel</title>
     </head>
     <body>
-      <form action="api/channels/${it.name}/hub" method="post">
+      <form action="/api/channels/${it.name}/hub" method="post">
         Enter Event Name <input type="text">
         <input type="submit" value="Submit">
       </form>
