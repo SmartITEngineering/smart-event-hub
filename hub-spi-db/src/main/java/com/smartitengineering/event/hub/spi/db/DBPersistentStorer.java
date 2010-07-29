@@ -196,7 +196,7 @@ public class DBPersistentStorer
             PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
       }
       if (StringUtils.isNotBlank(channelId)) {
-        params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId));
+        params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId, MatchMode.EXACT));
       }
       params.addAll(Arrays.asList(propertyParam, QueryParameterFactory.getMaxResultsParam(
           Math.abs(count)), QueryParameterFactory.getOrderByParam(
