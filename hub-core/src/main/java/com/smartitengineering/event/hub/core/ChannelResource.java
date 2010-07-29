@@ -114,12 +114,12 @@ public class ChannelResource extends AbstractChannelResource {
     Channel channel = getAuthChannel();
     ResponseBuilder builder = Response.ok();
     if (channel != null) {
-      viewable = new Viewable("channelName", channel, ChannelResource.class);
+      viewable = new Viewable("channel", channel);
       builder.entity(viewable);
       return builder.build();
     }
     else {
-      viewable = new Viewable("channelName", "Not Found");
+      viewable = new Viewable("channel", "Not Found", ChannelResource.class);
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
