@@ -18,10 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Content;
-import com.smartitengineering.event.hub.api.Event;
 import java.io.InputStream;
-import java.util.Map;
-import java.util.WeakHashMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
