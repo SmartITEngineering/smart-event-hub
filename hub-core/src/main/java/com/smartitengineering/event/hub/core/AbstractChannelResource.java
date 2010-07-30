@@ -66,10 +66,10 @@ public abstract class AbstractChannelResource {
 
   protected UriBuilder setBaseUri(final UriBuilder builder) throws IllegalArgumentException {
     final URI baseUri = uriInfo.getBaseUri();
-    builder.host(baseUri.getHost());
-    builder.port(baseUri.getPort());
-    builder.scheme(baseUri.getScheme());
-    return builder;
+    UriBuilder result = UriBuilder.fromUri(baseUri);
+    final URI uri = builder.build();
+    result.path(uri.getPath());
+    return result;
   }
 
   protected abstract String getChannelName();
