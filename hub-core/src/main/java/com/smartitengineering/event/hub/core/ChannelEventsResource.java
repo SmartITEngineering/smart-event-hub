@@ -58,17 +58,17 @@ public class ChannelEventsResource extends AbstractEventResource {
   private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
 
   static {
-    EVENTS_URI_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
-    EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
+    EVENTS_URI_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
+    EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
     try {
-      EVENTS_BEFORE_BUILDER.path(AllEventsResource.class.getMethod("getBefore", String.class));
+      EVENTS_BEFORE_BUILDER.path(ChannelEventsResource.class.getMethod("getBefore", String.class));
     }
     catch (Exception ex) {
       throw new InstantiationError();
     }
-    EVENTS_AFTER_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
+    EVENTS_AFTER_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
     try {
-      EVENTS_AFTER_BUILDER.path(AllEventsResource.class.getMethod("getAfter", String.class));
+      EVENTS_AFTER_BUILDER.path(ChannelEventsResource.class.getMethod("getAfter", String.class));
     }
     catch (Exception ex) {
       throw new InstantiationError();
