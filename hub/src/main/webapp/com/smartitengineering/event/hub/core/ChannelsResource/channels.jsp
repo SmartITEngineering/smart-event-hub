@@ -32,10 +32,10 @@
               <a href="channels/${channel.name}/events"><c:out value="${channel.name}" /></a>
             </td>
             <td>
-              <c:out value="${channel.description}" />Description
+              <c:out value="${channel.description}" />
             </td>
             <td>
-              <c:out value="${channel.authToken}" />Auth Token
+              <c:out value="${channel.authToken}" />
             </td>
           </tr>
         </c:forEach>
