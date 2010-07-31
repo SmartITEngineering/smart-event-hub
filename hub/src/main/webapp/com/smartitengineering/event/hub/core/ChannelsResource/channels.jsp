@@ -47,7 +47,7 @@
       <div class="hide" id="div2">
         <form action="/api/channels" method="post" id="create-channel">
           <div>Name</div><input name="name" type="text" /><br />
-          <div>Description</div><input name="description" type="text" /><br />
+          <div>Description</div><textarea name="description" cols="30" rows="5"></textarea><br />
           <div>Auth Token</div><input name="authToken" type="text" /><br />
           <input name="submit" type="submit" />
         </form>
