@@ -14,7 +14,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Add New Event in ${it.name} Channel</title>
   </head>
-  <body bgcolor="#E1E1FF">
+  <body bgcolor="#00FFCC">
     <h3>
       <div>
         <div id="name">Channel Name : ${it.name}</div>
