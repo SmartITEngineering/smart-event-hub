@@ -7,6 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
   "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -18,29 +19,35 @@
     <link type="text/css" rel='stylesheet' href='/css/channel.css' />
   </head>
   <body>
-    <h1>Channels</h1>
+    <h1 align="center">Channels</h1>
     <div class="show" id="div1">
       <table>
         <tr>
           <th>Name</th>
           <th>Description</th>
           <th>Auth Token</th>
+          <th>Events</th>
         </tr>
         <c:forEach var="channel" items="${it}">
           <tr>
             <td>
-              <a href="channels/${channel.name}/events"><c:out value="${channel.name}" /></a>
+              <a href="channels/${channel.name}"><c:out value="${channel.name}" /></a>
             </td>
             <td>
-              <c:out value="${channel.description}" />
+              <c:set var="description" value="${channel.description}"></c:set>
+              <a href="channels/${channel.name}"><c:out value="${fn:substring(description,0,10)}"/></a>
             </td>
             <td>
               <c:out value="${channel.authToken}" />
             </td>
+            <td>
+              <a href="channels/${channel.name}/events">View Events of ${channel.name}</a>
+            </td>
           </tr>
         </c:forEach>
       </table>
-      <button onclick=change()>Create New Channel</button>
+      <br><br>
+      <center><button onclick=change() id="butt">Create New Channel</button></center>
     </div>
 
     <h3>
