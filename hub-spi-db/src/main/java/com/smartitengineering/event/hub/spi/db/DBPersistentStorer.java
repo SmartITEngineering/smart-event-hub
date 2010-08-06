@@ -185,22 +185,27 @@ public class DBPersistentStorer
     else {
       List<QueryParameter> params = new ArrayList<QueryParameter>();
       final QueryParameter<Integer> propertyParam;
+      final QueryParameter<Order> orderByParam;
       if (count > 0) {
-        propertyParam =
-        QueryParameterFactory.getGreaterThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
+        propertyParam = QueryParameterFactory.getGreaterThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
+                                                                          placeholderIdInt);
+        orderByParam = QueryParameterFactory.getOrderByParam(PersistentEvent.PLACE_HOLDER_ID, Order.ASC);
       }
       else {
         propertyParam = QueryParameterFactory.getLesserThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
                                                                          placeholderIdInt);
+        orderByParam = QueryParameterFactory.getOrderByParam(PersistentEvent.PLACE_HOLDER_ID, Order.DESC);
       }
       if (StringUtils.isNotBlank(channelId)) {
         params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId,
                                                                     MatchMode.EXACT));
       }
       params.addAll(Arrays.asList(propertyParam, QueryParameterFactory.getMaxResultsParam(
-          Math.abs(count)), QueryParameterFactory.getOrderByParam(
-          PersistentEvent.PLACE_HOLDER_ID, Order.DESC)));
+          Math.abs(count)), orderByParam));
       List<PersistentEvent> persistentEvents = getEventReadDao().getList(params);
+      if (count > 0) {
+        Collections.reverse(persistentEvents);
+      }
       if (persistentEvents == null || persistentEvents.isEmpty()) {
         return new LinkedHashSet<Event>();
       }
