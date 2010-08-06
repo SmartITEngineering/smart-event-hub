@@ -187,16 +187,15 @@ public class DBPersistentStorer
       final QueryParameter<Integer> propertyParam;
       if (count > 0) {
         propertyParam =
-        QueryParameterFactory.getGreaterThanEqualToPropertyParam(
-            PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
+        QueryParameterFactory.getGreaterThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
       }
       else {
-        propertyParam =
-        QueryParameterFactory.getLesserThanEqualToPropertyParam(
-            PersistentEvent.PLACE_HOLDER_ID, placeholderIdInt);
+        propertyParam = QueryParameterFactory.getLesserThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
+                                                                         placeholderIdInt);
       }
       if (StringUtils.isNotBlank(channelId)) {
-        params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId, MatchMode.EXACT));
+        params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId,
+                                                                    MatchMode.EXACT));
       }
       params.addAll(Arrays.asList(propertyParam, QueryParameterFactory.getMaxResultsParam(
           Math.abs(count)), QueryParameterFactory.getOrderByParam(
