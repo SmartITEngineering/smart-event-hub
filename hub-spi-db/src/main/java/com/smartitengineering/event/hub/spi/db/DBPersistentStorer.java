@@ -184,24 +184,29 @@ public class DBPersistentStorer
     }
     else {
       List<QueryParameter> params = new ArrayList<QueryParameter>();
-      final QueryParameter<Integer> propertyParam;
       final QueryParameter<Order> orderByParam;
-      if (count > 0) {
-        propertyParam = QueryParameterFactory.getGreaterThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
-                                                                          placeholderIdInt);
-        orderByParam = QueryParameterFactory.getOrderByParam(PersistentEvent.PLACE_HOLDER_ID, Order.ASC);
+      if (placeholderIdInt > -1) {
+        final QueryParameter<Integer> propertyParam;
+        if (count > 0) {
+          propertyParam = QueryParameterFactory.getGreaterThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
+                                                                            placeholderIdInt);
+          orderByParam = QueryParameterFactory.getOrderByParam(PersistentEvent.PLACE_HOLDER_ID, Order.ASC);
+        }
+        else {
+          propertyParam = QueryParameterFactory.getLesserThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
+                                                                           placeholderIdInt);
+          orderByParam = QueryParameterFactory.getOrderByParam(PersistentEvent.PLACE_HOLDER_ID, Order.DESC);
+        }
+        params.add(propertyParam);
       }
       else {
-        propertyParam = QueryParameterFactory.getLesserThanPropertyParam(PersistentEvent.PLACE_HOLDER_ID,
-                                                                         placeholderIdInt);
         orderByParam = QueryParameterFactory.getOrderByParam(PersistentEvent.PLACE_HOLDER_ID, Order.DESC);
       }
       if (StringUtils.isNotBlank(channelId)) {
         params.add(QueryParameterFactory.getStringLikePropertyParam(PersistentEvent.CHANNEL_ID, channelId,
                                                                     MatchMode.EXACT));
       }
-      params.addAll(Arrays.asList(propertyParam, QueryParameterFactory.getMaxResultsParam(
-          Math.abs(count)), orderByParam));
+      params.addAll(Arrays.asList(QueryParameterFactory.getMaxResultsParam(Math.abs(count)), orderByParam));
       List<PersistentEvent> persistentEvents = getEventReadDao().getList(params);
       if (count > 0) {
         Collections.reverse(persistentEvents);
