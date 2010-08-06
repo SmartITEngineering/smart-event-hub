@@ -30,9 +30,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Feed;
-import org.apache.commons.lang.StringUtils;
 import org.apache.abdera.model.Link;
-import org.apache.abdera.model.Person;
 
 /**
  *
@@ -63,10 +61,10 @@ public abstract class AbstractEventResource {
 
   protected UriBuilder setBaseUri(final UriBuilder builder) throws IllegalArgumentException {
     final URI baseUri = uriInfo.getBaseUri();
-    builder.host(baseUri.getHost());
-    builder.port(baseUri.getPort());
-    builder.scheme(baseUri.getScheme());
-    return builder;
+    UriBuilder result=UriBuilder.fromUri(baseUri);
+    final URI uri = builder.build();
+    result.path(uri.getPath());
+    return result;
   }
 
   protected Feed getFeed(String title, Date updated) {
