@@ -61,6 +61,7 @@ public class ChannelJsonProvider
   public static final String NAME = "name";
   public static final String DESCRIPTION = "description";
   private static final String HUB_URI = "hubUri";
+  private static final String EVENT_URI="eventUri";
   public static final String AUTH_TOKEN = "authToken";
   public static final String AUTO_EXPIRE = "autoExpire";
   private static final String CREATED = "createdAt";
@@ -201,6 +202,7 @@ public class ChannelJsonProvider
     if (channel.getHubUri() != null) {
       jsonMap.put(HUB_URI, channel.getHubUri().toString());
     }
+    jsonMap.put(EVENT_URI, "/"+channel.getName().toString()+"/events");
     if (channel.getFilter() != null) {
       Filter filter = channel.getFilter();
       jsonMap.put(FILTER, filter.getFilterScript());
