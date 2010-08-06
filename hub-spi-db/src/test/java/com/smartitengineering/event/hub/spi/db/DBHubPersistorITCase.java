@@ -315,7 +315,7 @@ public class DBHubPersistorITCase
     Event event4 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
         content))).build();
     event4 = storer.create(dummyChannel, event4);
-    Integer placeholderId = NumberUtils.toInt(event4.getPlaceholderId()) + 1;
+    final Integer placeholderId = NumberUtils.toInt(event4.getPlaceholderId(), 0);
     System.out.println("Selected PlaceholderID: " + placeholderId);
     Event event5 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
         content))).build();
@@ -328,6 +328,7 @@ public class DBHubPersistorITCase
     storer.create(dummyChannel, event7);
     final Comparator<Event> comparator = new Comparator<Event>() {
 
+      @Override
       public int compare(Event o1,
                          Event o2) {
         if (o1 == null && o2 == null) {
@@ -360,7 +361,7 @@ public class DBHubPersistorITCase
     List<Event> origList = new ArrayList<Event>(events);
     System.out.println(origList + " " + sortTestList);
     assertTrue(origList.equals(sortTestList));
-    assertEquals(placeholderId.toString(), origList.get(origList.size() - 1).
+    assertEquals(Integer.toString(placeholderId + 1), origList.get(origList.size() - 1).
         getPlaceholderId());
     events = storer.getEvents(placeholderId.toString(), "\t", -1 * count);
     assertNotNull(events);
@@ -370,7 +371,7 @@ public class DBHubPersistorITCase
     origList = new ArrayList<Event>(events);
     System.out.println(origList + " " + sortTestList);
     assertTrue(origList.equals(sortTestList));
-    assertEquals(placeholderId.toString(), origList.get(0).getPlaceholderId());
+    assertEquals(Integer.toString(placeholderId - 1), origList.get(0).getPlaceholderId());
     events = storer.getEvents(placeholderId.toString(), dummyChannel.getName(), -1 * count);
     assertNotNull(events);
     assertTrue(events.size() == count);
@@ -379,7 +380,7 @@ public class DBHubPersistorITCase
     origList = new ArrayList<Event>(events);
     System.out.println(origList + " " + sortTestList);
     assertTrue(origList.equals(sortTestList));
-    assertEquals(placeholderId.toString(), origList.get(0).getPlaceholderId());
+    assertEquals(Integer.toString(placeholderId - 1), origList.get(0).getPlaceholderId());
   }
 
   public void testDeleteEvent() {
