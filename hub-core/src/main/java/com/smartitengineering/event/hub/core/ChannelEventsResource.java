@@ -111,14 +111,14 @@ public class ChannelEventsResource extends AbstractEventResource {
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get(@PathParam("channelId") String inputChannelId) {
     this.channelId = inputChannelId;
-    return get("1", true);
+    return get("1", false);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml(@PathParam("channelId") String inputChannelId) {
     this.channelId = inputChannelId;
-    return getInHTML("1", true);
+    return getInHTML("1", false);
   }
   /*
    *
@@ -130,9 +130,14 @@ public class ChannelEventsResource extends AbstractEventResource {
     if (count == null) {
       count = 10;
     }
+    int thisCount=count;
+    if(isBefore)
+    {
+      thisCount=count*-1;
+    }
     ResponseBuilder responseBuilder = Response.ok();
     Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
-                                                                                          count);
+                                                                                          thisCount);
     Viewable viewable = new Viewable("events", events, ChannelEventsResource.class);
     responseBuilder.entity(viewable);
     return responseBuilder.build();
@@ -151,8 +156,14 @@ public class ChannelEventsResource extends AbstractEventResource {
 
     atomFeed.addLink(eventsLink);
 
+    int thisCount=count;
+    if(isBefore)
+    {
+      thisCount=count*-1;
+    }
+
     Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
-                                                                                          count);
+                                                                                          thisCount);
 
     if (events != null && !events.isEmpty()) {
       MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
