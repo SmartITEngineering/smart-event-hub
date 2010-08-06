@@ -146,8 +146,8 @@ public class ChannelEventsResource extends AbstractEventResource {
     Feed atomFeed = getFeed("Events", new Date());
 
     Link eventsLink = abderaFactory.newLink();
-    eventsLink.setHref(UriBuilder.fromResource(EventResource.class).build().toString());
-    eventsLink.setRel("root");
+    eventsLink.setHref(UriBuilder.fromResource(EventResource.class).build(placeholderId).toString());
+    eventsLink.setRel("event");
 
     atomFeed.addLink(eventsLink);
 
@@ -170,13 +170,13 @@ public class ChannelEventsResource extends AbstractEventResource {
         previousUri.queryParam(key, values);
       }
 
-      nextLink.setHref(nextUri.build(lastEvent.getPlaceholderId()).toString());
+      nextLink.setHref(nextUri.build(channelId, lastEvent.getPlaceholderId()).toString());
       atomFeed.addLink(nextLink);
 
       Link previousLink = abderaFactory.newLink();
       previousLink.setRel(Link.REL_NEXT);
       Event firstEvent = eventList.get(events.size() - 1);
-      previousLink.setHref(previousUri.build(firstEvent.getPlaceholderId()).toString());
+      previousLink.setHref(previousUri.build(channelId, firstEvent.getPlaceholderId()).toString());
       atomFeed.addLink(previousLink);
 
       for (Event event : events) {
