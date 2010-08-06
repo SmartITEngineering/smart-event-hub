@@ -179,7 +179,7 @@ public class DBPersistentStorer
   public LinkedHashSet<Event> getEvents(String placeholderId, String channelId,
                                         int count) {
     int placeholderIdInt = NumberUtils.toInt(placeholderId);
-    if (placeholderIdInt <= 0 || count == 0) {
+    if (count == 0) {
       return new LinkedHashSet<Event>();
     }
     else {
@@ -208,7 +208,7 @@ public class DBPersistentStorer
       }
       params.addAll(Arrays.asList(QueryParameterFactory.getMaxResultsParam(Math.abs(count)), orderByParam));
       List<PersistentEvent> persistentEvents = getEventReadDao().getList(params);
-      if (count > 0) {
+      if (count > 0 && (!placeholderId.equals("-1"))) {
         Collections.reverse(persistentEvents);
       }
       if (persistentEvents == null || persistentEvents.isEmpty()) {
