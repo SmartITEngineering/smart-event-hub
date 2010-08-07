@@ -20,6 +20,7 @@ package com.smartitengineering.event.hub.core;
 import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import com.smartitengineering.util.rest.atom.server.AbstractResource;
 import java.net.URI;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -32,7 +33,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author imyousuf
  */
-public abstract class AbstractChannelResource {
+public abstract class AbstractChannelResource extends AbstractResource {
 
   @Context
   private UriInfo uriInfo;
@@ -70,6 +71,11 @@ public abstract class AbstractChannelResource {
     final URI uri = builder.build();
     result.path(uri.getPath());
     return result;
+  }
+
+  @Override
+  protected String getAuthor() {
+    return "info@smartitengineering.com";
   }
 
   protected abstract String getChannelName();

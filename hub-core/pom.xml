@@ -49,6 +49,10 @@
       <artifactId>atmosphere-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.smartitengineering.smart-util.rest</groupId>
+      <artifactId>atom-server</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.smartitengineering.event</groupId>
       <artifactId>hub-common</artifactId>
       <version>${project.version}</version>

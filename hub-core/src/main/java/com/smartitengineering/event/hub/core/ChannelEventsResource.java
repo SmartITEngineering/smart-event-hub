@@ -160,10 +160,10 @@ public class ChannelEventsResource extends AbstractEventResource {
                                                                                           thisCount);
 
     if (events != null && !events.isEmpty()) {
-      MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+      MultivaluedMap<String, String> queryParams = getUriInfo().getQueryParameters();
 
       List<Event> eventList = new ArrayList<Event>(events);
-      Link nextLink = abderaFactory.newLink();
+      Link nextLink = getAbderaFactory().newLink();
       nextLink.setRel(Link.REL_PREVIOUS);
       Event lastEvent = eventList.get(0);
       final UriBuilder nextUri = EVENTS_AFTER_BUILDER.clone();
@@ -178,14 +178,14 @@ public class ChannelEventsResource extends AbstractEventResource {
       nextLink.setHref(nextUri.build(channelId, lastEvent.getPlaceholderId()).toString());
       atomFeed.addLink(nextLink);
 
-      Link previousLink = abderaFactory.newLink();
+      Link previousLink = getAbderaFactory().newLink();
       previousLink.setRel(Link.REL_NEXT);
       Event firstEvent = eventList.get(events.size() - 1);
       previousLink.setHref(previousUri.build(channelId, firstEvent.getPlaceholderId()).toString());
       atomFeed.addLink(previousLink);
 
       for (Event event : events) {
-        Entry eventEntry = abderaFactory.newEntry();
+        Entry eventEntry = getAbderaFactory().newEntry();
 
         eventEntry.setId(event.getPlaceholderId());
         eventEntry.setTitle(event.getPlaceholderId().toString());
@@ -217,7 +217,7 @@ public class ChannelEventsResource extends AbstractEventResource {
         eventEntry.setContent(contentAsString);
         eventEntry.setUpdated(event.getCreationDate());
 
-        Link eventLink = abderaFactory.newLink();
+        Link eventLink = getAbderaFactory().newLink();
 
         eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getUniversallyUniqueID()).toString());
         eventLink.setRel(Link.REL_ALTERNATE);
