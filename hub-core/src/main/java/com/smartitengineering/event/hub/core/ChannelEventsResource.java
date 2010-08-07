@@ -56,10 +56,11 @@ public class ChannelEventsResource extends AbstractEventResource {
   static final UriBuilder EVENTS_URI_BUILDER;
   static final UriBuilder EVENTS_AFTER_BUILDER;
   static final UriBuilder EVENTS_BEFORE_BUILDER;
-  private String channelId = "";
   private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
   @Context
   private HttpServletRequest servletRequest;
+  @PathParam("channelId")
+  private String channelId;
 
   static {
     EVENTS_URI_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
@@ -113,8 +114,7 @@ public class ChannelEventsResource extends AbstractEventResource {
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  public Response get(@PathParam("channelId") String inputChannelId) {
-    this.channelId = inputChannelId;
+  public Response get() {
     return get("-1", false);
   }
 
@@ -134,10 +134,9 @@ public class ChannelEventsResource extends AbstractEventResource {
     if (count == null) {
       count = 10;
     }
-    int thisCount=count;
-    if(isBefore)
-    {
-      thisCount=count*-1;
+    int thisCount = count;
+    if (isBefore) {
+      thisCount = count * -1;
     }
     ResponseBuilder responseBuilder = Response.ok();
     Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
@@ -155,10 +154,9 @@ public class ChannelEventsResource extends AbstractEventResource {
     ResponseBuilder responseBuilder = Response.ok();
     Feed atomFeed = getFeed("Events", new Date());
 
-    int thisCount=count;
-    if(isBefore)
-    {
-      thisCount=count*-1;
+    int thisCount = count;
+    if (isBefore) {
+      thisCount = count * -1;
     }
 
     Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
