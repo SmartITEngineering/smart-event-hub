@@ -37,10 +37,13 @@
       <c:forEach var="event" items="${it}">
         <tr>
           <td>
-
             <c:out value="${event.placeholderId}" />
-            <c:set var="id" value="${event.placeholderId}"></c:set>
+            <c:set var="nextUrl" value="${event.placeholderId}"></c:set>
           </td>
+          <c:if test="${count==0}">
+            <c:set var="previousUrl" value="${event.placeholderId}"></c:set>
+            <c:set var="count" value="2"></c:set>
+          </c:if>
           <td>
             <c:out value="${event.universallyUniqueID}" />
           </td>
@@ -55,6 +58,13 @@
         </tr>
       </c:forEach>
     </table>
-      <a href="/api/channels"><< Back</a> <div id="pagi"><a id="pagination"><< Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/channels/pos/events/before/${id}" id="pagination">Next >></a></div>
+    <a href="/api/channels"><< Back</a> <div id="pagi">
+      <c:if test="${not empty nextUrl}">
+        <a id="pagination" href="/api/channels/pos/events/after/${previousUrl}"><< Previous</a>
+        <c:if test="${nextUrl!=1}">
+          &nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/channels/pos/events/before/${nextUrl}" id="pagination">Next >></a>
+        </c:if>
+      </c:if>
+    </div>
   </body>
 </html>
