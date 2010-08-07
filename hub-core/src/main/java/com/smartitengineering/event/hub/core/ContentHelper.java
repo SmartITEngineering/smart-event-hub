@@ -31,16 +31,14 @@ public class ContentHelper {
   public Content content;
   public InputStream contentStream;
   public String contentAsString = null;
-  //private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
 
   public void setContent(Content content) {
     this.content = content;
-    this.contentAsString=null;
+    this.contentAsString = null;
   }
 
   private void convert() {
-    //contentStream=(InputStream)content;
-    if (content!=null && StringUtils.isBlank(contentAsString)) {
+    if (content != null && StringUtils.isBlank(contentAsString)) {
       try {
         contentAsString = IOUtils.toString(content.getContent());
       }

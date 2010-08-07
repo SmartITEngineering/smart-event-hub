@@ -19,17 +19,16 @@ package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
+import com.smartitengineering.util.rest.server.AbstractResource;
 import com.sun.jersey.api.view.Viewable;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
@@ -37,11 +36,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * @author imyousuf
  */
 @Path("/event/{eventPlaceholderId}")
-public class EventResource {
+public class EventResource extends AbstractResource {
 
   static final UriBuilder EVENT_URI_BUILDER = UriBuilder.fromResource(EventResource.class);
-  @Context
-  private UriInfo uriInfo;
   private final Event event;
 
   public EventResource(@PathParam("eventPlaceholderId") String placeholderId) {
@@ -59,14 +56,6 @@ public class EventResource {
     }
   }
 
-
-  /*
-   * Get a certain event in HTML format
-   *
-   *
-   *
-   *
-   */
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getHTML() {
