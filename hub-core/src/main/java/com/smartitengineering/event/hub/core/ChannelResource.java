@@ -31,11 +31,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriInfo;
 
 /**
  *
@@ -48,8 +46,6 @@ public class ChannelResource extends AbstractChannelResource {
   private String channelName;
   @HeaderParam(Constants.AUTH_TOKEN_HEADER_NAME)
   private String authToken;
-  @Context
-  private UriInfo uriInfo;
 
   private Response setData(Channel channel) {
     Response response;
@@ -62,12 +58,12 @@ public class ChannelResource extends AbstractChannelResource {
       Channel myChannel = getChannel();
       if (myChannel == null) {
         storer.create(channel);
-        response = Response.created(uriInfo.getAbsolutePath()).build();
+        response = Response.created(getUriInfo().getAbsolutePath()).build();
       }
       else {
         checkAuthToken(myChannel);
         storer.update(channel);
-        response = Response.noContent().location(uriInfo.getAbsolutePath()).build();
+        response = Response.noContent().location(getUriInfo().getAbsolutePath()).build();
       }
     }
     catch (Throwable th) {
