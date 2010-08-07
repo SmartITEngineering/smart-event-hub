@@ -17,10 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.core;
 
+import com.sun.jersey.api.view.Viewable;
 import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -39,6 +42,9 @@ public class RootResource extends AbstractEventResource {
   private static final Date INIT_DATE = new Date();
   private String eventName = "";
 
+  @Context
+  private HttpServletRequest servletRequest;
+
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
@@ -49,10 +55,23 @@ public class RootResource extends AbstractEventResource {
     eventsLink.setRel("Events");
     atomFeed.addLink(eventsLink);
     Link authorsLink = Abdera.getNewFactory().newLink();
-    authorsLink.setHref(UriBuilder.fromResource(ChannelResource.class).build().toString());
+    authorsLink.setHref(UriBuilder.fromResource(ChannelsResource.class).build().toString());
     authorsLink.setRel("info@smartitengineering.com");
     atomFeed.addLink(authorsLink);
     responseBuilder.entity(atomFeed);
+    return responseBuilder.build();
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  public Response getInHTML()
+  {
+    ResponseBuilder responseBuilder = Response.ok();
+    String eventsLink=UriBuilder.fromResource(AllEventsResource.class).build().toString();
+    String channelLink=UriBuilder.fromResource(ChannelsResource.class).build().toString();
+    servletRequest.setAttribute("channelLink", channelLink);
+    Viewable viewable = new Viewable("root", eventsLink, RootResource.class);
+    responseBuilder.entity(viewable);
     return responseBuilder.build();
   }
 
