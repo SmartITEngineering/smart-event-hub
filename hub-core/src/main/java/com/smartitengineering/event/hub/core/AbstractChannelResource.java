@@ -23,10 +23,8 @@ import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import com.smartitengineering.util.rest.atom.server.AbstractResource;
 import java.net.URI;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -34,9 +32,6 @@ import org.apache.commons.lang.StringUtils;
  * @author imyousuf
  */
 public abstract class AbstractChannelResource extends AbstractResource {
-
-  @Context
-  private UriInfo uriInfo;
 
   protected Channel checkChannelExistence()
       throws WebApplicationException {
@@ -66,7 +61,7 @@ public abstract class AbstractChannelResource extends AbstractResource {
   }
 
   protected UriBuilder setBaseUri(final UriBuilder builder) throws IllegalArgumentException {
-    final URI baseUri = uriInfo.getBaseUri();
+    final URI baseUri = getUriInfo().getBaseUri();
     UriBuilder result = UriBuilder.fromUri(baseUri);
     final URI uri = builder.build();
     result.path(uri.getPath());

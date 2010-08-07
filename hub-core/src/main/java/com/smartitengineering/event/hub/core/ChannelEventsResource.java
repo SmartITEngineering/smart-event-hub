@@ -120,8 +120,7 @@ public class ChannelEventsResource extends AbstractEventResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getHtml(@PathParam("channelId") String inputChannelId) {
-    this.channelId = inputChannelId;
+  public Response getHtml() {
     return getInHTML("-1", false);
   }
   /*

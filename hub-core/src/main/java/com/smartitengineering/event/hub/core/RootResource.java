@@ -52,12 +52,8 @@ public class RootResource extends AbstractEventResource {
     Feed atomFeed = getFeed("Event Hub", INIT_DATE);
     Link eventsLink = Abdera.getNewFactory().newLink();
     eventsLink.setHref(UriBuilder.fromResource(AllEventsResource.class).build().toString());
-    eventsLink.setRel("Events");
+    eventsLink.setRel("events");
     atomFeed.addLink(eventsLink);
-    Link authorsLink = Abdera.getNewFactory().newLink();
-    authorsLink.setHref(UriBuilder.fromResource(ChannelsResource.class).build().toString());
-    authorsLink.setRel("info@smartitengineering.com");
-    atomFeed.addLink(authorsLink);
     responseBuilder.entity(atomFeed);
     return responseBuilder.build();
   }
