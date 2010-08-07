@@ -79,13 +79,6 @@ public class AllEventsResource extends AbstractEventResource {
   private Integer count;
 
   @GET
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/before/{eventPlaceholderId}")
-  public Response getBeforeHTML(@PathParam("eventPlaceholderId") String beforeEvent) {
-    return getInHTML(beforeEvent, true);
-  }
-
-  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   @Path("/before/{eventPlaceholderId}")
   public Response getBefore(@PathParam("eventPlaceholderId") String beforeEvent) {
@@ -94,9 +87,9 @@ public class AllEventsResource extends AbstractEventResource {
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/after/{eventPlaceholderId}")
-  public Response getAfterHTML(@PathParam("eventPlaceholderId") String afterEvent) {
-    return getInHTML(afterEvent, false);
+  @Path("/before/{eventPlaceholderId}")
+  public Response getBeforeHTML(@PathParam("eventPlaceholderId") String beforeEvent) {
+    return getInHTML(beforeEvent, true);
   }
 
   @GET
@@ -104,6 +97,13 @@ public class AllEventsResource extends AbstractEventResource {
   @Path("/after/{eventPlaceholderId}")
   public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
     return get(afterEvent, false);
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/after/{eventPlaceholderId}")
+  public Response getAfterHTML(@PathParam("eventPlaceholderId") String afterEvent) {
+    return getInHTML(afterEvent, false);
   }
 
   @GET
@@ -213,9 +213,9 @@ public class AllEventsResource extends AbstractEventResource {
 
         Link eventLink = getAbderaFactory().newLink();
 
-        eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getUniversallyUniqueID()).toString());
+        eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getPlaceholderId()).toString());
         eventLink.setRel(Link.REL_ALTERNATE);
-        eventLink.setMimeType(MediaType.APPLICATION_ATOM_XML);
+        eventLink.setMimeType(MediaType.APPLICATION_JSON);
 
         eventEntry.addLink(eventLink);
         atomFeed.addEntry(eventEntry);
