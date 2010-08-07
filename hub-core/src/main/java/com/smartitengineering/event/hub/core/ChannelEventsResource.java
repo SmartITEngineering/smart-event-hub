@@ -111,14 +111,14 @@ public class ChannelEventsResource extends AbstractEventResource {
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get(@PathParam("channelId") String inputChannelId) {
     this.channelId = inputChannelId;
-    return get("1", false);
+    return get("-1", false);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml(@PathParam("channelId") String inputChannelId) {
     this.channelId = inputChannelId;
-    return getInHTML("1", false);
+    return getInHTML("-1", false);
   }
   /*
    *
@@ -149,12 +149,6 @@ public class ChannelEventsResource extends AbstractEventResource {
     }
     ResponseBuilder responseBuilder = Response.ok();
     Feed atomFeed = getFeed("Events", new Date());
-
-    Link eventsLink = abderaFactory.newLink();
-    eventsLink.setHref(UriBuilder.fromResource(EventResource.class).build(placeholderId).toString());
-    eventsLink.setRel("event");
-
-    atomFeed.addLink(eventsLink);
 
     int thisCount=count;
     if(isBefore)
