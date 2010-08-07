@@ -208,7 +208,7 @@ public class DBPersistentStorer
       }
       params.addAll(Arrays.asList(QueryParameterFactory.getMaxResultsParam(Math.abs(count)), orderByParam));
       List<PersistentEvent> persistentEvents = getEventReadDao().getList(params);
-      if (count > 0 && (!placeholderId.equals("-1"))) {
+      if (count > 0 && placeholderIdInt > -1) {
         Collections.reverse(persistentEvents);
       }
       if (persistentEvents == null || persistentEvents.isEmpty()) {
