@@ -224,9 +224,9 @@ public class ChannelEventsResource extends AbstractEventResource {
 
         Link eventLink = getAbderaFactory().newLink();
 
-        eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getUniversallyUniqueID()).toString());
+        eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getPlaceholderId()).toString());
         eventLink.setRel(Link.REL_ALTERNATE);
-        eventLink.setMimeType(MediaType.APPLICATION_ATOM_XML);
+        eventLink.setMimeType(MediaType.APPLICATION_JSON);
 
         eventEntry.addLink(eventLink);
         atomFeed.addEntry(eventEntry);
