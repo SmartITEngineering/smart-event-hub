@@ -37,7 +37,7 @@
       <c:forEach var="event" items="${it}">
         <tr>
           <td>
-            <c:out value="${event.placeholderId}" />
+            <a href="/api/event/${event.placeholderId}"><c:out value="${event.placeholderId}" /></a>
             <c:set var="nextUrl" value="${event.placeholderId}"></c:set>
           </td>
           <c:if test="${count==0}">
@@ -45,15 +45,15 @@
             <c:set var="count" value="2"></c:set>
           </c:if>
           <td>
-            <c:out value="${event.universallyUniqueID}" />
+            <a href="/api/event/${event.placeholderId}"><c:out value="${event.universallyUniqueID}" /></a>
           </td>
           <jsp:setProperty name="contentHelper" property="content" value="${event.eventContent}"/>
           <c:set var="content" value="${contentHelper.contentAsString}"></c:set>
           <td>
-            <c:out value="${fn:substring(content,0,10)}"></c:out>
+            <a href="/api/event/${event.placeholderId}"><c:out value="${fn:substring(content,0,10)}"></c:out></a>
           </td>
           <td>
-            <c:out value="${event.creationDate}" />
+            <a href="/api/event/${event.placeholderId}"><c:out value="${event.creationDate}" /></a>
           </td>
         </tr>
       </c:forEach>
