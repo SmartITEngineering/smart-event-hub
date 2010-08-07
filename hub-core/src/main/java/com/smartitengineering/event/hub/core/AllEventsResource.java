@@ -79,10 +79,24 @@ public class AllEventsResource extends AbstractEventResource {
   private Integer count;
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/before/{eventPlaceholderId}")
+  public Response getBeforeHTML(@PathParam("eventPlaceholderId") String beforeEvent) {
+    return getInHTML(beforeEvent, true);
+  }
+
+  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   @Path("/before/{eventPlaceholderId}")
   public Response getBefore(@PathParam("eventPlaceholderId") String beforeEvent) {
     return get(beforeEvent, true);
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/after/{eventPlaceholderId}")
+  public Response getAfterHTML(@PathParam("eventPlaceholderId") String afterEvent) {
+    return getInHTML(afterEvent, false);
   }
 
   @GET
@@ -95,17 +109,26 @@ public class AllEventsResource extends AbstractEventResource {
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
-    return get("1", true);
+    return get("-1", true);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getHTML() {
+    return getInHTML("-1", false);
+  }
+   public Response getInHTML(String placeholderId, boolean isBefore) {
     if (count == null) {
       count = 10;
     }
+    int thisCount=count;
+    if(isBefore)
+    {
+      thisCount=count*-1;
+    }
     ResponseBuilder responseBuilder = Response.ok();
-    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents("1", null, count);
+    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null,
+                                                                                          thisCount);
     Viewable viewable = new Viewable("allevents", events, AllEventsResource.class);
     responseBuilder.entity(viewable);
     return responseBuilder.build();
@@ -114,6 +137,10 @@ public class AllEventsResource extends AbstractEventResource {
   public Response get(String placeholderId, boolean isBefore) {
     if (count == null) {
       count = 10;
+    }
+    int thisCount = count;
+    if (isBefore) {
+      thisCount = count * -1;
     }
     ResponseBuilder responseBuilder = Response.ok();
     Feed atomFeed = getFeed("Events", new Date());
@@ -124,7 +151,7 @@ public class AllEventsResource extends AbstractEventResource {
 
     atomFeed.addLink(eventsLink);
 
-    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null, count);
+    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null, thisCount);
 
     if (events != null && !events.isEmpty()) {
       MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
