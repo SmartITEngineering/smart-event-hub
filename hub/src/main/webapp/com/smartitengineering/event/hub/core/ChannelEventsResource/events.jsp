@@ -60,9 +60,9 @@
     </table>
     <a href="/api/channels"><< Back</a> <div id="pagi">
       <c:if test="${not empty nextUrl}">
-        <a id="pagination" href="/api/channels/pos/events/after/${previousUrl}"><< Previous</a>
+        <a id="pagination" href="/api/channels/${channelId}/events/after/${previousUrl}"><< Previous</a>
         <c:if test="${nextUrl!=1}">
-          &nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/channels/pos/events/before/${nextUrl}" id="pagination">Next >></a>
+          &nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/channels/${channelId}/events/before/${nextUrl}" id="pagination">Next >></a>
         </c:if>
       </c:if>
     </div>

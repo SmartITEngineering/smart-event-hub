@@ -49,6 +49,10 @@
       <artifactId>atmosphere-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.smartitengineering.smart-util.rest</groupId>
       <artifactId>atom-server</artifactId>
     </dependency>

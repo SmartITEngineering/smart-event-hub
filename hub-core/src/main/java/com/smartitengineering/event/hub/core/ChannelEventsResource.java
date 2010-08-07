@@ -28,12 +28,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -56,6 +58,8 @@ public class ChannelEventsResource extends AbstractEventResource {
   static final UriBuilder EVENTS_BEFORE_BUILDER;
   private String channelId = "";
   private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
+  @Context
+  private HttpServletRequest servletRequest;
 
   static {
     EVENTS_URI_BUILDER = UriBuilder.fromResource(ChannelEventsResource.class);
@@ -138,6 +142,7 @@ public class ChannelEventsResource extends AbstractEventResource {
     ResponseBuilder responseBuilder = Response.ok();
     Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
                                                                                           thisCount);
+    servletRequest.setAttribute("channelId", channelId);
     Viewable viewable = new Viewable("events", events, ChannelEventsResource.class);
     responseBuilder.entity(viewable);
     return responseBuilder.build();

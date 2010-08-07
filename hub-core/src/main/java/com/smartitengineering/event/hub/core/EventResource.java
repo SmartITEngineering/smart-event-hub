@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
-import com.smartitengineering.event.hub.core.EventResource;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import com.sun.jersey.api.view.Viewable;
 import javax.ws.rs.DELETE;
