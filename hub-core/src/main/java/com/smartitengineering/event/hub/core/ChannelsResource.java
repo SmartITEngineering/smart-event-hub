@@ -50,7 +50,7 @@ import org.apache.commons.lang.math.NumberUtils;
  *
  * @author imyousuf
  */
-@Path("/channels")
+@Path("/all-channels")
 public class ChannelsResource extends AbstractChannelResource {
 
   static final UriBuilder CHANNELS_URI_BUILDER;
@@ -117,13 +117,13 @@ public class ChannelsResource extends AbstractChannelResource {
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
-    return get(0, false);
+    return get(Integer.MAX_VALUE, true);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml() {
-    return getInHtml(0, false);
+    return getInHtml(Integer.MAX_VALUE, true);
   }
 
   @POST
