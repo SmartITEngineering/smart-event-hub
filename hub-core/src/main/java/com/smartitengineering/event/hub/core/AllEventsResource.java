@@ -48,7 +48,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author kaisar
  */
-@Path("/events")
+@Path("/all-events")
 public class AllEventsResource extends AbstractEventResource {
 
   static final UriBuilder EVENTS_URI_BUILDER;
