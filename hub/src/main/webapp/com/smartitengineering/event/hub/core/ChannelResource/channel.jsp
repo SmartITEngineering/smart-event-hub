@@ -26,6 +26,6 @@
       Enter Event Name <textarea name="event" id="event">Event</textarea><br>
       <input type="submit" value="Submit" />
     </form>
-      <a href="/api/channels/${it.name}/events">Events of ${it.name}</a>
+    <a href="/api/channels/${it.name}/events">Events of ${it.name}</a>
   </body>
 </html>

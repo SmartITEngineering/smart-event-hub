@@ -19,8 +19,8 @@
   <body>
     <b>Placeholder Id</b>          <c:out value="${it.placeholderId}" /><br>
     <b>Universally Unique Id</b>        <c:out value="${it.universallyUniqueID}" /><br>
-            <jsp:setProperty name="contentHelper" property="content" value="${it.eventContent}"/>
-            <c:set var="content" value="${contentHelper.contentAsString}"></c:set>
+    <jsp:setProperty name="contentHelper" property="content" value="${it.eventContent}"/>
+    <c:set var="content" value="${contentHelper.contentAsString}"></c:set>
     <b>Event Content</b>        <c:out value="${content}"/><br>
     <b>Creation Date</b>        <c:out value="${it.creationDate}" /><br>
     <a href="/api/all-channels"><< Back</a>
