@@ -74,7 +74,6 @@ public class ChannelsResource extends AbstractChannelResource {
       throw new InstantiationError();
     }
   }
-
   private Integer position;
   @QueryParam("count")
   @DefaultValue("10")
@@ -157,7 +156,8 @@ public class ChannelsResource extends AbstractChannelResource {
         builder.entity(errorMessage);
       }
       else {
-        Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(0, 10);
+        Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(Integer.MAX_VALUE,
+                                                                                                    -10);
         Viewable viewable = new Viewable("channels", channels, ChannelsResource.class);
         builder = Response.ok(viewable);
       }
