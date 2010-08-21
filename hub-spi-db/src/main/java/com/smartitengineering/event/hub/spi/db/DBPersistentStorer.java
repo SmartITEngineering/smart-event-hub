@@ -225,14 +225,24 @@ public class DBPersistentStorer
       return Collections.emptyList();
     }
     final QueryParameter<Integer> idParam;
+    List<QueryParameter> params = new ArrayList<QueryParameter>();
+    final QueryParameter<Order> orderByParam;
     if (count > 0) {
       idParam = QueryParameterFactory.getGreaterThanPropertyParam("id", startIndex);
+      orderByParam = QueryParameterFactory.getOrderByParam("id", Order.DESC);
     }
     else {
       idParam = QueryParameterFactory.getLesserThanPropertyParam("id", startIndex);
+      orderByParam = QueryParameterFactory.getOrderByParam("id", Order.DESC);
     }
+    params.add(idParam);
+    params.addAll(Arrays.asList(QueryParameterFactory.getMaxResultsParam(Math.abs(count)), orderByParam));
     List<PersistentChannel> channels = getChannelReadDao().getList(idParam, QueryParameterFactory.getMaxResultsParam(
         Math.abs(count)));
+    if(count>0)
+    {
+      Collections.reverse(channels);
+    }
     return getChannelConverter().convertInversely(channels.toArray(new PersistentChannel[channels.size()]));
   }
 
