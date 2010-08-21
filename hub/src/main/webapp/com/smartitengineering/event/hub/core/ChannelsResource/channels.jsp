@@ -48,20 +48,20 @@
           </c:if>
           <tr>
             <td>
-              <a href="channels/${channel.name}"><c:out value="${channel.position}" /></a>
+              <c:out value="${channel.position}" />
             </td>
             <td>
-              <a href="channels/${channel.name}"><c:out value="${channel.name}" /></a>
+              <a href="/api/channels/${channel.name}"><c:out value="${channel.name}" /></a>
             </td>
             <td>
               <c:set var="description" value="${channel.description}"></c:set>
-              <a href="channels/${channel.name}"><c:out value="${fn:substring(description,0,10)}"/></a>
+              <a href="/api/channels/${channel.name}"><c:out value="${fn:substring(description,0,10)}"/></a>
             </td>
             <td>
               <c:out value="${channel.authToken}" />
             </td>
             <td>
-              <a href="channels/${channel.name}/events">View Events of ${channel.name}</a>
+              <a href="/api/channels/${channel.name}/events">View Events of ${channel.name}</a>
             </td>
           </tr>
         </c:forEach>
