@@ -66,8 +66,16 @@
           </tr>
         </c:forEach>
       </table>
-      <br><br>
-      <a href="/api/all-channels/after/${first}${qParam}" id="pagination">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/all-channels/before/${last}${qParam}" id="pagination">Next</a>
+      <br>
+      <div id="pagi">
+        <c:if test="${not empty first}">
+          <a href="/api/all-channels/after/${first}${qParam}" id="pagination"> << Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <c:if test="${last!=1}">
+            <a href="/api/all-channels/before/${last}${qParam}" id="pagination">Next >> </a>
+          </c:if>
+        </c:if>
+      </div>
+      <br>
       <center><button onclick=change() id="butt">Create New Channel</button></center>
     </div>
 
