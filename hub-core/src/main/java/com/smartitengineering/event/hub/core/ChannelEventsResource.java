@@ -123,11 +123,6 @@ public class ChannelEventsResource extends AbstractEventResource {
   public Response getHtml() {
     return getInHTML("-1", false);
   }
-  /*
-   *
-   * add get events in HTML format
-   *
-   */
 
   public Response getInHTML(String placeholderId, boolean isBefore) {
     if (count == null) {

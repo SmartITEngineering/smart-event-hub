@@ -98,11 +98,6 @@ public class ChannelResource extends AbstractChannelResource {
     }
   }
 
-  /*
-   *
-   * add the facility to get channel info in HTML
-   *
-   */
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getChannelInfoInHTML() {
