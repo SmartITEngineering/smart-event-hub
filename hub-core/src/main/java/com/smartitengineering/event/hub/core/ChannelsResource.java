@@ -75,100 +75,56 @@ public class ChannelsResource extends AbstractChannelResource {
     }
   }
 
-//  private Integer position;
-//  @QueryParam("count")
-//  @DefaultValue("10")
-//  private Integer count;
-  private String channelName;
-  private String authToken;
-//
-//  @GET
-//  @Produces(MediaType.APPLICATION_ATOM_XML)
-//  @Path("/before/{channelPosition}")
-//  public Response getBefore(@PathParam("channelPosition") String beforeChannel) {
-//    this.position = NumberUtils.toInt(beforeChannel);
-//    return get(position, true);
-//  }
-//
-//  @GET
-//  @Produces(MediaType.TEXT_HTML)
-//  @Path("/before/{channelPosition}")
-//  public Response getBeforeHtml(@PathParam("channelPosition") String beforeChannel) {
-//    this.position = NumberUtils.toInt(beforeChannel);
-//    return getInHtml(position, true);
-//  }
-//
-//  @GET
-//  @Produces(MediaType.APPLICATION_ATOM_XML)
-//  @Path("/after/{channelPosition}")
-//  public Response getAfter(@PathParam("channelPosition") String afterChannel) {
-//    this.position = NumberUtils.toInt(afterChannel);
-//    return get(position, false);
-//  }
-//
-//  @GET
-//  @Produces(MediaType.TEXT_HTML)
-//  @Path("/after/{channelPosition}")
-//  public Response getAfterHtml(@PathParam("channelPosition") String afterChannel) {
-//    this.position = NumberUtils.toInt(afterChannel);
-//    return getInHtml(position, false);
-//  }
-//
-//  @GET
-//  @Produces(MediaType.APPLICATION_ATOM_XML)
-//  public Response get() {
-//    return get(0, false);
-//  }
-//
-//  @GET
-//  @Produces(MediaType.TEXT_HTML)
-//  public Response getHtml() {
-//    return getInHtml(0, false);
-//  }
+  private Integer position;
   @QueryParam("count")
   @DefaultValue("10")
   private Integer count;
+  private String channelName;
+  private String authToken;
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  @Path("/before/{eventPlaceholderId}")
-  public Response getBefore(@PathParam("eventPlaceholderId") String beforeEvent) {
-    return get(beforeEvent, true);
+  @Path("/before/{channelPosition}")
+  public Response getBefore(@PathParam("channelPosition") String beforeChannel) {
+    this.position = NumberUtils.toInt(beforeChannel);
+    return get(position, true);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/before/{eventPlaceholderId}")
-  public Response getBeforeInHTML(@PathParam("eventPlaceholderId") String beforeEvent) {
-    return getInHtml(beforeEvent, true);
+  @Path("/before/{channelPosition}")
+  public Response getBeforeHtml(@PathParam("channelPosition") String beforeChannel) {
+    this.position = NumberUtils.toInt(beforeChannel);
+    return getInHtml(position, true);
   }
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  @Path("/after/{eventPlaceholderId}")
-  public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
-    return get(afterEvent, false);
+  @Path("/after/{channelPosition}")
+  public Response getAfter(@PathParam("channelPosition") String afterChannel) {
+    this.position = NumberUtils.toInt(afterChannel);
+    return get(position, false);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  @Path("/after/{eventPlaceholderId}")
-  public Response getAfterInHTML(@PathParam("eventPlaceholderId") String afterEvent) {
-    return getInHtml(afterEvent, false);
+  @Path("/after/{channelPosition}")
+  public Response getAfterHtml(@PathParam("channelPosition") String afterChannel) {
+    this.position = NumberUtils.toInt(afterChannel);
+    return getInHtml(position, false);
   }
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
-    return get("0", false);
+    return get(0, false);
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml() {
-    return getInHtml("0", false);
+    return getInHtml(0, false);
   }
-
 
   @POST
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -212,7 +168,7 @@ public class ChannelsResource extends AbstractChannelResource {
     return builder.build();
   }
 
-  public Response getInHtml(String startIndex, boolean isBefore) {
+  public Response getInHtml(int startIndex, boolean isBefore) {
     if (count == null) {
       count = 10;
     }
@@ -221,15 +177,14 @@ public class ChannelsResource extends AbstractChannelResource {
       realCount = count * -1;
     }
     final ResponseBuilder builder = Response.ok();
-    Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(NumberUtils.toInt(
-        startIndex), realCount);
+    Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(startIndex, realCount);
     Viewable viewable = new Viewable("channels", channels, ChannelsResource.class);
     builder.entity(viewable);
     return builder.build();
 
   }
 
-  public Response get(String startIndex, boolean isBefore) {
+  public Response get(int startIndex, boolean isBefore) {
     if (count == null) {
       count = 10;
     }
@@ -246,8 +201,7 @@ public class ChannelsResource extends AbstractChannelResource {
 
     atomFeed.addLink(eventsLink);
 
-    Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(NumberUtils.toInt(
-        startIndex), thisCount);
+    Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(startIndex, thisCount);
 
     if (channels != null && !channels.isEmpty()) {
       MultivaluedMap<String, String> queryParams = getUriInfo().getQueryParameters();
