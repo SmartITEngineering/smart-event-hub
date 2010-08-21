@@ -13,11 +13,15 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+      function delayer(){
+        window.location="http://localhost:9090/api"
+      }
+    </script>
     <title>Home Page</title>
     <link type="text/css" rel='stylesheet' href='/css/channel.css' />
   </head>
-  <body>
-    <% String redirectURL = "http://localhost:9090/api";
-    response.sendRedirect(redirectURL); %>
+  <body onload="setTimeout('delayer()', 500)">
+    <h2 align="center">Please Wait. Redirecting....</h2>
   </body>
 </html>
