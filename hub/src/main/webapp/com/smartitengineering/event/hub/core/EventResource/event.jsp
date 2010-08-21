@@ -23,6 +23,6 @@
             <c:set var="content" value="${contentHelper.contentAsString}"></c:set>
     <b>Event Content</b>        <c:out value="${content}"/><br>
     <b>Creation Date</b>        <c:out value="${it.creationDate}" /><br>
-    <a href="/api/events"><< Back</a>
+    <a href="/api/all-channels"><< Back</a>
   </body>
 </html>
