@@ -23,6 +23,7 @@
     <div class="show" id="div1">
       <table>
         <tr>
+          <th>Position</th>
           <th>Name</th>
           <th>Description</th>
           <th>Auth Token</th>
@@ -30,6 +31,9 @@
         </tr>
         <c:forEach var="channel" items="${it}">
           <tr>
+            <td>
+              <a href="channels/${channel.name}"><c:out value="${channel.position}" /></a>
+            </td>
             <td>
               <a href="channels/${channel.name}"><c:out value="${channel.name}" /></a>
             </td>
@@ -47,6 +51,7 @@
         </c:forEach>
       </table>
       <br><br>
+      <a href="" id="pagination">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="pagination">Next</a>
       <center><button onclick=change() id="butt">Create New Channel</button></center>
     </div>
 
