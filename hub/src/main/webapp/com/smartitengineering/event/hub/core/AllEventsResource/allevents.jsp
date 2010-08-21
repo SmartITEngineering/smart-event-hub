@@ -31,17 +31,27 @@
       <th>
         Creation Date
       </th>
-      <c:set var="count" value="0"></c:set>
-      <c:forEach var="event" items="${it}">
+      <c:set var="first" value="0"></c:set>
+      <c:set var="last" value="0"></c:set>
+      <c:choose>
+        <c:when test="${empty param.count}">
+          <c:set var="qParam" value="" />
+        </c:when>
+        <c:otherwise>
+          <c:set var="qParam" value="?count=${param.count}" />
+        </c:otherwise>
+      </c:choose>
+      <c:forEach var="event" items="${it}" varStatus="status">
+        <c:if test="${status.first}">
+          <c:set var="first" value="${event.placeholderId}" />
+        </c:if>
+        <c:if test="${status.last}">
+          <c:set var="last" value="${event.placeholderId}" />
+        </c:if>
         <tr>
           <td>
             <a href="/api/event/${event.placeholderId}"><c:out value="${event.placeholderId}" /></a>
-            <c:set var="nextUrl" value="${event.placeholderId}"></c:set>
           </td>
-          <c:if test="${count==0}">
-            <c:set var="previousUrl" value="${event.placeholderId}"></c:set>
-            <c:set var="count" value="2"></c:set>
-          </c:if>
           <td>
             <a href="/api/event/${event.placeholderId}"><c:out value="${event.universallyUniqueID}" /></a>
           </td>
@@ -57,10 +67,10 @@
       </c:forEach>
     </table>
     <div id="pagi">
-      <c:if test="${not empty nextUrl}">
-        <a id="pagination" href="/api/events/after/${previousUrl}"><< Previous</a>
-        <c:if test="${nextUrl!=1}">
-          &nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/events/before/${nextUrl}" id="pagination">Next >></a>
+      <c:if test="${not empty first}">
+        <a id="pagination" href="/api/all-events/after/${first}${qParam}"><< Previous</a>
+        <c:if test="${last!=1}">
+          &nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/all-events/before/${last}${qParam}" id="pagination">Next >></a>
         </c:if>
       </c:if>
     </div>

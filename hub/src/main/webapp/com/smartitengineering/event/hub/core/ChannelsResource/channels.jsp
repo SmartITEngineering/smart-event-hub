@@ -29,7 +29,23 @@
           <th>Auth Token</th>
           <th>Events</th>
         </tr>
-        <c:forEach var="channel" items="${it}">
+        <c:set var="first" value="0"></c:set>
+        <c:set var="last" value="0"></c:set>
+        <c:choose>
+          <c:when test="${empty param.count}">
+            <c:set var="qParam" value="" />
+          </c:when>
+          <c:otherwise>
+            <c:set var="qParam" value="?count=${param.count}" />
+          </c:otherwise>
+        </c:choose>
+        <c:forEach var="channel" items="${it}" varStatus="status">
+          <c:if test="${status.first}">
+            <c:set var="first" value="${channel.position}" />
+          </c:if>
+          <c:if test="${status.last}">
+            <c:set var="last" value="${channel.position}" />
+          </c:if>
           <tr>
             <td>
               <a href="channels/${channel.name}"><c:out value="${channel.position}" /></a>
@@ -51,13 +67,13 @@
         </c:forEach>
       </table>
       <br><br>
-      <a href="" id="pagination">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="pagination">Next</a>
+      <a href="/api/all-channels/after/${first}${qParam}" id="pagination">Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/all-channels/before/${last}${qParam}" id="pagination">Next</a>
       <center><button onclick=change() id="butt">Create New Channel</button></center>
     </div>
 
     <h3>
       <div class="hide" id="div2">
-        <form action="/api/channels" method="post" id="create-channel">
+        <form action="/api/all-channels" method="post" id="create-channel">
           <div>Name</div><input name="name" type="text" /><br />
           <div>Description</div><textarea name="description" cols="30" rows="5"></textarea><br />
           <div>Auth Token</div><input name="authToken" type="text" /><br />
