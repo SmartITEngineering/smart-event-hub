@@ -229,7 +229,7 @@ public class DBPersistentStorer
     final QueryParameter<Order> orderByParam;
     if (count > 0) {
       idParam = QueryParameterFactory.getGreaterThanPropertyParam("id", startIndex);
-      orderByParam = QueryParameterFactory.getOrderByParam("id", Order.DESC);
+      orderByParam = QueryParameterFactory.getOrderByParam("id", Order.ASC);
     }
     else {
       idParam = QueryParameterFactory.getLesserThanPropertyParam("id", startIndex);
@@ -237,10 +237,8 @@ public class DBPersistentStorer
     }
     params.add(idParam);
     params.addAll(Arrays.asList(QueryParameterFactory.getMaxResultsParam(Math.abs(count)), orderByParam));
-    List<PersistentChannel> channels = getChannelReadDao().getList(idParam, QueryParameterFactory.getMaxResultsParam(
-        Math.abs(count)));
-    if(count>0)
-    {
+    List<PersistentChannel> channels = getChannelReadDao().getList(params);
+    if (count > 0) {
       Collections.reverse(channels);
     }
     return getChannelConverter().convertInversely(channels.toArray(new PersistentChannel[channels.size()]));
