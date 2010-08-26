@@ -17,67 +17,30 @@
     <title>Channels</title>
     <script type="text/javascript" src="/javascripts/js_1.js"></script>
     <link type="text/css" rel='stylesheet' href='/css/channel.css' />
+    <script type="text/javascript" src="/javascripts/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="/javascripts/siteljquerylib.js"></script>
+    <c:choose>
+      <c:when test="${empty param.count}">
+        <c:set var="qParam" value="" />
+      </c:when>
+      <c:otherwise>
+        <c:set var="qParam" value="?count=${param.count}" />
+      </c:otherwise>
+    </c:choose>
+    <script type="text/javascript">
+      var url="/api/all-channels/frags${qParam}";
+      $(document).ready(function(){
+        $("#content").pagination(url, "pagi");
+      });
+    </script>
   </head>
   <body>
-    <h1 align="center">Channels</h1>
-    <div class="show" id="div1">
-      <table>
-        <tr>
-          <th>Position</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Auth Token</th>
-          <th>Events</th>
-        </tr>
-        <c:set var="first" value="0"></c:set>
-        <c:set var="last" value="0"></c:set>
-        <c:choose>
-          <c:when test="${empty param.count}">
-            <c:set var="qParam" value="" />
-          </c:when>
-          <c:otherwise>
-            <c:set var="qParam" value="?count=${param.count}" />
-          </c:otherwise>
-        </c:choose>
-        <c:forEach var="channel" items="${it}" varStatus="status">
-          <c:if test="${status.first}">
-            <c:set var="first" value="${channel.position}" />
-          </c:if>
-          <c:if test="${status.last}">
-            <c:set var="last" value="${channel.position}" />
-          </c:if>
-          <tr>
-            <td>
-              <c:out value="${channel.position}" />
-            </td>
-            <td>
-              <a href="/api/channels/${channel.name}"><c:out value="${channel.name}" /></a>
-            </td>
-            <td>
-              <c:set var="description" value="${channel.description}"></c:set>
-              <a href="/api/channels/${channel.name}"><c:out value="${fn:substring(description,0,10)}"/></a>
-            </td>
-            <td>
-              <c:out value="${channel.authToken}" />
-            </td>
-            <td>
-              <a href="/api/channels/${channel.name}/events">View Events of ${channel.name}</a>
-            </td>
-          </tr>
-        </c:forEach>
-      </table>
-      <br>
-      <div id="pagi">
-        <c:if test="${not empty first}">
-          <a href="/api/all-channels/after/${first}${qParam}" id="pagination"> << Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <c:if test="${last!=1}">
-            <a href="/api/all-channels/before/${last}${qParam}" id="pagination">Next >> </a>
-          </c:if>
-        </c:if>
-      </div>
-      <br>
+    <div id="content"></div>
+    <div id="div1" class="show">
+      
       <center><button onclick=change() id="butt">Create New Channel</button></center>
     </div>
+
 
     <h3>
       <div class="hide" id="div2">

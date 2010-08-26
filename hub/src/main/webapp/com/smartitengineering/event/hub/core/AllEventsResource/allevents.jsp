@@ -15,65 +15,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Events</title>
     <link type="text/css" rel='stylesheet' href='/css/channel.css' />
+    <script type="text/javascript" src="/javascripts/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="/javascripts/siteljquerylib.js"></script>
+    <c:choose>
+      <c:when test="${empty param.count}">
+        <c:set var="qParam" value="" />
+      </c:when>
+      <c:otherwise>
+        <c:set var="qParam" value="?count=${param.count}" />
+      </c:otherwise>
+    </c:choose>
+    <script type="text/javascript">
+      var url="/api/all-events/frags${qParam}";
+      $(document).ready(function(){
+        $("#content").pagination(url, "pagi");
+      });
+    </script>
   </head>
   <body>
-    <h1 align="center">Events</h1>
-    <table align="center">
-      <th>
-        Placeholder Id
-      </th>
-      <th>
-        Universally Unique Id
-      </th>
-      <th>
-        Event Content
-      </th>
-      <th>
-        Creation Date
-      </th>
-      <c:set var="first" value="0"></c:set>
-      <c:set var="last" value="0"></c:set>
-      <c:choose>
-        <c:when test="${empty param.count}">
-          <c:set var="qParam" value="" />
-        </c:when>
-        <c:otherwise>
-          <c:set var="qParam" value="?count=${param.count}" />
-        </c:otherwise>
-      </c:choose>
-      <c:forEach var="event" items="${it}" varStatus="status">
-        <c:if test="${status.first}">
-          <c:set var="first" value="${event.placeholderId}" />
-        </c:if>
-        <c:if test="${status.last}">
-          <c:set var="last" value="${event.placeholderId}" />
-        </c:if>
-        <tr>
-          <td>
-            <a href="/api/event/${event.placeholderId}"><c:out value="${event.placeholderId}" /></a>
-          </td>
-          <td>
-            <a href="/api/event/${event.placeholderId}"><c:out value="${event.universallyUniqueID}" /></a>
-          </td>
-          <td>
-            <jsp:setProperty name="contentHelper" property="content" value="${event.eventContent}"/>
-            <c:set var="content" value="${contentHelper.contentAsString}"></c:set>
-            <a href="/api/event/${event.placeholderId}"><c:out value="${fn:substring(content,0,10)}"></c:out></a>
-          </td>
-          <td>
-            <a href="/api/event/${event.placeholderId}"><c:out value="${event.creationDate}" /></a>
-          </td>
-        </tr>
-      </c:forEach>
-    </table>
-    <div id="pagi">
-      <c:if test="${not empty first}">
-        <a id="pagination" href="/api/all-events/after/${first}${qParam}"><< Previous</a>
-        <c:if test="${last!=1}">
-          &nbsp;&nbsp;&nbsp;&nbsp;<a href="/api/all-events/before/${last}${qParam}" id="pagination">Next >></a>
-        </c:if>
-      </c:if>
-    </div>
-
+    <div id="content"></div>
   </body>
 </html>
