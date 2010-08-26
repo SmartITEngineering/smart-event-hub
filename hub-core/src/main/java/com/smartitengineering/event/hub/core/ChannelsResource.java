@@ -98,6 +98,14 @@ public class ChannelsResource extends AbstractChannelResource {
   }
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/before/{channelPosition}/frags")
+  public Response getBeforeHtmlFrags(@PathParam("channelPosition") String beforeChannel) {
+    this.position = NumberUtils.toInt(beforeChannel);
+    return getInHtmlFrags(position, true);
+  }
+
+  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   @Path("/after/{channelPosition}")
   public Response getAfter(@PathParam("channelPosition") String afterChannel) {
@@ -114,6 +122,14 @@ public class ChannelsResource extends AbstractChannelResource {
   }
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/after/{channelPosition}/frags")
+  public Response getAfterHtmlFrags(@PathParam("channelPosition") String afterChannel) {
+    this.position = NumberUtils.toInt(afterChannel);
+    return getInHtmlFrags(position, false);
+  }
+
+  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
     return get(Integer.MAX_VALUE, true);
@@ -123,6 +139,13 @@ public class ChannelsResource extends AbstractChannelResource {
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml() {
     return getInHtml(Integer.MAX_VALUE, true);
+  }
+
+  @GET
+  @Path("/frags")
+  @Produces(MediaType.TEXT_HTML)
+  public Response getHtmlFrags() {
+    return getInHtmlFrags(Integer.MAX_VALUE, true);
   }
 
   @POST
@@ -179,6 +202,22 @@ public class ChannelsResource extends AbstractChannelResource {
     final ResponseBuilder builder = Response.ok();
     Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(startIndex, realCount);
     Viewable viewable = new Viewable("channels", channels, ChannelsResource.class);
+    builder.entity(viewable);
+    return builder.build();
+
+  }
+
+  public Response getInHtmlFrags(int startIndex, boolean isBefore) {
+    if (count == null) {
+      count = 10;
+    }
+    Integer realCount = count;
+    if (isBefore) {
+      realCount = count * -1;
+    }
+    final ResponseBuilder builder = Response.ok();
+    Collection<Channel> channels = HubPersistentStorerSPI.getInstance().getStorer().getChannels(startIndex, realCount);
+    Viewable viewable = new Viewable("channelsFrags", channels, ChannelsResource.class);
     builder.entity(viewable);
     return builder.build();
 

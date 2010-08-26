@@ -99,6 +99,13 @@ public class ChannelEventsResource extends AbstractEventResource {
   }
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/before/{eventPlaceholderId}/frags")
+  public Response getBeforeInHTMLFrags(@PathParam("eventPlaceholderId") String beforeEvent) {
+    return getInHTMLFrags(beforeEvent, true);
+  }
+
+  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   @Path("/after/{eventPlaceholderId}")
   public Response getAfter(@PathParam("eventPlaceholderId") String afterEvent) {
@@ -113,6 +120,13 @@ public class ChannelEventsResource extends AbstractEventResource {
   }
 
   @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/after/{eventPlaceholderId}/frags")
+  public Response getAfterInHTMLFrags(@PathParam("eventPlaceholderId") String afterEvent) {
+    return getInHTMLFrags(afterEvent, false);
+  }
+
+  @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
     return get("-1", false);
@@ -122,6 +136,13 @@ public class ChannelEventsResource extends AbstractEventResource {
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml() {
     return getInHTML("-1", false);
+  }
+
+  @GET
+  @Path("/frags")
+  @Produces(MediaType.TEXT_HTML)
+  public Response getHtmlFrags() {
+    return getInHTMLFrags("-1", false);
   }
 
   public Response getInHTML(String placeholderId, boolean isBefore) {
@@ -137,6 +158,23 @@ public class ChannelEventsResource extends AbstractEventResource {
                                                                                           thisCount);
     servletRequest.setAttribute("channelId", channelId);
     Viewable viewable = new Viewable("events", events, ChannelEventsResource.class);
+    responseBuilder.entity(viewable);
+    return responseBuilder.build();
+  }
+
+  public Response getInHTMLFrags(String placeholderId, boolean isBefore) {
+    if (count == null) {
+      count = 10;
+    }
+    int thisCount = count;
+    if (isBefore) {
+      thisCount = count * -1;
+    }
+    ResponseBuilder responseBuilder = Response.ok();
+    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, channelId,
+                                                                                          thisCount);
+    servletRequest.setAttribute("channelId", channelId);
+    Viewable viewable = new Viewable("channelEventsFrags", events, ChannelEventsResource.class);
     responseBuilder.entity(viewable);
     return responseBuilder.build();
   }

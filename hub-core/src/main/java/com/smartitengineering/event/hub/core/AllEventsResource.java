@@ -91,6 +91,12 @@ public class AllEventsResource extends AbstractEventResource {
   public Response getBeforeHTML(@PathParam("eventPlaceholderId") String beforeEvent) {
     return getInHTML(beforeEvent, true);
   }
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/before/{eventPlaceholderId}/frags")
+  public Response getBeforeHTMLFrags(@PathParam("eventPlaceholderId") String beforeEvent) {
+    return getInHTMLFrags(beforeEvent, true);
+  }
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
@@ -105,6 +111,12 @@ public class AllEventsResource extends AbstractEventResource {
   public Response getAfterHTML(@PathParam("eventPlaceholderId") String afterEvent) {
     return getInHTML(afterEvent, false);
   }
+  @GET
+  @Produces(MediaType.TEXT_HTML)
+  @Path("/after/{eventPlaceholderId}/frags")
+  public Response getAfterHTMLFrags(@PathParam("eventPlaceholderId") String afterEvent) {
+    return getInHTMLFrags(afterEvent, false);
+  }
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
@@ -116,6 +128,12 @@ public class AllEventsResource extends AbstractEventResource {
   @Produces(MediaType.TEXT_HTML)
   public Response getHTML() {
     return getInHTML("-1", false);
+  }
+  @GET
+  @Path("/frags")
+  @Produces(MediaType.TEXT_HTML)
+  public Response getHTMLFrags() {
+    return getInHTMLFrags("-1", false);
   }
    public Response getInHTML(String placeholderId, boolean isBefore) {
     if (count == null) {
@@ -130,6 +148,22 @@ public class AllEventsResource extends AbstractEventResource {
     Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null,
                                                                                           thisCount);
     Viewable viewable = new Viewable("allevents", events, AllEventsResource.class);
+    responseBuilder.entity(viewable);
+    return responseBuilder.build();
+  }
+   public Response getInHTMLFrags(String placeholderId, boolean isBefore) {
+    if (count == null) {
+      count = 10;
+    }
+    int thisCount=count;
+    if(isBefore)
+    {
+      thisCount=count*-1;
+    }
+    ResponseBuilder responseBuilder = Response.ok();
+    Collection<Event> events = HubPersistentStorerSPI.getInstance().getStorer().getEvents(placeholderId, null,
+                                                                                          thisCount);
+    Viewable viewable = new Viewable("eventFrags", events, AllEventsResource.class);
     responseBuilder.entity(viewable);
     return responseBuilder.build();
   }
