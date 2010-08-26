@@ -22,6 +22,7 @@ function change()
         {
             document.getElementById("div1").className="hide";
             document.getElementById("div2").className="show";
+            document.getElementById("content").className="hide";
         }
     else
         {
