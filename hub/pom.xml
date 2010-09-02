@@ -28,9 +28,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <artifactId>hub-db</artifactId>
   <packaging>war</packaging>
   <version>0.1-SNAPSHOT</version>
-  <name>Hub RDBMS Configured WebApp</name>
+  <name>Hub Web Application</name>
   <description>
-    The main web application which will persist events to RDBMS.
+    The main web application which will persist events to storage configured. It will be based on profiles. By default
+    it will build the hub-db.war only.
   </description>
   <dependencies>
     <dependency>
@@ -39,38 +40,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.smartitengineering.event</groupId>
-      <artifactId>hub-spi-db</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>com.smartitengineering.smart-util</groupId>
       <artifactId>smart-bean-spring-util</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.smartitengineering</groupId>
-      <artifactId>smart-hibernate-abstract-dao</artifactId>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm-attrs</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>cglib</groupId>
-          <artifactId>cglib</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib-nodep</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -93,6 +65,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <webResource>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <includes>
+                <include>web.xml</include>
+              </includes>
+              <targetPath>WEB-INF</targetPath>
+              <filtering>true</filtering>
+            </webResource>
+          </webResources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
@@ -101,9 +89,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <executions>
           <execution>
             <id>start-jetty</id>
-            <phase>process-test-resources</phase>
+            <phase>pre-integration-test</phase>
             <goals>
-              <goal>run</goal>
+              <goal>run-war</goal>
             </goals>
             <configuration>
               <scanIntervalSeconds>0</scanIntervalSeconds>
@@ -112,7 +100,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           </execution>
           <execution>
             <id>stop-jetty</id>
-            <phase>prepare-package</phase>
+            <phase>post-integration-test</phase>
             <goals>
               <goal>stop</goal>
             </goals>
@@ -120,6 +108,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </executions>
       </plugin>
     </plugins>
-    <finalName>hub-db</finalName>
   </build>
+  <profiles>
+    <profile>
+      <id>rdbms</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.smartitengineering.event</groupId>
+          <artifactId>hub-spi-db</artifactId>
+          <version>${project.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.smartitengineering</groupId>
+          <artifactId>smart-hibernate-abstract-dao</artifactId>
+          <scope>runtime</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>asm</groupId>
+              <artifactId>asm</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>asm</groupId>
+              <artifactId>asm-attrs</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>cglib</groupId>
+              <artifactId>cglib</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>cglib</groupId>
+          <artifactId>cglib-nodep</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <finalName>hub-db</finalName>
+      </build>
+      <properties>
+        <app.context.path>com/smartitengineering/event/hub/spi/db/app-max-context.xml</app.context.path>
+      </properties>
+    </profile>
+  </profiles>
 </project>

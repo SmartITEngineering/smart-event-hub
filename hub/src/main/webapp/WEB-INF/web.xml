@@ -3,7 +3,7 @@
   <display-name>hub</display-name>
   <context-param>
     <param-name>classpathAppContextLocation</param-name>
-    <param-value>com/smartitengineering/event/hub/spi/db/app-max-context.xml</param-value>
+    <param-value>${app.context.path}</param-value>
   </context-param>
   <listener>
     <listener-class>com.smartitengineering.util.bean.spring.ClasspathXmlContextLoader</listener-class>
