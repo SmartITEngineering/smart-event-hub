@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>hub-db</artifactId>
   <packaging>war</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1-${app.type}-SNAPSHOT</version>
   <name>Hub Web Application</name>
   <description>
     The main web application which will persist events to storage configured. It will be based on profiles. By default
@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <dependency>
       <groupId>com.smartitengineering.event</groupId>
       <artifactId>hub-core</artifactId>
-      <version>${project.version}</version>
+      <version>${parent.version}</version>
     </dependency>
     <dependency>
       <groupId>com.smartitengineering.smart-util</groupId>
@@ -119,7 +119,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
           <groupId>com.smartitengineering.event</groupId>
           <artifactId>hub-spi-db</artifactId>
-          <version>${project.version}</version>
+          <version>${parent.version}</version>
           <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -152,6 +152,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </build>
       <properties>
         <app.context.path>com/smartitengineering/event/hub/spi/db/app-max-context.xml</app.context.path>
+        <app.type>rdbms</app.type>
       </properties>
     </profile>
   </profiles>
