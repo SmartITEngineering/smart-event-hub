@@ -46,8 +46,8 @@ import org.apache.commons.lang.math.NumberUtils;
 public class DBPersistentStorer
     implements HubPersistentStorer {
 
-  private CommonReadDao<PersistentChannel> channelReadDao;
-  private CommonReadDao<PersistentEvent> eventReadDao;
+  private CommonReadDao<PersistentChannel, Integer> channelReadDao;
+  private CommonReadDao<PersistentEvent, Integer> eventReadDao;
   private CommonWriteDao<PersistentChannel> channelWriteDao;
   private CommonWriteDao<PersistentEvent> eventWriteDao;
   private GenericAdapter<Channel, PersistentChannel> channelConverter;
@@ -58,7 +58,7 @@ public class DBPersistentStorer
     this.channelConverter = channelConverter;
   }
 
-  public void setChannelReadDao(CommonReadDao<PersistentChannel> channelReadDao) {
+  public void setChannelReadDao(CommonReadDao<PersistentChannel, Integer> channelReadDao) {
     this.channelReadDao = channelReadDao;
   }
 
@@ -72,7 +72,7 @@ public class DBPersistentStorer
     this.eventConverter = eventConverter;
   }
 
-  public void setEventReadDao(CommonReadDao<PersistentEvent> eventReadDao) {
+  public void setEventReadDao(CommonReadDao<PersistentEvent, Integer> eventReadDao) {
     this.eventReadDao = eventReadDao;
   }
 
@@ -84,7 +84,7 @@ public class DBPersistentStorer
     return channelConverter;
   }
 
-  protected CommonReadDao<PersistentChannel> getChannelReadDao() {
+  protected CommonReadDao<PersistentChannel, Integer> getChannelReadDao() {
     return channelReadDao;
   }
 
@@ -96,7 +96,7 @@ public class DBPersistentStorer
     return eventConverter;
   }
 
-  protected CommonReadDao<PersistentEvent> getEventReadDao() {
+  protected CommonReadDao<PersistentEvent, Integer> getEventReadDao() {
     return eventReadDao;
   }
 

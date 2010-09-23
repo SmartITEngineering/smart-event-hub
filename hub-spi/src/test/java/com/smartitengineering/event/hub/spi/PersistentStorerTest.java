@@ -59,7 +59,7 @@ public class PersistentStorerTest
     final BeanFactory factory = mockery.mock(BeanFactory.class);
     final HubPersistentStorer storer = mockery.mock(HubPersistentStorer.class);
     mockery.checking(new Expectations(){{
-      exactly(1).of(factory).containsBean("storer");
+      exactly(1).of(factory).containsBean("storer", HubPersistentStorer.class);
       will(returnValue(Boolean.TRUE));
       exactly(1).of(factory).getBean("storer", HubPersistentStorer.class);
       will(returnValue(storer));
