@@ -39,9 +39,11 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.annotation.Cluster;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.jersey.Broadcastable;
+import org.atmosphere.plugin.cluster.jgroups.JGroupsFilter;
 
 /**
  *
@@ -70,6 +72,7 @@ public class ChannelHubResource extends AbstractChannelResource {
 
   @Broadcast
   @POST
+  @Cluster(name = "EventHub", value=JGroupsFilter.class)
   public Response broadcast(@HeaderParam("Content-type") String contentType, String message) {
     checkAuthToken();
     checkChannelExistence();

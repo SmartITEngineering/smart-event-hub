@@ -67,6 +67,7 @@ public class ChannelResource extends AbstractChannelResource {
       }
     }
     catch (Throwable th) {
+      th.printStackTrace();
       throw new WebApplicationException(th, Response.Status.BAD_REQUEST);
     }
     return response;
