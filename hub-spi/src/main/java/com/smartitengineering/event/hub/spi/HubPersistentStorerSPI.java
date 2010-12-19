@@ -32,7 +32,6 @@ public final class HubPersistentStorerSPI {
   private HubPersistentStorer storer;
 
   private HubPersistentStorerSPI() {
-    BeanFactoryRegistrar.aggregate(this);
   }
 
   public HubPersistentStorer getStorer() {
@@ -44,6 +43,7 @@ public final class HubPersistentStorerSPI {
   public static HubPersistentStorerSPI getInstance() {
     if(storerSPI == null) {
       storerSPI = new HubPersistentStorerSPI();
+      BeanFactoryRegistrar.aggregate(storerSPI);
     }
     return storerSPI;
   }
