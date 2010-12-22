@@ -1,0 +1,26 @@
+[
+  {
+    "tableName": "channel",
+    "columnFamilyConfigurations": [
+      {
+        "familyName": "self"
+      }
+    ]
+  },
+  {
+    "tableName": "event",
+    "columnFamilyConfigurations": [
+      {
+        "familyName": "self"
+      }
+    ]
+  },
+  {
+    "tableName": "autoids",
+    "columnFamilyConfigurations": [
+      {
+        "familyName": "self"
+      }
+    ]
+  }
+]
