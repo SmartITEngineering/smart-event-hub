@@ -1,5 +1,5 @@
 {
   "schemaNamespace": "com.smartitengineering.event.hub.spi.hbase.persistents",
-  "mainTableName": "event",
+  "mainTableName": "hub_event",
   "transactionalDomain": "false"
 }

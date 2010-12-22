@@ -1,6 +1,6 @@
 [
   {
-    "tableName": "channel",
+    "tableName": "hub_channel",
     "columnFamilyConfigurations": [
       {
         "familyName": "self"
@@ -8,7 +8,7 @@
     ]
   },
   {
-    "tableName": "event",
+    "tableName": "hub_event",
     "columnFamilyConfigurations": [
       {
         "familyName": "self"
@@ -16,7 +16,7 @@
     ]
   },
   {
-    "tableName": "autoids",
+    "tableName": "hub_autoids",
     "columnFamilyConfigurations": [
       {
         "familyName": "self"
