@@ -6,7 +6,7 @@
     <param-value>${app.context.path}</param-value>
   </context-param>
   <listener>
-    <listener-class>com.smartitengineering.util.bean.spring.ClasspathXmlContextLoader</listener-class>
+    <listener-class>${app.context.listener}</listener-class>
   </listener>
   <servlet>
     <description>AtmosphereServlet</description>

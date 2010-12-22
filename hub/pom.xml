@@ -40,11 +40,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <version>${parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.smartitengineering.smart-util</groupId>
-      <artifactId>smart-bean-spring-util</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
@@ -55,10 +50,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -121,6 +112,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </activation>
       <dependencies>
         <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.smartitengineering.smart-util</groupId>
+          <artifactId>smart-bean-spring-util</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
           <groupId>com.smartitengineering.event</groupId>
           <artifactId>hub-spi-db</artifactId>
           <version>${parent.version}</version>
@@ -156,6 +157,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </build>
       <properties>
         <app.context.path>com/smartitengineering/event/hub/spi/db/app-max-context.xml</app.context.path>
+        <app.context.listener>com.smartitengineering.util.bean.spring.ClasspathXmlContextLoader</app.context.listener>
         <app.type>rdbms</app.type>
       </properties>
     </profile>
