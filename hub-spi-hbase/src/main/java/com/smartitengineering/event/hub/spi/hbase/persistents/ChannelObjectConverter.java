@@ -32,14 +32,14 @@ import org.apache.hadoop.hbase.util.Bytes;
 public class ChannelObjectConverter extends AbstractObjectRowConverter<PersistentChannel, Long> {
 
   private static final byte[] FAMILY_SELF = Bytes.toBytes("self");
-  private static final byte[] CELL_NAME = Bytes.toBytes("self");
-  private static final byte[] CELL_DESC = Bytes.toBytes("self");
-  private static final byte[] CELL_AUTH_TOKEN = Bytes.toBytes("self");
-  private static final byte[] CELL_FILTER_TYPE = Bytes.toBytes("self");
-  private static final byte[] CELL_SCRIPT = Bytes.toBytes("self");
-  private static final byte[] CELL_AUTO_EXPIRY_DATE_TIME = Bytes.toBytes("self");
-  private static final byte[] CELL_CREATION_DATE = Bytes.toBytes("self");
-  private static final byte[] CELL_LAST_MODIFIED_DATE = Bytes.toBytes("self");
+  private static final byte[] CELL_NAME = Bytes.toBytes("name");
+  private static final byte[] CELL_DESC = Bytes.toBytes("desc");
+  private static final byte[] CELL_AUTH_TOKEN = Bytes.toBytes("authToken");
+  private static final byte[] CELL_FILTER_TYPE = Bytes.toBytes("filterType");
+  private static final byte[] CELL_SCRIPT = Bytes.toBytes("script");
+  private static final byte[] CELL_AUTO_EXPIRY_DATE_TIME = Bytes.toBytes("autoExpiryDate");
+  private static final byte[] CELL_CREATION_DATE = Bytes.toBytes("creationDate");
+  private static final byte[] CELL_LAST_MODIFIED_DATE = Bytes.toBytes("lastModifiedDate");
 
   @Override
   protected String[] getTablesToAttainLock() {
