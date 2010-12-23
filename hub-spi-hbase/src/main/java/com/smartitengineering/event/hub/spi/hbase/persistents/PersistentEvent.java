@@ -30,7 +30,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * @author imyousuf
  */
 public class PersistentEvent
-    extends AbstractHBaseDomain<PersistentEvent, Long> {
+    extends AbstractHBaseDomain<PersistentEvent, EventId> {
 
   static final String PLACE_HOLDER_ID = "id";
   static final String UUID = "uuid";
@@ -40,14 +40,22 @@ public class PersistentEvent
   private Date creationDateTime;
 
   public void setPlaceholderId(String placeholder) {
-    setId(NumberUtils.toLong(placeholder, -1));
+    EventId id = getId();
+    if (id == null) {
+      id = new EventId();
+      if (StringUtils.isNotBlank(channelId)) {
+        id.setChannelName(channelId);
+      }
+      setId(id);
+    }
+    id.setEventIdForChannel(NumberUtils.toLong(placeholder));
   }
 
   public String getPlaceholderId() {
     if (getId() == null) {
       return "";
     }
-    return Long.toString(getId());
+    return Long.toString(getId().getEventIdForChannel());
   }
 
   public String getChannelId() {
@@ -63,6 +71,14 @@ public class PersistentEvent
   }
 
   public void setChannelId(String channelId) {
+    EventId id = getId();
+    if (id == null) {
+      id = new EventId();
+      setId(id);
+    }
+    if (StringUtils.isNotBlank(channelId)) {
+      id.setChannelName(channelId);
+    }
     this.channelId = channelId;
   }
 
