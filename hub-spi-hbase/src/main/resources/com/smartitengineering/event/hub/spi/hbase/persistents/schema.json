@@ -6,17 +6,25 @@
         "familyName": "self"
       }
     ]
-  },
-  {
+  }
+  , {
     "tableName": "hub_event",
     "columnFamilyConfigurations": [
       {
         "familyName": "self"
       }
     ]
-  },
-  {
+  }
+  , {
     "tableName": "hub_autoids",
+    "columnFamilyConfigurations": [
+      {
+        "familyName": "self"
+      }
+    ]
+  }
+  , {
+    "tableName": "hub_eventuuids",
     "columnFamilyConfigurations": [
       {
         "familyName": "self"
