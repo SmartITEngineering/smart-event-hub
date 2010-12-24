@@ -227,6 +227,12 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         UUID uuid = UUID.randomUUID();
         persistentEvent.setUuid(uuid.toString());
       }
+      else {
+        Event possDupEvent = getEventByUUID(persistentEvent.getUuid());
+        if (possDupEvent != null) {
+          throw new IllegalArgumentException("Duplication event!");
+        }
+      }
 
       EventUUID eUuid = new EventUUID();
       eUuid.setEventId(persistentEvent.getId());
