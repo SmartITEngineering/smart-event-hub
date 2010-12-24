@@ -256,8 +256,8 @@ public class GuiceModule extends AbstractModule {
     }).to(new TypeLiteral<RowCellIncrementorImpl<ReverseIdIndex, RowAutoIdIndex, String>>() {
     });
     CellConfigImpl<ReverseIdIndex> configRevImpl = new CellConfigImpl<ReverseIdIndex>();
-    configImpl.setFamily("self");
-    configImpl.setQualifier("reverseIdValue");
+    configRevImpl.setFamily("self");
+    configRevImpl.setQualifier("reverseIdValue");
     bind(new TypeLiteral<CellConfig<ReverseIdIndex>>() {
     }).toInstance(configRevImpl);
   }
