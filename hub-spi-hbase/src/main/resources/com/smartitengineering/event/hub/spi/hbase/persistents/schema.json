@@ -31,4 +31,12 @@
       }
     ]
   }
+  , {
+    "tableName": "hub_reverseidindex",
+    "columnFamilyConfigurations": [
+      {
+        "familyName": "self"
+      }
+    ]
+  }
 ]

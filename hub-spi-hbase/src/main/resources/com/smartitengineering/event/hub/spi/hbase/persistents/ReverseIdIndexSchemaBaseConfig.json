@@ -1,0 +1,5 @@
+{
+  "schemaNamespace": "com.smartitengineering.event.hub.spi.hbase.persistents",
+  "mainTableName": "hub_reverseidindex",
+  "transactionalDomain": "false"
+}
