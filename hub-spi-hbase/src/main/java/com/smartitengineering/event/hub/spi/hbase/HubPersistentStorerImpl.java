@@ -109,12 +109,15 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
     if (!channelAutoIdInitialized) {
       throw new IllegalStateException("Channel ID could not be generated!");
     }
+    if (channel == null) {
+      return;
+    }
     PersistentChannel pChannel = channelAdapter.convert(channel);
     if (!pChannel.isValid()) {
       throw new IllegalStateException("Channel not in valid state!");
     }
     Channel eChannel = getChannel(pChannel.getName());
-    if (eChannel == null) {
+    if (eChannel != null) {
       throw new IllegalStateException("Channel already exists!");
     }
     try {
@@ -146,6 +149,9 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
 
   @Override
   public void update(Channel channel) {
+    if (channel == null) {
+      return;
+    }
     checkAndInitializeAutoId();
     PersistentChannel pChannel = getMergedPersistentChannel(channel);
     if (!pChannel.isValid()) {
@@ -163,8 +169,11 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
 
   @Override
   public void delete(Channel channel) {
+    if (channel == null) {
+      return;
+    }
     checkAndInitializeAutoId();
-    PersistentChannel pChannel = channelAdapter.convert(channel);
+    PersistentChannel pChannel = getMergedPersistentChannel(channel);
     if (!pChannel.isValid()) {
       throw new IllegalStateException("Channel not in valid state!");
     }
@@ -360,23 +369,43 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
   }
 
   protected PersistentChannel getMergedPersistentChannel(Channel channel) {
-    if (channel == null) {
+    if (channel == null || StringUtils.isBlank(channel.getName())) {
       return null;
     }
     PersistentChannel persistentChannel = getPersistentChannel(channel.getName());
+    if (logger.isInfoEnabled()) {
+      logger.info("Persistent channel found is " + persistentChannel);
+      logger.info("Persistent channel ID is " + persistentChannel.getId());
+    }
     Map.Entry<Channel, PersistentChannel> entry;
     entry = new SimpleEntry<Channel, PersistentChannel>(channel, persistentChannel);
     channelAdapter.merge(entry);
+    if (logger.isInfoEnabled()) {
+      logger.info("Persistent channel ID is " + persistentChannel.getId());
+    }
     return persistentChannel;
   }
 
   protected PersistentChannel getPersistentChannel(String channelName) {
-    RowAutoIdIndex idIndex = autoIdRdDao.getById(getChannelIdIndexName(channelName));
+    if (StringUtils.isBlank(channelName)) {
+      return null;
+    }
+    final String channelIdIndexName = getChannelIdIndexName(channelName.toLowerCase());
+    if (logger.isInfoEnabled()) {
+      logger.info("Getting channel with name in reverse lookup table " + channelIdIndexName);
+    }
+    RowAutoIdIndex idIndex = autoIdRdDao.getById(channelIdIndexName);
     if (idIndex != null) {
-      PersistentChannel persistentChannel = channelRdDao.getById(NumberUtils.toLong(idIndex.getReverseId()));
+      logger.info("Found ID in channel name index");
+      final long channelId = NumberUtils.toLong(idIndex.getReverseId());
+      if (logger.isInfoEnabled()) {
+        logger.info("Found reverse index for channel " + channelId);
+      }
+      PersistentChannel persistentChannel = channelRdDao.getById(channelId);
       return persistentChannel;
     }
     else {
+      logger.info("Did not found ID in channel name index");
       PersistentChannel persistentChannel = channelRdDao.getSingle(QueryParameterFactory.getStringLikePropertyParam(
           PersistentChannel.NAME, channelName.toLowerCase(), MatchMode.EXACT));
       return persistentChannel;
