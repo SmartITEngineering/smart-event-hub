@@ -19,6 +19,7 @@ package com.smartitengineering.event.hub.spi.hbase.persistents;
 
 import com.smartitengineering.dao.impl.hbase.spi.ExecutorService;
 import com.smartitengineering.dao.impl.hbase.spi.impl.AbstractObjectRowConverter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -32,6 +33,7 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdI
 
   private static final byte[] FAMILY_SELF = Bytes.toBytes("self");
   private static final byte[] CELL_ID_VAL = Bytes.toBytes("idValue");
+  private static final byte[] CELL_REVERSE_ID = Bytes.toBytes("reverseId");
 
   @Override
   protected String[] getTablesToAttainLock() {
@@ -41,6 +43,9 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdI
   @Override
   protected void getPutForTable(RowAutoIdIndex instance, ExecutorService service, Put put) {
     put.add(FAMILY_SELF, CELL_ID_VAL, Bytes.toBytes(instance.getAutoIdValue()));
+    if (StringUtils.isNotBlank(instance.getReverseId())) {
+      put.add(FAMILY_SELF, CELL_REVERSE_ID, Bytes.toBytes(instance.getReverseId()));
+    }
   }
 
   @Override
@@ -54,6 +59,9 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdI
       RowAutoIdIndex id = new RowAutoIdIndex();
       id.setAutoIdValue(Bytes.toLong(startRow.getValue(FAMILY_SELF, CELL_ID_VAL)));
       id.setId(getInfoProvider().getIdFromRowId(startRow.getRow()));
+      if (startRow.getValue(FAMILY_SELF, CELL_REVERSE_ID) != null) {
+        id.setReverseId(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_REVERSE_ID)));
+      }
       return id;
     }
     catch (Exception ex) {
