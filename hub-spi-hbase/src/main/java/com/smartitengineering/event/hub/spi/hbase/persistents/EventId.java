@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.spi.hbase.persistents;
 
 import com.smartitengineering.dao.impl.hbase.spi.Externalizable;
+import com.smartitengineering.event.hub.spi.hbase.HubPersistentStorerImpl;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -53,9 +54,24 @@ public class EventId implements Externalizable, Comparable<EventId> {
     this.eventIdForChannel = eventIdForChannel;
   }
 
+  public static EventId fromString(String idString) {
+    EventId id = new EventId();
+    try {
+      id.readIdFromString(idString);
+    }
+    catch (Exception ex) {
+      id.logger.error("Could not read event id from string ( '" + idString + "' )", ex);
+      throw new RuntimeException(ex);
+    }
+    return id;
+  }
+
   @Override
   public String toString() {
-    return new StringBuilder(ObjectUtils.toString(channelName)).append(':').append(eventIdForChannel).toString();
+    String thisId =
+           StringUtils.leftPad(ObjectUtils.toString(eventIdForChannel), HubPersistentStorerImpl.MAX_LENGTH, '0');
+    return new StringBuilder().append(thisId).append(':').append(ObjectUtils.toString(
+        channelName)).toString();
   }
 
   @Override
@@ -66,6 +82,10 @@ public class EventId implements Externalizable, Comparable<EventId> {
   @Override
   public void readExternal(DataInput input) throws IOException, ClassNotFoundException {
     String idString = Utils.readStringInUTF8(input);
+    readIdFromString(idString);
+  }
+
+  protected void readIdFromString(String idString) throws IOException {
     if (logger.isInfoEnabled()) {
       logger.info("Trying to parse content id: " + idString);
     }
