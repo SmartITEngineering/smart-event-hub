@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class PersistentChannel extends AbstractHBaseDomain<PersistentChannel, Long> {
 
+  public static final String NAME = "name";
   private String description, authToken, filterType, script, name;
   private Date creationDateTime, autoExpiryDateTime, lastModifiedDateTime;
 

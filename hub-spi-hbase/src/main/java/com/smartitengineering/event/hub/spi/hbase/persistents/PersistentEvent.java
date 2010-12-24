@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
 /**
  *
@@ -35,27 +34,16 @@ public class PersistentEvent
   static final String PLACE_HOLDER_ID = "id";
   static final String UUID = "uuid";
   static final String CHANNEL_ID = "channelId";
-  private String contentType, channelId, uuid;
+  private String contentType, channelId, uuid, placeholderId;
   private byte[] content;
   private Date creationDateTime;
 
   public void setPlaceholderId(String placeholder) {
-    EventId id = getId();
-    if (id == null) {
-      id = new EventId();
-      if (StringUtils.isNotBlank(channelId)) {
-        id.setChannelName(channelId);
-      }
-      setId(id);
-    }
-    id.setEventIdForChannel(NumberUtils.toLong(placeholder));
+    this.placeholderId = placeholder;
   }
 
   public String getPlaceholderId() {
-    if (getId() == null) {
-      return "";
-    }
-    return Long.toString(getId().getEventIdForChannel());
+    return placeholderId;
   }
 
   public String getChannelId() {

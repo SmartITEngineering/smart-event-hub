@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author imyousuf
  */
-public class AutoId extends AbstractHBaseDomain<AutoId, String> {
+public class RowAutoIdIndex extends AbstractHBaseDomain<RowAutoIdIndex, String> {
 
   private long autoIdValue;
 

@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.util.Bytes;
  *
  * @author imyousuf
  */
-public class AutoIdObjectConverter extends AbstractObjectRowConverter<AutoId, String> {
+public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdIndex, String> {
 
   private static final byte[] FAMILY_SELF = Bytes.toBytes("self");
   private static final byte[] CELL_ID_VAL = Bytes.toBytes("idValue");
@@ -39,19 +39,19 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<AutoId, St
   }
 
   @Override
-  protected void getPutForTable(AutoId instance, ExecutorService service, Put put) {
+  protected void getPutForTable(RowAutoIdIndex instance, ExecutorService service, Put put) {
     put.add(FAMILY_SELF, CELL_ID_VAL, Bytes.toBytes(instance.getAutoIdValue()));
   }
 
   @Override
-  protected void getDeleteForTable(AutoId instance, ExecutorService service, Delete put) {
+  protected void getDeleteForTable(RowAutoIdIndex instance, ExecutorService service, Delete put) {
     //Nothing to do
   }
 
   @Override
-  public AutoId rowsToObject(Result startRow, ExecutorService executorService) {
+  public RowAutoIdIndex rowsToObject(Result startRow, ExecutorService executorService) {
     try {
-      AutoId id = new AutoId();
+      RowAutoIdIndex id = new RowAutoIdIndex();
       id.setAutoIdValue(Bytes.toLong(startRow.getValue(FAMILY_SELF, CELL_ID_VAL)));
       id.setId(getInfoProvider().getIdFromRowId(startRow.getRow()));
       return id;
