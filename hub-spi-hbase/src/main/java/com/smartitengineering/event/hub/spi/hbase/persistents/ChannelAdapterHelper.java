@@ -40,10 +40,15 @@ public class ChannelAdapterHelper
   @Override
   protected void mergeFromF2T(Channel fromBean,
                               PersistentChannel toBean) {
-    toBean.setId((long) fromBean.getPosition());
+    if (fromBean.getPosition() > 0) {
+      toBean.setId((long) fromBean.getPosition());
+    }
     toBean.setDescription(fromBean.getDescription());
     toBean.setAuthToken(fromBean.getAuthToken());
     toBean.setAutoExpiryDateTime(fromBean.getAutoExpiryDateTime());
+    if (StringUtils.isNotBlank(fromBean.getName())) {
+      toBean.setName(fromBean.getName().toLowerCase());
+    }
     if (fromBean.getFilter() != null) {
       toBean.setFilterType(fromBean.getFilter().getMimeType().name());
       toBean.setScript(fromBean.getFilter().getFilterScript());
