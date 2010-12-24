@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 public class RowAutoIdIndex extends AbstractHBaseDomain<RowAutoIdIndex, String> {
 
   private long autoIdValue;
+  private long reverseAutoIdValue = Long.MAX_VALUE;
   private String reverseId;
 
   public String getReverseId() {
@@ -35,6 +36,14 @@ public class RowAutoIdIndex extends AbstractHBaseDomain<RowAutoIdIndex, String> 
 
   public void setReverseId(String reverseId) {
     this.reverseId = reverseId;
+  }
+
+  public long getReverseAutoIdValue() {
+    return reverseAutoIdValue;
+  }
+
+  public void setReverseAutoIdValue(long reverseAutoIdValue) {
+    this.reverseAutoIdValue = reverseAutoIdValue;
   }
 
   public long getAutoIdValue() {

@@ -33,6 +33,7 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdI
 
   private static final byte[] FAMILY_SELF = Bytes.toBytes("self");
   private static final byte[] CELL_ID_VAL = Bytes.toBytes("idValue");
+  private static final byte[] CELL_REVERSE_ID_VAL = Bytes.toBytes("reverseIdValue");
   private static final byte[] CELL_REVERSE_ID = Bytes.toBytes("reverseId");
 
   @Override
@@ -43,6 +44,7 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdI
   @Override
   protected void getPutForTable(RowAutoIdIndex instance, ExecutorService service, Put put) {
     put.add(FAMILY_SELF, CELL_ID_VAL, Bytes.toBytes(instance.getAutoIdValue()));
+    put.add(FAMILY_SELF, CELL_REVERSE_ID_VAL, Bytes.toBytes(instance.getReverseAutoIdValue()));
     if (StringUtils.isNotBlank(instance.getReverseId())) {
       put.add(FAMILY_SELF, CELL_REVERSE_ID, Bytes.toBytes(instance.getReverseId()));
     }
@@ -58,6 +60,7 @@ public class AutoIdObjectConverter extends AbstractObjectRowConverter<RowAutoIdI
     try {
       RowAutoIdIndex id = new RowAutoIdIndex();
       id.setAutoIdValue(Bytes.toLong(startRow.getValue(FAMILY_SELF, CELL_ID_VAL)));
+      id.setReverseAutoIdValue(Bytes.toLong(startRow.getValue(FAMILY_SELF, CELL_REVERSE_ID_VAL)));
       id.setId(getInfoProvider().getIdFromRowId(startRow.getRow()));
       if (startRow.getValue(FAMILY_SELF, CELL_REVERSE_ID) != null) {
         id.setReverseId(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_REVERSE_ID)));
