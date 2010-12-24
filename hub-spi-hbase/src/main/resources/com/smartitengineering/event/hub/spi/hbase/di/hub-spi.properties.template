@@ -1,0 +1,4 @@
+contextName=com.smartitengineering.event.hub.spi
+modules.0=com.smartitengineering.event.hub.spi.hbase.di.GuiceModule
+ignoreMissingDependency=false
+com.smartitengineering.event.waitTimeInSec=10

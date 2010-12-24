@@ -17,18 +17,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.event.hub.spi.hbase;
 
-import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
-import org.junit.Assert;
-import org.junit.Test;
+import com.smartitengineering.util.bean.guice.GuiceUtil;
 
 /**
- * Unit test for simple App.
+ *
+ * @author imyousuf
  */
-public class AppTest {
+public class Initializer {
 
-  @Test
-  public void testApp() {
-    Initializer.init();
-    Assert.assertNotNull(HubPersistentStorerSPI.getInstance().getStorer());
+  private Initializer() {
+  }
+
+  public static void init() {
+    GuiceUtil.getInstance("com/smartitengineering/event/hub/spi/hbase/di/hub-spi.properties").register();
   }
 }

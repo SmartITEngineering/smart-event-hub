@@ -15,20 +15,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.smartitengineering.event.hub.spi.hbase;
+package com.smartitengineering.event.hub.spi.hbase.persistents;
 
-import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
-import org.junit.Assert;
-import org.junit.Test;
+import com.smartitengineering.dao.impl.hbase.spi.DomainIdInstanceProvider;
 
 /**
- * Unit test for simple App.
+ *
+ * @author imyousuf
  */
-public class AppTest {
+public class DomainIdInstanceProviderImpl implements DomainIdInstanceProvider {
 
-  @Test
-  public void testApp() {
-    Initializer.init();
-    Assert.assertNotNull(HubPersistentStorerSPI.getInstance().getStorer());
+  @Override
+  public <IdType> IdType getInstance(Class<? extends IdType> clazz) {
+    Object object = null;
+    if (EventId.class.isAssignableFrom(clazz)) {
+      object = new EventId();
+    }
+    return (IdType) object;
   }
 }
