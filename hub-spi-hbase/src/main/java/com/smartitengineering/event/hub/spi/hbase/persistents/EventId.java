@@ -94,10 +94,10 @@ public class EventId implements Externalizable, Comparable<EventId> {
     }
     String[] params = idString.split(":");
     if (params == null || params.length != 2) {
-      throw new IOException("Object should have been in the format channelName:eventId!");
+      throw new IOException("Object should have been in the format eventId:channelName!");
     }
-    channelName = params[0];
-    eventIdForChannel = NumberUtils.toLong(params[1]);
+    channelName = params[1];
+    eventIdForChannel = NumberUtils.toLong(params[0]);
   }
 
   @Override
