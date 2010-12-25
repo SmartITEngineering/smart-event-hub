@@ -328,7 +328,7 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
     }
     final QueryParameter<Integer> maxResultsParam = QueryParameterFactory.getMaxResultsParam(Math.abs(count));
     final String eventChannelId;
-    if (StringUtils.isNotBlank(placeholderId) && StringUtils.isBlank(channelId)) {
+    if (StringUtils.isNotBlank(placeholderId)) {
       PersistentEvent pEvent = getPersistentEvent(placeholderId);
       if (pEvent != null) {
         eventChannelId = pEvent.getChannelId();
@@ -353,11 +353,21 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(searchId.toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
-        params.add(QueryParameterFactory.getStringLikePropertyParam("id", Bytes.toBytes(new StringBuilder(':').append(
-            channelId).toString()), MatchMode.END));
+        if (logger.isInfoEnabled()) {
+          logger.info("Channel to search with " + channelId.toLowerCase());
+        }
+        params.add(QueryParameterFactory.getEqualPropertyParam("channelId", Bytes.toBytes(channelId.toLowerCase())));
+      }
+      logger.info("Doing event straight search!");
+      final List<PersistentEvent> list = eventRdDao.getList(params);
+      if (logger.isInfoEnabled()) {
+        logger.info("Straight event search completed!");
+        for(PersistentEvent pEvent : list) {
+          logger.info("EVENT " + pEvent.getId().toString());
+        }
       }
       return new LinkedHashSet<Event>(eventAdapter.convertInversely(
-          eventRdDao.getList(params).toArray(EMPTY_EVENT_ARRAY)));
+          list.toArray(EMPTY_EVENT_ARRAY)));
     }
     else {
       final List<QueryParameter> params = new ArrayList<QueryParameter>();
@@ -372,13 +382,16 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         params.add(QueryParameterFactory.getStringLikePropertyParam("id", Bytes.toBytes(new StringBuilder(':').append(
             channelId).toString()), MatchMode.END));
       }
+      logger.info("Doing reverse event search!");
       List<ReverseIdIndex> indexes = reverseIdIndexRdDao.getList(params);
       List<EventId> eventIds = new ArrayList<EventId>(indexes.size());
       for (ReverseIdIndex index : indexes) {
         eventIds.add(EventId.fromString(index.getReverseId()));
       }
       Collections.reverse(eventIds);
-      return new LinkedHashSet<Event>(eventAdapter.convertInversely(eventRdDao.getByIds(eventIds).toArray(
+      final Set<PersistentEvent> byIds = eventRdDao.getByIds(eventIds);
+      logger.info("Reverse event search completed!");
+      return new LinkedHashSet<Event>(eventAdapter.convertInversely(byIds.toArray(
           EMPTY_EVENT_ARRAY)));
     }
   }

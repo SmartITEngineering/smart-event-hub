@@ -8,5 +8,13 @@
       "qualifierARangePrefix":false,
       "filterOnRowId":true
     }
+    , "channelId": {
+      "columnFamilyAsString":"self",
+      "columnQualifierAsString":"channelId",
+      "filterOnIfMissing":false,
+      "filterOnLatestVersionOnly":true,
+      "qualifierARangePrefix":false,
+      "filterOnRowId":false
+    }
   }
 }

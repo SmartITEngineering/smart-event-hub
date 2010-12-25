@@ -419,7 +419,7 @@ public class HBaseHubPersistorITCase {
     Assert.assertEquals(Long.toString(placeholderId + 1), origList.get(0).getPlaceholderId());
     events = storer.getEvents(placeholderId.toString(), dummyChannel.getName(), -1 * count);
     Assert.assertNotNull(events);
-    Assert.assertTrue(events.size() == count);
+    Assert.assertEquals(Math.abs(count), events.size());
     sortTestList = new ArrayList<Event>(events);
     Collections.sort(sortTestList, comparator);
     origList = new ArrayList<Event>(events);
