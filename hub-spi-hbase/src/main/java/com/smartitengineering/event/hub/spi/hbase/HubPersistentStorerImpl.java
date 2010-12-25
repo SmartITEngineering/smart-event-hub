@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -200,15 +201,22 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       return Collections.emptyList();
     }
     final QueryParameter<Integer> maxResultsParam = QueryParameterFactory.getMaxResultsParam(Math.abs(count));
-    if (count > 0) {
+    if (count < 0) {
       final QueryParameter param;
-      param = QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(new Long(startIndex)));
-      return channelAdapter.convertInversely(channelRdDao.getList(param, maxResultsParam).toArray(EMPTY_CHANNEL_ARRAY));
+      long index = Long.MAX_VALUE - startIndex;
+      if (logger.isInfoEnabled()) {
+        logger.info("Reverse Index value " + index);
+      }
+      param = QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(index));
+      final List<PersistentChannel> list = channelRdDao.getList(param, maxResultsParam);
+      if (logger.isInfoEnabled()) {
+        logger.info("Result " + list);
+      }
+      return channelAdapter.convertInversely(list.toArray(EMPTY_CHANNEL_ARRAY));
     }
     else {
-      long reverseIndex = Long.MAX_VALUE - startIndex;
       final QueryParameter param = QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(getChannelIdIndexName(String.
-          valueOf(reverseIndex))));
+          valueOf(startIndex))));
       List<ReverseIdIndex> reverseIndexes = reverseIdIndexRdDao.getList(param, maxResultsParam);
       List<Long> ids = new ArrayList<Long>(reverseIndexes.size());
       for (ReverseIdIndex index : reverseIndexes) {
@@ -217,7 +225,11 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
           ids.add(longVal);
         }
       }
-      return channelAdapter.convertInversely(channelRdDao.getByIds(ids).toArray(EMPTY_CHANNEL_ARRAY));
+      final Set<PersistentChannel> byIds = channelRdDao.getByIds(ids);
+      if (logger.isInfoEnabled()) {
+        logger.info("Result " + reverseIndexes + " - " + byIds);
+      }
+      return channelAdapter.convertInversely(byIds.toArray(EMPTY_CHANNEL_ARRAY));
     }
   }
 
@@ -256,23 +268,49 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       eventWrtDao.save(persistentEvent);
       reverseIdIndexWrtDao.save(reverseIdIndex);
       eventUUIDWrtDao.save(eUuid);
-      return eventAdapter.convertInversely(persistentEvent);
+      final Event convertInversely = eventAdapter.convertInversely(persistentEvent);
+      if (logger.isInfoEnabled()) {
+        logger.info("Event's ID, UUID and PlaceholderID: " + persistentEvent.getId().toString() + " " + convertInversely.
+            getUniversallyUniqueID() + " " + convertInversely.getPlaceholderId());
+      }
+      return convertInversely;
     }
     return null;
   }
 
   @Override
   public void delete(Event event) {
-    eventWrtDao.delete(getPersistentEvent(event.getPlaceholderId()));
+    if (event == null) {
+      return;
+    }
+    final PersistentEvent persistentEvent = getPersistentEvent(event.getPlaceholderId());
+    if (persistentEvent == null) {
+      return;
+    }
+    eventWrtDao.delete(persistentEvent);
   }
 
   @Override
   public Event getEvent(String placeholderId) {
-    return eventAdapter.convertInversely(getPersistentEvent(placeholderId));
+    final PersistentEvent persistentEvent = getPersistentEvent(placeholderId);
+    final Event convertInversely = eventAdapter.convertInversely(persistentEvent);
+    if (logger.isInfoEnabled()) {
+      if (persistentEvent != null && convertInversely != null) {
+        logger.info("Event's ID, UUID and PlaceholderID: " + persistentEvent.getId().toString() + " " + convertInversely.
+            getUniversallyUniqueID() + " " + convertInversely.getPlaceholderId());
+      }
+      else {
+        logger.info("EVENT IS NULL!");
+      }
+    }
+    return convertInversely;
   }
 
   @Override
   public Event getEventByUUID(String uuid) {
+    if (StringUtils.isBlank(uuid)) {
+      return null;
+    }
     EventUUID eUuid = eventUUIDRdDao.getById(uuid);
     if (eUuid != null) {
       PersistentEvent event = eventRdDao.getById(eUuid.getEventId());
@@ -284,17 +322,35 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
   }
 
   @Override
-  public LinkedHashSet<Event> getEvents(String placeholderId, String channelId, int count) {
+  public LinkedHashSet<Event> getEvents(String placeholderId, final String channelId, int count) {
     if (count == 0) {
       return new LinkedHashSet<Event>();
     }
     final QueryParameter<Integer> maxResultsParam = QueryParameterFactory.getMaxResultsParam(Math.abs(count));
-    if (count > 0) {
+    final String eventChannelId;
+    if (StringUtils.isNotBlank(placeholderId) && StringUtils.isBlank(channelId)) {
+      PersistentEvent pEvent = getPersistentEvent(placeholderId);
+      if (pEvent != null) {
+        eventChannelId = pEvent.getChannelId();
+      }
+      else {
+        eventChannelId = "";
+      }
+    }
+    else {
+      eventChannelId = channelId;
+    }
+    if (count < 0) {
       final List<QueryParameter> params = new ArrayList<QueryParameter>();
       params.add(maxResultsParam);
       if (StringUtils.isNotBlank(placeholderId)) {
-        params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(leftPadNumberWithZero(NumberUtils.
-            toLong(placeholderId)))));
+        final StringBuilder searchId = new StringBuilder(leftPadNumberWithZero(NumberUtils.toLong(placeholderId))).
+            append(':');
+        searchId.append(eventChannelId);
+        if (logger.isInfoEnabled()) {
+          logger.info("Event Id to search greater or smaller than: " + searchId);
+        }
+        params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(searchId.toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
         params.add(QueryParameterFactory.getStringLikePropertyParam("id", Bytes.toBytes(new StringBuilder(':').append(
@@ -309,8 +365,8 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       if (StringUtils.isNotBlank(placeholderId)) {
         final long toLong = NumberUtils.toLong(placeholderId);
         final long reversePlaceholderId = Long.MAX_VALUE - toLong;
-        params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(leftPadNumberWithZero(
-            reversePlaceholderId))));
+        params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(new StringBuilder(leftPadNumberWithZero(
+            reversePlaceholderId)).append(':').append(eventChannelId).toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
         params.add(QueryParameterFactory.getStringLikePropertyParam("id", Bytes.toBytes(new StringBuilder(':').append(
@@ -321,6 +377,7 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       for (ReverseIdIndex index : indexes) {
         eventIds.add(EventId.fromString(index.getReverseId()));
       }
+      Collections.reverse(eventIds);
       return new LinkedHashSet<Event>(eventAdapter.convertInversely(eventRdDao.getByIds(eventIds).toArray(
           EMPTY_EVENT_ARRAY)));
     }
@@ -424,8 +481,9 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
   }
 
   protected PersistentEvent getPersistentEvent(String placeholderId) {
-    int placeholderIdInt = NumberUtils.toInt(placeholderId);
+    long placeholderIdInt = NumberUtils.toLong(placeholderId);
     if (placeholderIdInt <= 0) {
+      logger.info("Invalid place holder id!");
       return null;
     }
     PersistentEvent persistentEvent =
