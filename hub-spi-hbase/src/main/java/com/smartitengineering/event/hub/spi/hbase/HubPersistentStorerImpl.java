@@ -353,16 +353,17 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(searchId.toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
+        final String toString = new StringBuilder(':').append(channelId.toLowerCase()).toString();
         if (logger.isInfoEnabled()) {
-          logger.info("Channel to search with " + channelId.toLowerCase());
+          logger.info("Channel to search with id at end " + toString);
         }
-        params.add(QueryParameterFactory.getEqualPropertyParam("channelId", Bytes.toBytes(channelId.toLowerCase())));
+        params.add(QueryParameterFactory.getStringLikePropertyParam("id", toString, MatchMode.END));
       }
       logger.info("Doing event straight search!");
       final List<PersistentEvent> list = eventRdDao.getList(params);
       if (logger.isInfoEnabled()) {
         logger.info("Straight event search completed!");
-        for(PersistentEvent pEvent : list) {
+        for (PersistentEvent pEvent : list) {
           logger.info("EVENT " + pEvent.getId().toString());
         }
       }
@@ -379,8 +380,8 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
             reversePlaceholderId)).append(':').append(eventChannelId).toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
-        params.add(QueryParameterFactory.getStringLikePropertyParam("id", Bytes.toBytes(new StringBuilder(':').append(
-            channelId).toString()), MatchMode.END));
+        params.add(QueryParameterFactory.getStringLikePropertyParam("id", new StringBuilder(':').append(channelId).
+            toString(), MatchMode.END));
       }
       logger.info("Doing reverse event search!");
       List<ReverseIdIndex> indexes = reverseIdIndexRdDao.getList(params);
