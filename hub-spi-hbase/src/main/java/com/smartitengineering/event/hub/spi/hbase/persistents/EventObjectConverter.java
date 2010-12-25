@@ -19,6 +19,7 @@ package com.smartitengineering.event.hub.spi.hbase.persistents;
 
 import com.smartitengineering.dao.impl.hbase.spi.ExecutorService;
 import com.smartitengineering.dao.impl.hbase.spi.impl.AbstractObjectRowConverter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -36,6 +37,7 @@ public class EventObjectConverter extends AbstractObjectRowConverter<PersistentE
   private static final byte[] CELL_UUID = Bytes.toBytes("uuid");
   private static final byte[] CELL_CREATION_DATE = Bytes.toBytes("creationDate");
   private static final byte[] CELL_CONTENT = Bytes.toBytes("content");
+  private static final byte[] CELL_PLACEHOLDER = Bytes.toBytes("placeholder");
 
   @Override
   protected String[] getTablesToAttainLock() {
@@ -49,6 +51,9 @@ public class EventObjectConverter extends AbstractObjectRowConverter<PersistentE
     put.add(FAMILY_SELF, CELL_UUID, Bytes.toBytes(instance.getUuid()));
     put.add(FAMILY_SELF, CELL_CONTENT, instance.getContent());
     put.add(FAMILY_SELF, CELL_CREATION_DATE, Utils.toBytes(instance.getCreationDateTime()));
+    if (StringUtils.isNotBlank(instance.getPlaceholderId())) {
+      put.add(FAMILY_SELF, CELL_PLACEHOLDER, Bytes.toBytes(instance.getPlaceholderId()));
+    }
   }
 
   @Override
@@ -61,11 +66,17 @@ public class EventObjectConverter extends AbstractObjectRowConverter<PersistentE
     try {
       PersistentEvent event = new PersistentEvent();
       event.setId(getInfoProvider().getIdFromRowId(startRow.getRow()));
+      if (logger.isInfoEnabled()) {
+        logger.info("Parsed ID " + event.getId().toString());
+      }
       event.setChannelId(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_CHANNEL_ID)));
       event.setContentType(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_CONTENT_TYPE)));
       event.setUuid(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_UUID)));
       event.setContent(startRow.getValue(FAMILY_SELF, CELL_CONTENT));
       event.setCreationDateTime(Utils.toDate(startRow.getValue(FAMILY_SELF, CELL_CREATION_DATE)));
+      if (startRow.getValue(FAMILY_SELF, CELL_PLACEHOLDER) != null) {
+        event.setPlaceholderId(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_PLACEHOLDER)));
+      }
       return event;
     }
     catch (Exception ex) {
