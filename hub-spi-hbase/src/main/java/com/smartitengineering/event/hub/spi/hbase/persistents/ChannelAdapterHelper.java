@@ -24,6 +24,8 @@ import com.smartitengineering.event.hub.api.impl.APIFactory.ChannelBuilder;
 import com.smartitengineering.util.bean.adapter.AbstractAdapterHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,6 +33,8 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 public class ChannelAdapterHelper
     extends AbstractAdapterHelper<Channel, PersistentChannel> {
+
+  protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Override
   protected PersistentChannel newTInstance() {
@@ -41,7 +45,7 @@ public class ChannelAdapterHelper
   protected void mergeFromF2T(Channel fromBean,
                               PersistentChannel toBean) {
     if (fromBean.getPosition() > 0) {
-      toBean.setId((long) fromBean.getPosition());
+      toBean.setId(Long.MAX_VALUE - fromBean.getPosition());
     }
     toBean.setDescription(fromBean.getDescription());
     toBean.setAuthToken(fromBean.getAuthToken());
@@ -61,8 +65,11 @@ public class ChannelAdapterHelper
         authToken(toBean.getAuthToken()).autoExpiryDateTime(toBean.getAutoExpiryDateTime()).creationDateTime(toBean.
         getCreationDateTime()).lastModifiedDate(toBean.getLastModifiedDateTime());
     int pos = -1;
+    if (logger.isInfoEnabled()) {
+      logger.info("Channel ID " + toBean.getId());
+    }
     if (toBean.getId() != null) {
-      pos = NumberUtils.toInt(toBean.getId().toString());
+      pos = NumberUtils.toInt(new Long(Long.MAX_VALUE - toBean.getId().longValue()).toString());
     }
     builder.position(pos);
     if (StringUtils.isNotBlank(toBean.getFilterType())) {
