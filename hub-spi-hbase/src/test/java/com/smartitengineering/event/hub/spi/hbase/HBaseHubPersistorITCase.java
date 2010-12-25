@@ -217,11 +217,21 @@ public class HBaseHubPersistorITCase {
     storer.create(newChannel);
     newChannel = APIFactory.getChannelBuilder("channel5").build();
     storer.create(newChannel);
+    final Channel tChannel = storer.getChannel("channel5");
+    System.out.println("Last Position: " + tChannel.getPosition() + " " + (Long.MAX_VALUE - tChannel.getPosition()));
     Collection<Channel> channels = storer.getChannels(6, 2);
+    Assert.assertFalse(channels.isEmpty());
+    for (Channel channel : channels) {
+      System.out.println("Position is: " + channel.getPosition());
+    }
     for (Channel channel : channels) {
       Assert.assertTrue("Position is: " + channel.getPosition(), channel.getPosition() > 6);
     }
     channels = storer.getChannels(6, -2);
+    Assert.assertFalse(channels.isEmpty());
+    for (Channel channel : channels) {
+      System.out.println("Position is: " + channel.getPosition());
+    }
     for (Channel channel : channels) {
       Assert.assertTrue("Position is: " + channel.getPosition(), channel.getPosition() < 6);
     }
@@ -229,6 +239,7 @@ public class HBaseHubPersistorITCase {
 
   @Test
   public void testCreateEvent() {
+    System.out.println("----------------------- CREATE EVENT -----------------------");
     final String content = "<xml>some xml</xml>";
     final String contentType = "application/xml";
     Event event = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
@@ -350,7 +361,7 @@ public class HBaseHubPersistorITCase {
     Event event4 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
         content))).build();
     event4 = storer.create(dummyChannel, event4);
-    final Integer placeholderId = NumberUtils.toInt(event4.getPlaceholderId(), 0);
+    final Long placeholderId = NumberUtils.toLong(event4.getPlaceholderId(), 0);
     System.out.println("Selected PlaceholderID: " + placeholderId);
     Event event5 = APIFactory.getEventBuilder().eventContent(APIFactory.getContent(contentType, IOUtils.toInputStream(
         content))).build();
@@ -378,10 +389,9 @@ public class HBaseHubPersistorITCase {
               return -1;
             }
             else {
-              final int compareTo =
-                        new Integer(NumberUtils.toInt(o1.getPlaceholderId())).compareTo(NumberUtils.toInt(o2.
+              final int compareTo = new Long(NumberUtils.toLong(o1.getPlaceholderId())).compareTo(NumberUtils.toLong(o2.
                   getPlaceholderId()));
-              return compareTo * -1;
+              return compareTo;
             }
           }
         }
@@ -394,9 +404,9 @@ public class HBaseHubPersistorITCase {
     List<Event> sortTestList = new ArrayList<Event>(events);
     Collections.sort(sortTestList, comparator);
     List<Event> origList = new ArrayList<Event>(events);
-    System.out.println(origList + " " + sortTestList);
+    System.out.println("*** EVENTS: " + origList + " " + sortTestList);
     Assert.assertTrue(origList.equals(sortTestList));
-    Assert.assertEquals(Integer.toString(placeholderId + 1), origList.get(origList.size() - 1).
+    Assert.assertEquals(Long.toString(placeholderId - 1), origList.get(origList.size() - 1).
         getPlaceholderId());
     events = storer.getEvents(placeholderId.toString(), "\t", -1 * count);
     Assert.assertNotNull(events);
@@ -406,7 +416,7 @@ public class HBaseHubPersistorITCase {
     origList = new ArrayList<Event>(events);
     System.out.println(origList + " " + sortTestList);
     Assert.assertTrue(origList.equals(sortTestList));
-    Assert.assertEquals(Integer.toString(placeholderId - 1), origList.get(0).getPlaceholderId());
+    Assert.assertEquals(Long.toString(placeholderId + 1), origList.get(0).getPlaceholderId());
     events = storer.getEvents(placeholderId.toString(), dummyChannel.getName(), -1 * count);
     Assert.assertNotNull(events);
     Assert.assertTrue(events.size() == count);
@@ -415,7 +425,7 @@ public class HBaseHubPersistorITCase {
     origList = new ArrayList<Event>(events);
     System.out.println(origList + " " + sortTestList);
     Assert.assertTrue(origList.equals(sortTestList));
-    Assert.assertEquals(Integer.toString(placeholderId - 1), origList.get(0).getPlaceholderId());
+    Assert.assertEquals(Long.toString(placeholderId + 1), origList.get(0).getPlaceholderId());
   }
 
   @Test
