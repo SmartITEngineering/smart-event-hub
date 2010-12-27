@@ -283,7 +283,7 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
     if (event == null) {
       return;
     }
-    final PersistentEvent persistentEvent = getPersistentEvent(event.getPlaceholderId());
+    final PersistentEvent persistentEvent = getPersistentEvent(NumberUtils.toLong(event.getPlaceholderId()));
     if (persistentEvent == null) {
       return;
     }
@@ -292,7 +292,7 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
 
   @Override
   public Event getEvent(String placeholderId) {
-    final PersistentEvent persistentEvent = getPersistentEvent(placeholderId);
+    final PersistentEvent persistentEvent = getPersistentEvent(NumberUtils.toLong(placeholderId));
     final Event convertInversely = eventAdapter.convertInversely(persistentEvent);
     if (logger.isInfoEnabled()) {
       if (persistentEvent != null && convertInversely != null) {
@@ -328,17 +328,27 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
     }
     final QueryParameter<Integer> maxResultsParam = QueryParameterFactory.getMaxResultsParam(Math.abs(count));
     final String eventChannelId;
-    if (StringUtils.isNotBlank(placeholderId)) {
-      PersistentEvent pEvent = getPersistentEvent(placeholderId);
-      if (pEvent != null) {
-        eventChannelId = pEvent.getChannelId();
+    long eventId = NumberUtils.toLong(placeholderId);
+    if (eventId > -1) {
+      if (StringUtils.isNotBlank(placeholderId)) {
+        PersistentEvent pEvent = getPersistentEvent(eventId);
+        if (pEvent != null) {
+          eventChannelId = pEvent.getChannelId();
+        }
+        else {
+          eventChannelId = "";
+        }
       }
       else {
-        eventChannelId = "";
+        eventChannelId = channelId;
       }
     }
     else {
-      eventChannelId = channelId;
+      placeholderId = null;
+      eventChannelId = "";
+      if(count > 0) {
+        count = -1 * count;
+      }
     }
     if (count < 0) {
       final List<QueryParameter> params = new ArrayList<QueryParameter>();
@@ -498,22 +508,21 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
     if (event == null) {
       return null;
     }
-    PersistentEvent persistentEvent = getPersistentEvent(event.getPlaceholderId());
+    PersistentEvent persistentEvent = getPersistentEvent(NumberUtils.toLong(event.getPlaceholderId()));
     Map.Entry<Event, PersistentEvent> entry;
     entry = new SimpleEntry<Event, PersistentEvent>(event, persistentEvent);
     eventAdapter.merge(entry);
     return persistentEvent;
   }
 
-  protected PersistentEvent getPersistentEvent(String placeholderId) {
-    long placeholderIdInt = NumberUtils.toLong(placeholderId);
-    if (placeholderIdInt <= 0) {
+  protected PersistentEvent getPersistentEvent(long placeholderId) {
+    if (placeholderId <= 0) {
       logger.info("Invalid place holder id!");
       return null;
     }
     PersistentEvent persistentEvent =
                     eventRdDao.getSingle(
-        QueryParameterFactory.getStringLikePropertyParam("id", leftPadNumberWithZero(placeholderIdInt), MatchMode.START));
+        QueryParameterFactory.getStringLikePropertyParam("id", leftPadNumberWithZero(placeholderId), MatchMode.START));
     return persistentEvent;
   }
 }
