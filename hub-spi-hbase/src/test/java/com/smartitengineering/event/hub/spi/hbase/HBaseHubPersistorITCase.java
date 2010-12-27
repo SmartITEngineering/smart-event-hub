@@ -340,6 +340,7 @@ public class HBaseHubPersistorITCase {
 
   @Test
   public void testGetEvents() {
+    System.out.println("--------------------- Test GetEvents ---------------------");
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
     Assert.assertTrue(storer.getEvents("-1", null, 0).size() == 0);
@@ -430,6 +431,7 @@ public class HBaseHubPersistorITCase {
 
   @Test
   public void testDeleteEvent() {
+    System.out.println("--------------------- Test DeleteEvents ---------------------");
     final HubPersistentStorer storer =
                               HubPersistentStorerSPI.getInstance().getStorer();
     storer.delete((Event) null);

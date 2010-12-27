@@ -353,7 +353,8 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(searchId.toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
-        final String toString = new StringBuilder(':').append(channelId.toLowerCase()).toString();
+        String toString;
+        toString = new StringBuilder("[0-9]+").append(':').append(channelId.toLowerCase()).toString();
         if (logger.isInfoEnabled()) {
           logger.info("Channel to search with id at end " + toString);
         }
@@ -379,14 +380,24 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(new StringBuilder(leftPadNumberWithZero(
             reversePlaceholderId)).append(':').append(eventChannelId).toString())));
       }
+      final String toString;
       if (StringUtils.isNotBlank(channelId)) {
-        params.add(QueryParameterFactory.getStringLikePropertyParam("id", new StringBuilder(':').append(channelId).
-            toString(), MatchMode.END));
+        toString = new StringBuilder("[0-9]+").append("\\:").append(channelId.toLowerCase()).toString();
       }
+      else {
+        toString = new StringBuilder("[0-9]+").append("\\:").append(".+").toString();
+      }
+      if (logger.isInfoEnabled()) {
+        logger.info("End pattern to test for! " + toString);
+      }
+      params.add(QueryParameterFactory.getStringLikePropertyParam("id", toString, MatchMode.END));
       logger.info("Doing reverse event search!");
       List<ReverseIdIndex> indexes = reverseIdIndexRdDao.getList(params);
       List<EventId> eventIds = new ArrayList<EventId>(indexes.size());
       for (ReverseIdIndex index : indexes) {
+        if (logger.isInfoEnabled()) {
+          logger.info("Reverse ID: " + index.getReverseId());
+        }
         eventIds.add(EventId.fromString(index.getReverseId()));
       }
       Collections.reverse(eventIds);
