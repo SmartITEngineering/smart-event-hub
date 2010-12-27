@@ -22,6 +22,7 @@ import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import com.sun.jersey.api.view.Viewable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -51,23 +52,19 @@ import org.apache.commons.io.IOUtils;
 @Path("/all-events")
 public class AllEventsResource extends AbstractEventResource {
 
-  static final UriBuilder EVENTS_URI_BUILDER;
-  static final UriBuilder EVENTS_AFTER_BUILDER;
-  static final UriBuilder EVENTS_BEFORE_BUILDER;
   private final Map<Event, String> contentCache = new WeakHashMap<Event, String>();
 
+  static final Method BEFORE_METHOD;
+  static final Method AFTER_METHOD;
   static {
-    EVENTS_URI_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
-    EVENTS_BEFORE_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
     try {
-      EVENTS_BEFORE_BUILDER.path(AllEventsResource.class.getMethod("getBefore", String.class));
+      BEFORE_METHOD = (AllEventsResource.class.getMethod("getBefore", String.class));
     }
     catch (Exception ex) {
       throw new InstantiationError();
     }
-    EVENTS_AFTER_BUILDER = UriBuilder.fromResource(AllEventsResource.class);
     try {
-      EVENTS_AFTER_BUILDER.path(AllEventsResource.class.getMethod("getAfter", String.class));
+      AFTER_METHOD = (AllEventsResource.class.getMethod("getAfter", String.class));
     }
     catch (Exception ex) {
       throw new InstantiationError();
@@ -180,7 +177,7 @@ public class AllEventsResource extends AbstractEventResource {
     Feed atomFeed = getFeed("Events", new Date());
 
     Link eventsLink = getAbderaFactory().newLink();
-    eventsLink.setHref(UriBuilder.fromResource(RootResource.class).build().toString());
+    eventsLink.setHref(getRelativeURIBuilder().path(RootResource.class).build().toString());
     eventsLink.setRel("root");
 
     atomFeed.addLink(eventsLink);
@@ -194,8 +191,8 @@ public class AllEventsResource extends AbstractEventResource {
       Link nextLink = getAbderaFactory().newLink();
       nextLink.setRel(Link.REL_PREVIOUS);
       Event lastEvent = eventList.get(0);
-      final UriBuilder nextUri = EVENTS_AFTER_BUILDER.clone();
-      final UriBuilder previousUri = EVENTS_BEFORE_BUILDER.clone();
+      final UriBuilder nextUri = getRelativeURIBuilder().path(AllEventsResource.class).path(AFTER_METHOD);
+      final UriBuilder previousUri = getRelativeURIBuilder().path(AllEventsResource.class).path(BEFORE_METHOD);
 
       for (String key : queryParams.keySet()) {
         final Object[] values = queryParams.get(key).toArray();
@@ -247,7 +244,7 @@ public class AllEventsResource extends AbstractEventResource {
 
         Link eventLink = getAbderaFactory().newLink();
 
-        eventLink.setHref(EventResource.EVENT_URI_BUILDER.clone().build(event.getPlaceholderId()).toString());
+        eventLink.setHref(getRelativeURIBuilder().path(EventResource.class).build(event.getPlaceholderId()).toString());
         eventLink.setRel(Link.REL_ALTERNATE);
         eventLink.setMimeType(MediaType.APPLICATION_JSON);
 

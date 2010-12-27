@@ -28,7 +28,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
@@ -38,7 +37,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 @Path("/event/{eventPlaceholderId}")
 public class EventResource extends AbstractResource {
 
-  static final UriBuilder EVENT_URI_BUILDER = UriBuilder.fromResource(EventResource.class);
   private final Event event;
 
   public EventResource(@PathParam("eventPlaceholderId") String placeholderId) {

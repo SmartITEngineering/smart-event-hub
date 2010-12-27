@@ -21,10 +21,8 @@ import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.spi.HubPersistentStorer;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import com.smartitengineering.util.rest.atom.server.AbstractResource;
-import java.net.URI;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -58,14 +56,6 @@ public abstract class AbstractChannelResource extends AbstractResource {
     if (myChannel == null || !StringUtils.equals(getAuthToken(), myChannel.getAuthToken())) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
-  }
-
-  protected UriBuilder setBaseUri(final UriBuilder builder) throws IllegalArgumentException {
-    final URI baseUri = getUriInfo().getBaseUri();
-    UriBuilder result = UriBuilder.fromUri(baseUri);
-    final URI uri = builder.build();
-    result.path(uri.getPath());
-    return result;
   }
 
   @Override

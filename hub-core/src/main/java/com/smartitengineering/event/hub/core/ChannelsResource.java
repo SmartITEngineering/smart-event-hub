@@ -23,6 +23,7 @@ import com.smartitengineering.event.hub.api.impl.APIFactory.ChannelBuilder;
 import com.smartitengineering.event.hub.common.ChannelJsonProvider;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import com.sun.jersey.api.view.Viewable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -53,22 +54,18 @@ import org.apache.commons.lang.math.NumberUtils;
 @Path("/all-channels")
 public class ChannelsResource extends AbstractChannelResource {
 
-  static final UriBuilder CHANNELS_URI_BUILDER;
-  static final UriBuilder CHANNELS_AFTER_BUILDER;
-  static final UriBuilder CHANNELS_BEFORE_BUILDER;
+  static final Method BEFORE_METHOD;
+  static final Method AFTER_METHOD;
 
   static {
-    CHANNELS_URI_BUILDER = UriBuilder.fromResource(ChannelsResource.class);
-    CHANNELS_BEFORE_BUILDER = UriBuilder.fromResource(ChannelsResource.class);
     try {
-      CHANNELS_BEFORE_BUILDER.path(ChannelsResource.class.getMethod("getBefore", String.class));
+      BEFORE_METHOD = ChannelsResource.class.getMethod("getBefore", String.class);
     }
     catch (Exception ex) {
       throw new InstantiationError();
     }
-    CHANNELS_AFTER_BUILDER = UriBuilder.fromResource(ChannelsResource.class);
     try {
-      CHANNELS_AFTER_BUILDER.path(ChannelsResource.class.getMethod("getAfter", String.class));
+      AFTER_METHOD = ChannelsResource.class.getMethod("getAfter", String.class);
     }
     catch (Exception ex) {
       throw new InstantiationError();
@@ -235,7 +232,7 @@ public class ChannelsResource extends AbstractChannelResource {
     Feed atomFeed = getFeed("Events", new Date());
 
     Link eventsLink = getAbderaFactory().newLink();
-    eventsLink.setHref(UriBuilder.fromResource(RootResource.class).build().toString());
+    eventsLink.setHref(getRelativeURIBuilder().path(RootResource.class).build().toString());
     eventsLink.setRel("root");
 
     atomFeed.addLink(eventsLink);
@@ -249,8 +246,8 @@ public class ChannelsResource extends AbstractChannelResource {
       Link nextLink = getAbderaFactory().newLink();
       nextLink.setRel(Link.REL_PREVIOUS);
       Channel lastChannel = channelList.get(0);
-      final UriBuilder nextUri = CHANNELS_AFTER_BUILDER.clone();
-      final UriBuilder previousUri = CHANNELS_BEFORE_BUILDER.clone();
+      final UriBuilder nextUri = getRelativeURIBuilder().path(ChannelsResource.class).path(AFTER_METHOD);
+      final UriBuilder previousUri = getRelativeURIBuilder().path(ChannelsResource.class).path(BEFORE_METHOD);
 
       for (String key : queryParams.keySet()) {
         final Object[] values = queryParams.get(key).toArray();
@@ -278,7 +275,7 @@ public class ChannelsResource extends AbstractChannelResource {
         channelEntry.setUpdated(channel.getCreationDateTime());
         Link channelLink = getAbderaFactory().newLink();
 
-        channelLink.setHref(ChannelsResource.CHANNELS_URI_BUILDER.clone().build(channel.getPosition()).toString());
+        channelLink.setHref(getRelativeURIBuilder().path(ChannelResource.class).build(channel.getName()).toString());
         channelLink.setRel(Link.REL_ALTERNATE);
         channelLink.setMimeType(MediaType.APPLICATION_JSON);
 

@@ -27,7 +27,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriBuilder;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
@@ -41,7 +40,6 @@ public class RootResource extends AbstractEventResource {
 
   private static final Date INIT_DATE = new Date();
   private String eventName = "";
-
   @Context
   private HttpServletRequest servletRequest;
 
@@ -51,20 +49,23 @@ public class RootResource extends AbstractEventResource {
     ResponseBuilder responseBuilder = Response.ok();
     Feed atomFeed = getFeed("Event Hub", INIT_DATE);
     Link eventsLink = Abdera.getNewFactory().newLink();
-    eventsLink.setHref(UriBuilder.fromResource(AllEventsResource.class).build().toString());
+    eventsLink.setHref(getRelativeURIBuilder().path(AllEventsResource.class).build().toString());
     eventsLink.setRel("events");
     atomFeed.addLink(eventsLink);
+    Link channelsLink = Abdera.getNewFactory().newLink();
+    channelsLink.setHref(getRelativeURIBuilder().path(ChannelsResource.class).build().toString());
+    channelsLink.setRel("channels");
+    atomFeed.addLink(channelsLink);
     responseBuilder.entity(atomFeed);
     return responseBuilder.build();
   }
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getInHTML()
-  {
+  public Response getInHTML() {
     ResponseBuilder responseBuilder = Response.ok();
-    String eventsLink=UriBuilder.fromResource(AllEventsResource.class).build().toString();
-    String channelLink=UriBuilder.fromResource(ChannelsResource.class).build().toString();
+    String eventsLink = getRelativeURIBuilder().path(AllEventsResource.class).build().toString();
+    String channelLink = getRelativeURIBuilder().path(ChannelsResource.class).build().toString();
     servletRequest.setAttribute("channelLink", channelLink);
     Viewable viewable = new Viewable("root", eventsLink, RootResource.class);
     responseBuilder.entity(viewable);
