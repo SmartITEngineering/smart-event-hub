@@ -113,10 +113,10 @@ public class ChannelHubResource extends AbstractChannelResource {
     message = message + "\n";
     Broadcastable broadcastable = new Broadcastable(message, broadcaster);
     ResponseBuilder builder = Response.ok(broadcastable);
-    builder.location(getRelativeURIBuilder().path(EventResource.class).build(event.getPlaceholderId()));
+    builder.location(getAbsoluteURIBuilder().path(EventResource.class).build(event.getPlaceholderId()));
     if (isHtmlPost) {
       builder.status(Response.Status.SEE_OTHER);
-      builder.location(getRelativeURIBuilder().path(ChannelEventsResource.class).build(channelName));
+      builder.location(getAbsoluteURIBuilder().path(ChannelEventsResource.class).build(channelName));
     }
     return builder.build();
   }
