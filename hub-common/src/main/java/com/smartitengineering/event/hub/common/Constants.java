@@ -27,5 +27,7 @@ public interface Constants {
 
     static final String AUTH_TOKEN_HEADER_NAME = "X-CHANNEL-AUTH-TOKEN";
     static final String RSRC_PATH_CHANNEL = "channel";
+    static final String RSRC_PATH_CHANNEL_PREFIX = "channels";
     static final String RSRC_PATH_CHANNEL_HUB = Channel.HUB_SUB_RESOURCE_PATH;
+    static final String RSRC_PATH_CHANNEL_EVENTS = "events";
 }

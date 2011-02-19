@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.smartitengineering.event.hub.core;
 
 import com.smartitengineering.event.hub.api.Event;
+import com.smartitengineering.event.hub.common.Constants;
 import com.smartitengineering.event.hub.spi.HubPersistentStorerSPI;
 import com.sun.jersey.api.view.Viewable;
 import java.io.IOException;
@@ -51,7 +52,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author kaisar
  */
-@Path("/channels/{channelId}/events")
+@Path("/" + Constants.RSRC_PATH_CHANNEL_PREFIX + "/{channelId}/" + Constants.RSRC_PATH_CHANNEL_EVENTS)
 public class ChannelEventsResource extends AbstractEventResource {
 
   static final Method BEFORE_METHOD;

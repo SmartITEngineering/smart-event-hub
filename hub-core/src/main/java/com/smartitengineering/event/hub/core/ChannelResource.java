@@ -34,12 +34,14 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 
 /**
  *
  * @author imyousuf
  */
-@Path("/channels/{" + Constants.RSRC_PATH_CHANNEL + "}")
+@Path("/" + Constants.RSRC_PATH_CHANNEL_PREFIX + "/{" + Constants.RSRC_PATH_CHANNEL + "}")
 public class ChannelResource extends AbstractChannelResource {
 
   @PathParam(Constants.RSRC_PATH_CHANNEL)
@@ -93,6 +95,25 @@ public class ChannelResource extends AbstractChannelResource {
     Channel channel = getAuthChannel();
     if (channel != null) {
       return Response.ok(channel).build();
+    }
+    else {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_ATOM_XML)
+  public Response getChannelAtom() {
+    Channel channel = getAuthChannel();
+    if (channel != null) {
+      final Feed feed = getFeed(channel.getName(), channel.getName(), channel.getLastModifiedDate());
+      feed.addLink(getLink(getUriInfo().getRequestUri(), Link.REL_ALTERNATE, MediaType.APPLICATION_JSON));
+      String hubUri = getUriInfo().getRequestUriBuilder().path(Constants.RSRC_PATH_CHANNEL_HUB).build().toASCIIString();
+      feed.addLink(getLink(hubUri, Constants.RSRC_PATH_CHANNEL_HUB, MediaType.WILDCARD));
+      String eventsUri = getUriInfo().getRequestUriBuilder().path(Constants.RSRC_PATH_CHANNEL_EVENTS).build().
+          toASCIIString();
+      feed.addLink(getLink(eventsUri, Constants.RSRC_PATH_CHANNEL_EVENTS, MediaType.APPLICATION_ATOM_XML));
+      return Response.ok(feed).build();
     }
     else {
       return Response.status(Response.Status.NOT_FOUND).build();

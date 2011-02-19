@@ -34,9 +34,11 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
@@ -61,7 +63,7 @@ public class ChannelJsonProvider
   public static final String NAME = "name";
   public static final String DESCRIPTION = "description";
   private static final String HUB_URI = "hubUri";
-  private static final String EVENT_URI="eventUri";
+  private static final String EVENT_URI = "eventUri";
   public static final String AUTH_TOKEN = "authToken";
   public static final String AUTO_EXPIRE = "autoExpire";
   private static final String CREATED = "createdAt";
@@ -70,7 +72,10 @@ public class ChannelJsonProvider
   private static final String LAST_MODIFIED = "lastModified";
   private static final String DATE_ISO8601_PATTERN =
                               DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern();
+  @Context
+  private UriInfo uriInfo;
 
+  @Override
   public boolean isReadable(Class<?> type,
                             Type genericType,
                             Annotation[] annotations,
@@ -78,6 +83,7 @@ public class ChannelJsonProvider
     return Channel.class.isAssignableFrom(type) && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
   }
 
+  @Override
   public Channel readFrom(Class<Channel> type,
                           Type genericType,
                           Annotation[] annotations,
@@ -101,10 +107,12 @@ public class ChannelJsonProvider
     try {
       if (StringUtils.isNotBlank(filterTypeStr)) {
         mimeType = SupportedMimeType.valueOf(filterTypeStr.toUpperCase());
-      } else {
+      }
+      else {
         mimeType = null;
       }
-    } catch (Throwable th) {
+    }
+    catch (Throwable th) {
       throw new WebApplicationException(th, Status.BAD_REQUEST);
     }
     final String filterScript = parsedJsonContentMap.get(FILTER);
@@ -112,27 +120,31 @@ public class ChannelJsonProvider
     try {
       final String expireStr = parsedJsonContentMap.get(AUTO_EXPIRE);
       expireDate = parseDate(expireStr);
-    } catch (ParseException ex) {
+    }
+    catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
     final Date creationDate;
     try {
       final String createdAtStr = parsedJsonContentMap.get(CREATED);
       creationDate = parseDate(createdAtStr);
-    } catch (ParseException ex) {
+    }
+    catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
     final Date lastModifiedDate;
     try {
       final String lastModifiedStr = parsedJsonContentMap.get(LAST_MODIFIED);
       lastModifiedDate = parseDate(lastModifiedStr);
-    } catch (ParseException ex) {
+    }
+    catch (ParseException ex) {
       throw new WebApplicationException(ex, Status.BAD_REQUEST);
     }
     final Filter filter;
     if (mimeType != null && StringUtils.isNotBlank(filterScript)) {
       filter = APIFactory.getFilter(mimeType, filterScript);
-    } else {
+    }
+    else {
       filter = null;
       if (mimeType != null || StringUtils.isNotBlank(filterScript)) {
         throw new WebApplicationException(new IllegalArgumentException(
@@ -142,9 +154,10 @@ public class ChannelJsonProvider
     }
     return APIFactory.getChannelBuilder(name).description(description).authToken(
         authToken).autoExpiryDateTime(expireDate).creationDateTime(creationDate).
-        filter(filter).lastModifiedDate(lastModifiedDate).hubUri(uriStr).build();
+        filter(filter).lastModifiedDate(lastModifiedDate).build();
   }
 
+  @Override
   public boolean isWriteable(Class<?> type,
                              Type genericType,
                              Annotation[] annotations,
@@ -152,6 +165,7 @@ public class ChannelJsonProvider
     return Channel.class.isAssignableFrom(type) && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
   }
 
+  @Override
   public long getSize(Channel t,
                       Class<?> type,
                       Type genericType,
@@ -159,11 +173,13 @@ public class ChannelJsonProvider
                       MediaType mediaType) {
     if (isWriteable(type, genericType, annotations, mediaType)) {
       return getJsonString(t).length();
-    } else {
+    }
+    else {
       return 0;
     }
   }
 
+  @Override
   public void writeTo(Channel t,
                       Class<?> type,
                       Type genericType,
@@ -199,10 +215,10 @@ public class ChannelJsonProvider
     if (channel.getLastModifiedDate() != null) {
       jsonMap.put(LAST_MODIFIED, formatDate(channel.getLastModifiedDate()));
     }
-    if (channel.getHubUri() != null) {
-      jsonMap.put(HUB_URI, channel.getHubUri().toString());
-    }
-    jsonMap.put(EVENT_URI, "/"+channel.getName().toString()+"/events");
+    jsonMap.put(HUB_URI, uriInfo.getBaseUriBuilder().path(Constants.RSRC_PATH_CHANNEL_PREFIX).path(channel.getName()).
+        path(Constants.RSRC_PATH_CHANNEL_HUB).build().toASCIIString());
+    jsonMap.put(EVENT_URI, uriInfo.getBaseUriBuilder().path(Constants.RSRC_PATH_CHANNEL_PREFIX).path(
+        channel.getName()).path(Constants.RSRC_PATH_CHANNEL_EVENTS).build().toASCIIString());
     if (channel.getFilter() != null) {
       Filter filter = channel.getFilter();
       jsonMap.put(FILTER, filter.getFilterScript());
@@ -210,7 +226,8 @@ public class ChannelJsonProvider
     }
     try {
       return mapper.writeValueAsString(jsonMap);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       return "";
     }
   }
@@ -224,7 +241,8 @@ public class ChannelJsonProvider
     Date date;
     if (StringUtils.isNotBlank(dateStr)) {
       date = DateUtils.parseDate(dateStr, new String[]{DATE_ISO8601_PATTERN});
-    } else {
+    }
+    else {
       date = null;
     }
     return date;

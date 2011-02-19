@@ -49,7 +49,7 @@ import org.atmosphere.plugin.cluster.jgroups.JGroupsFilter;
  *
  * @author imyousuf
  */
-@Path("/channels/{" + Constants.RSRC_PATH_CHANNEL + "}/" + Constants.RSRC_PATH_CHANNEL_HUB)
+@Path("/" + Constants.RSRC_PATH_CHANNEL_PREFIX + "/{" + Constants.RSRC_PATH_CHANNEL + "}/" + Constants.RSRC_PATH_CHANNEL_HUB)
 public class ChannelHubResource extends AbstractChannelResource {
 
   @PathParam(Constants.RSRC_PATH_CHANNEL)

@@ -72,6 +72,4 @@ public interface Channel {
    * @return Filter of this channel
    */
   public Filter getFilter();
-
-  public URI getHubUri();
 }

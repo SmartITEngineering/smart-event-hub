@@ -19,7 +19,6 @@ package com.smartitengineering.event.hub.api.impl;
 
 import com.smartitengineering.event.hub.api.Channel;
 import com.smartitengineering.event.hub.api.Filter;
-import java.net.URI;
 import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
@@ -27,7 +26,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author imyousuf
  */
-class ChannelImpl
+final class ChannelImpl
     implements Channel,
                Cloneable {
 
@@ -35,7 +34,6 @@ class ChannelImpl
   private String description, authToken;
   private Date creationDateTime, autoExpiryDateTime, lastModifiedDate;
   private Filter filter;
-  private URI hubUri;
   private int position;
 
   public ChannelImpl(String name) {
@@ -54,7 +52,6 @@ class ChannelImpl
       setFilter(APIFactory.getFilter(otherFilter.getMimeType(), otherFilter.
           getFilterScript()));
     }
-    setHubUri(channel.getHubUri());
     setPosition(channel.getPosition());
   }
 
@@ -106,15 +103,6 @@ class ChannelImpl
 
   public void setFilter(Filter filter) {
     this.filter = filter;
-  }
-
-  public void setHubUri(URI hubUri) {
-    this.hubUri = hubUri;
-  }
-
-  @Override
-  public URI getHubUri() {
-    return hubUri;
   }
 
   @Override

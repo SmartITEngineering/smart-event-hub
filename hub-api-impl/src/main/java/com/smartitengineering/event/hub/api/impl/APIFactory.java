@@ -157,32 +157,7 @@ public final class APIFactory {
       return this;
     }
 
-    public ChannelBuilder hubUri(URI baseUri) {
-      UriBuilder builder = UriBuilder.fromUri(baseUri);
-      builder.path(channelImpl.getName());
-      builder.path(Channel.HUB_SUB_RESOURCE_PATH);
-      channelImpl.setHubUri(builder.build());
-      return this;
-    }
-
-    public ChannelBuilder hubUri(String uriStr) {
-      if (StringUtils.isBlank(uriStr)) {
-        return this;
-      }
-      URI uri;
-      try {
-        uri = new URI(uriStr);
-      } catch (URISyntaxException ex) {
-        throw new RuntimeException(ex);
-      }
-      channelImpl.setHubUri(uri);
-      return this;
-    }
-
     public Channel build() {
-      if (channelImpl.getHubUri() == null) {
-        hubUri(UriBuilder.fromPath("/").build());
-      }
       return channelImpl.clone();
     }
   }
