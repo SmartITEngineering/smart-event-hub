@@ -43,7 +43,7 @@ import org.atmosphere.annotation.Cluster;
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.jersey.Broadcastable;
-import org.atmosphere.plugin.cluster.jgroups.JGroupsFilter;
+import org.atmosphere.plugin.jgroups.JGroupsFilter;
 
 /**
  *

@@ -46,10 +46,6 @@
     </dependency>
     <dependency>
       <groupId>org.atmosphere</groupId>
-      <artifactId>atmosphere-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.atmosphere</groupId>
       <artifactId>atmosphere-jgroups</artifactId>
     </dependency>
     <dependency>
@@ -69,6 +65,10 @@
       <groupId>com.smartitengineering.event</groupId>
       <artifactId>hub-spi</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
     </dependency>
   </dependencies>
   <build>
