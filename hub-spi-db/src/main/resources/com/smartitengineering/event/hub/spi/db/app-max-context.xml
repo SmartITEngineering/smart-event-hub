@@ -72,7 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <value>2</value>
     </property>
     <property name="checkoutTimeout">
-      <value>5000</value>
+      <value>50000</value>
     </property>
     <property name="initialPoolSize">
       <value>5</value>
@@ -82,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </property>
         <!-- Will never expire (seconds)-->
     <property name="maxPoolSize">
-      <value>10</value>
+      <value>100</value>
     </property>
     <property name="maxStatements">
       <value>500</value>
@@ -94,7 +94,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <value>3</value>
     </property>
     <property name="numHelperThreads">
-      <value>4</value>
+      <value>40</value>
     </property>
   </bean>
   <import resource="app-min-context.xml" />
