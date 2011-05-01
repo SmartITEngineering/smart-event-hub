@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <parent>
     <groupId>com.smartitengineering</groupId>
     <artifactId>smart-core</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.7</version>
   </parent>
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>smart-event-hub</artifactId>
