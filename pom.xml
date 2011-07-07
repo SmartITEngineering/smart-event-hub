@@ -109,40 +109,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changelog-plugin</artifactId>
-        <inherited>true</inherited>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>${plexus-utils.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>${plugin.scm.version}</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <type>tag</type>
-          <tags>
-            <tag implementation="java.lang.String">${last.release.tag}</tag>
-            <tag implementation="java.lang.String">HEAD</tag>
-          </tags>
-        </configuration>
-        <executions>
-          <execution>
-            <id>generate-history</id>
-            <inherited>true</inherited>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>changelog</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
@@ -153,6 +119,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>changelog</id>
+      <activation>
+        <property>
+          <name>clog</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changelog-plugin</artifactId>
+            <inherited>true</inherited>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${plexus-utils.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-provider-gitexe</artifactId>
+                <version>${plugin.scm.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <type>tag</type>
+              <tags>
+                <tag implementation="java.lang.String">${last.release.tag}</tag>
+                <tag implementation="java.lang.String">HEAD</tag>
+              </tags>
+            </configuration>
+            <executions>
+              <execution>
+                <id>generate-history</id>
+                <inherited>true</inherited>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>changelog</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <reporting>
     <plugins>
       <plugin>
