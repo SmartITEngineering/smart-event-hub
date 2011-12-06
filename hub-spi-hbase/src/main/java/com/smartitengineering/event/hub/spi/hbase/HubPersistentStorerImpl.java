@@ -204,13 +204,13 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
     if (count < 0) {
       final QueryParameter param;
       long index = Long.MAX_VALUE - startIndex;
-      if (logger.isInfoEnabled()) {
-        logger.info("Reverse Index value " + index);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Reverse Index value " + index);
       }
       param = QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(index));
       final List<PersistentChannel> list = channelRdDao.getList(param, maxResultsParam);
-      if (logger.isInfoEnabled()) {
-        logger.info("Result " + list);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Result " + list);
       }
       return channelAdapter.convertInversely(list.toArray(EMPTY_CHANNEL_ARRAY));
     }
@@ -226,8 +226,8 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         }
       }
       final Set<PersistentChannel> byIds = channelRdDao.getByIds(ids);
-      if (logger.isInfoEnabled()) {
-        logger.info("Result " + reverseIndexes + " - " + byIds);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Result " + reverseIndexes + " - " + byIds);
       }
       return channelAdapter.convertInversely(byIds.toArray(EMPTY_CHANNEL_ARRAY));
     }
@@ -269,8 +269,8 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       reverseIdIndexWrtDao.save(reverseIdIndex);
       eventUUIDWrtDao.save(eUuid);
       final Event convertInversely = eventAdapter.convertInversely(persistentEvent);
-      if (logger.isInfoEnabled()) {
-        logger.info("Event's ID, UUID and PlaceholderID: " + persistentEvent.getId().toString() + " " + convertInversely.
+      if (logger.isDebugEnabled()) {
+        logger.debug("Event's ID, UUID and PlaceholderID: " + persistentEvent.getId().toString() + " " + convertInversely.
             getUniversallyUniqueID() + " " + convertInversely.getPlaceholderId());
       }
       return convertInversely;
@@ -294,9 +294,9 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
   public Event getEvent(String placeholderId) {
     final PersistentEvent persistentEvent = getPersistentEvent(NumberUtils.toLong(placeholderId));
     final Event convertInversely = eventAdapter.convertInversely(persistentEvent);
-    if (logger.isInfoEnabled()) {
+    if (logger.isDebugEnabled()) {
       if (persistentEvent != null && convertInversely != null) {
-        logger.info("Event's ID, UUID and PlaceholderID: " + persistentEvent.getId().toString() + " " + convertInversely.
+        logger.debug("Event's ID, UUID and PlaceholderID: " + persistentEvent.getId().toString() + " " + convertInversely.
             getUniversallyUniqueID() + " " + convertInversely.getPlaceholderId());
       }
       else {
@@ -357,25 +357,25 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
         final StringBuilder searchId = new StringBuilder(leftPadNumberWithZero(NumberUtils.toLong(placeholderId))).
             append(':');
         searchId.append(eventChannelId);
-        if (logger.isInfoEnabled()) {
-          logger.info("Event Id to search greater or smaller than: " + searchId);
+        if (logger.isDebugEnabled()) {
+          logger.debug("Event Id to search greater or smaller than: " + searchId);
         }
         params.add(QueryParameterFactory.getGreaterThanPropertyParam("id", Bytes.toBytes(searchId.toString())));
       }
       if (StringUtils.isNotBlank(channelId)) {
         String toString;
         toString = new StringBuilder("[0-9]+").append(':').append(channelId.toLowerCase()).toString();
-        if (logger.isInfoEnabled()) {
-          logger.info("Channel to search with id at end " + toString);
+        if (logger.isDebugEnabled()) {
+          logger.debug("Channel to search with id at end " + toString);
         }
         params.add(QueryParameterFactory.getStringLikePropertyParam("id", toString, MatchMode.END));
       }
-      logger.info("Doing event straight search!");
+      logger.debug("Doing event straight search!");
       final List<PersistentEvent> list = eventRdDao.getList(params);
-      if (logger.isInfoEnabled()) {
-        logger.info("Straight event search completed!");
+      if (logger.isDebugEnabled()) {
+        logger.debug("Straight event search completed!");
         for (PersistentEvent pEvent : list) {
-          logger.info("EVENT " + pEvent.getId().toString());
+          logger.debug("EVENT " + pEvent.getId().toString());
         }
       }
       return new LinkedHashSet<Event>(eventAdapter.convertInversely(
@@ -397,22 +397,22 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       else {
         toString = new StringBuilder("[0-9]+").append("\\:").append(".+").toString();
       }
-      if (logger.isInfoEnabled()) {
-        logger.info("End pattern to test for! " + toString);
+      if (logger.isDebugEnabled()) {
+        logger.debug("End pattern to test for! " + toString);
       }
       params.add(QueryParameterFactory.getStringLikePropertyParam("id", toString, MatchMode.END));
-      logger.info("Doing reverse event search!");
+      logger.debug("Doing reverse event search!");
       List<ReverseIdIndex> indexes = reverseIdIndexRdDao.getList(params);
       List<EventId> eventIds = new ArrayList<EventId>(indexes.size());
       for (ReverseIdIndex index : indexes) {
-        if (logger.isInfoEnabled()) {
-          logger.info("Reverse ID: " + index.getReverseId());
+        if (logger.isDebugEnabled()) {
+          logger.debug("Reverse ID: " + index.getReverseId());
         }
         eventIds.add(EventId.fromString(index.getReverseId()));
       }
       Collections.reverse(eventIds);
       final Set<PersistentEvent> byIds = eventRdDao.getByIds(eventIds);
-      logger.info("Reverse event search completed!");
+      logger.debug("Reverse event search completed!");
       return new LinkedHashSet<Event>(eventAdapter.convertInversely(byIds.toArray(
           EMPTY_EVENT_ARRAY)));
     }
@@ -465,15 +465,15 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       return null;
     }
     PersistentChannel persistentChannel = getPersistentChannel(channel.getName());
-    if (logger.isInfoEnabled()) {
-      logger.info("Persistent channel found is " + persistentChannel);
-      logger.info("Persistent channel ID is " + persistentChannel.getId());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Persistent channel found is " + persistentChannel);
+      logger.debug("Persistent channel ID is " + persistentChannel.getId());
     }
     Map.Entry<Channel, PersistentChannel> entry;
     entry = new SimpleEntry<Channel, PersistentChannel>(channel, persistentChannel);
     channelAdapter.merge(entry);
-    if (logger.isInfoEnabled()) {
-      logger.info("Persistent channel ID is " + persistentChannel.getId());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Persistent channel ID is " + persistentChannel.getId());
     }
     return persistentChannel;
   }
@@ -483,21 +483,21 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
       return null;
     }
     final String channelIdIndexName = getChannelIdIndexName(channelName.toLowerCase());
-    if (logger.isInfoEnabled()) {
-      logger.info("Getting channel with name in reverse lookup table " + channelIdIndexName);
+    if (logger.isDebugEnabled()) {
+      logger.debug("Getting channel with name in reverse lookup table " + channelIdIndexName);
     }
     RowAutoIdIndex idIndex = autoIdRdDao.getById(channelIdIndexName);
     if (idIndex != null) {
-      logger.info("Found ID in channel name index");
+      logger.debug("Found ID in channel name index");
       final long channelId = NumberUtils.toLong(idIndex.getReverseId());
-      if (logger.isInfoEnabled()) {
-        logger.info("Found reverse index for channel " + channelId);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Found reverse index for channel " + channelId);
       }
       PersistentChannel persistentChannel = channelRdDao.getById(channelId);
       return persistentChannel;
     }
     else {
-      logger.info("Did not found ID in channel name index");
+      logger.debug("Did not found ID in channel name index");
       PersistentChannel persistentChannel = channelRdDao.getSingle(QueryParameterFactory.getStringLikePropertyParam(
           PersistentChannel.NAME, channelName.toLowerCase(), MatchMode.EXACT));
       return persistentChannel;
@@ -517,7 +517,7 @@ public class HubPersistentStorerImpl implements HubPersistentStorer {
 
   protected PersistentEvent getPersistentEvent(long placeholderId) {
     if (placeholderId <= 0) {
-      logger.info("Invalid place holder id!");
+      logger.debug("Invalid place holder id!");
       return null;
     }
     PersistentEvent persistentEvent =

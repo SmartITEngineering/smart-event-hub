@@ -66,8 +66,8 @@ public class EventObjectConverter extends AbstractObjectRowConverter<PersistentE
     try {
       PersistentEvent event = new PersistentEvent();
       event.setId(getInfoProvider().getIdFromRowId(startRow.getRow()));
-      if (logger.isInfoEnabled()) {
-        logger.info("Parsed ID " + event.getId().toString());
+      if (logger.isDebugEnabled()) {
+        logger.debug("Parsed ID " + event.getId().toString());
       }
       event.setChannelId(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_CHANNEL_ID)));
       event.setContentType(Bytes.toString(startRow.getValue(FAMILY_SELF, CELL_CONTENT_TYPE)));

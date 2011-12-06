@@ -65,8 +65,8 @@ public class ChannelAdapterHelper
         authToken(toBean.getAuthToken()).autoExpiryDateTime(toBean.getAutoExpiryDateTime()).creationDateTime(toBean.
         getCreationDateTime()).lastModifiedDate(toBean.getLastModifiedDateTime());
     int pos = -1;
-    if (logger.isInfoEnabled()) {
-      logger.info("Channel ID " + toBean.getId());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Channel ID " + toBean.getId());
     }
     if (toBean.getId() != null) {
       pos = NumberUtils.toInt(new Long(Long.MAX_VALUE - toBean.getId().longValue()).toString());

@@ -86,8 +86,8 @@ public class EventId implements Externalizable, Comparable<EventId> {
   }
 
   protected void readIdFromString(String idString) throws IOException {
-    if (logger.isInfoEnabled()) {
-      logger.info("Trying to parse content id: " + idString);
+    if (logger.isDebugEnabled()) {
+      logger.debug("Trying to parse content id: " + idString);
     }
     if (StringUtils.isBlank(idString)) {
       throw new IOException("No content!");
