@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
   <display-name>hub</display-name>
-  <context-param>
-    <param-name>classpathAppContextLocation</param-name>
-    <param-value>com/smartitengineering/event/hub/spi/db/app-max-context.xml</param-value>
-  </context-param>
   <listener>
-    <listener-class>com.smartitengineering.util.bean.spring.ClasspathXmlContextLoader</listener-class>
+    <listener-class>com.smartitengineering.event.hub.spi.hbase.InitializerContextListener</listener-class>
   </listener>
   <servlet>
     <description>AtmosphereServlet</description>

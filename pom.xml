@@ -197,6 +197,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   </reporting>
   <modules>
     <module>hub</module>
+    <module>hub-hbase</module>
     <module>hub-core</module>
     <module>hub-spi</module>
     <module>hub-spi-db</module>
