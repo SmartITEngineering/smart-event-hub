@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <dependency>
       <groupId>com.smartitengineering.event</groupId>
       <artifactId>hub-core</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <dependency>
       <groupId>com.smartitengineering.event</groupId>
       <artifactId>hub-spi-hbase</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
