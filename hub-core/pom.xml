@@ -4,11 +4,11 @@
   <parent>
     <artifactId>smart-event-hub</artifactId>
     <groupId>com.smartitengineering.event</groupId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>hub-core</artifactId>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Hub RESTful Core</name>
   <description>
     The core module implements the resource responsible for event distribution.

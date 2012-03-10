@@ -21,11 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses />.
   <parent>
     <artifactId>smart-event-hub</artifactId>
     <groupId>com.smartitengineering.event</groupId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>hub-api-impl</artifactId>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Hub API Impl</name>
   <dependencies>
     <dependency>

@@ -4,11 +4,11 @@
   <parent>
     <artifactId>smart-event-hub</artifactId>
     <groupId>com.smartitengineering.event</groupId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>hub-spi-hbase</artifactId>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Hub SPI HBase</name>
   <dependencies>
     <dependency>

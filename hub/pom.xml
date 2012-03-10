@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses />.
   <parent>
     <groupId>com.smartitengineering.event</groupId>
     <artifactId>smart-event-hub</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <groupId>com.smartitengineering.event</groupId>
   <artifactId>hub-rdbms</artifactId>
   <packaging>war</packaging>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Hub Web Application (RDBMS)</name>
   <description>
     The main web application which will persist events to storage configured. It will be based on profiles. By default
