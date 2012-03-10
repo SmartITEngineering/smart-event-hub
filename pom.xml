@@ -94,7 +94,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   </mailingLists>
   <scm>
     <connection>scm:git:git://github.com/imyousuf/smart-event-hub.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:imyousuf/smart-event-hub.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/imyousuf/smart-event-hub.git</developerConnection>
     <url>http://github.com/imyousuf/smart-event-hub</url>
   </scm>
   <build>
